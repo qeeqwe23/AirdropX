@@ -1,0 +1,287 @@
+<?xml version="1.0"?>
+<!-- 引入 JSBSim 官方 XSL 样式表，用于在浏览器中格式化显示 XML 文件 -->
+<?xml-stylesheet type="text/xsl" href="http://jsbsim.sourceforge.net/JSBSim.xsl"?>
+<!-- 根节点：JSBSim 飞行动力学模型(FDM)配置 -->
+<!-- name: 模型名称 HY100; version: 配置文件版本 2.0; release: 发布状态 ALPHA(测试版) -->
+<!-- HY100.xml（HY100 无人机完整飞行动力学模型）和HY100_Turbojet.xml（涡轮喷气发动机模型）是整体与核心子模块的强依赖关系：
+HY100.xml 是无人机的 “完整体”，定义了几何尺寸、质量、起落架、飞控、气动力等全维度参数，但推进系统（动力）本身不包含具体的发动机性能逻辑；
+engine/HY100_Turbojet.xml 是无人机的 “动力核心”，专门定义涡轮喷气发动机的推力特性、燃油消耗、工况曲线等关键参数，是HY100.xml推进系统能正常工作的唯一依据。 -->
+
+
+<fdm_config name="HY100" version="2.0" release="ALPHA">
+
+    <!-- 文件头信息：记录作者、创建日期和模型描述 -->
+    <fileheader>
+        <author> ADS-100 Project Team </author>
+        <filecreationdate> 2023-02-20 </filecreationdate>
+        <description> HY100 Large UAV with 1.2T Airdrop System </description>
+    </fileheader>
+
+    <!-- [1] 几何尺寸与参考点 (Metrics) -->
+    <!-- 核心作用：定义无人机的基本几何参数和关键参考点，是气动力、质量平衡计算的基础 -->
+    <metrics>
+        <wingarea  unit="M2">  45.00 </wingarea>    <!-- 机翼面积：45 平方米 -->
+        <wingspan  unit="M">   18.00 </wingspan>    <!-- 机翼展长：18 米 -->
+        <chord     unit="M">    2.50 </chord>       <!-- 机翼平均气动弦长：2.5 米 -->
+        <htailarea unit="M2">   8.50 </htailarea>   <!-- 水平尾翼面积：8.5 平方米 -->
+        <htailarm  unit="M">    7.20 </htailarm>    <!-- 水平尾翼力臂：从气动参考点到尾翼的距离 7.2 米 -->
+        <!-- 空气动力学参考点 (AERORP)：所有气动力和力矩都绕此点计算，核心参考点 -->
+        <!-- 位置：机头后 4.5 米，机身中心线上，高度为 0 -->
+        <location name="AERORP" unit="M">
+            <x> 4.50 </x>  <!-- 纵向坐标：沿机身轴线，机头为 0，向后为正 -->
+            <y> 0.00 </y>  <!-- 横向坐标：机身中心线为 0，向右为正 -->
+            <z> 0.00 </z>  <!-- 垂向坐标：气动参考平面为 0，向上为正 -->
+        </location>
+        <!-- 视景参考点 (EYEPOINT)：用于仿真中相机视角的位置 -->
+        <location name="EYEPOINT" unit="M">
+            <x> 2.00 </x> <y> 0.00 </y> <z> 1.00 </z>
+        </location>
+        <!-- 飞行器参考点 (VRP)：通常定义为机头前端，作为飞行器的基准原点 -->
+        <location name="VRP" unit="M">
+            <x> 0.00 </x> <y> 0.00 </y> <z> 0.00 </z>
+        </location>
+    </metrics>
+
+    <!-- [2] 质量与重心配置 (Mass and Balance) -->
+    <!-- 核心作用：定义无人机的转动惯量、空机重量，以及 4 个空投物资挂载点（支持 1.2 吨空投） -->
+    <mass_balance>
+        <ixx unit="KG*M2">  18000 </ixx>  <!-- 绕 x 轴的转动惯量：横滚惯量，18000 kg·m² -->
+        <iyy unit="KG*M2">  28000 </iyy>  <!-- 绕 y 轴的转动惯量：俯仰惯量，28000 kg·m² -->
+        <izz unit="KG*M2">  42000 </izz>  <!-- 绕 z 轴的转动惯量：偏航惯量，42000 kg·m² -->
+        <emptyweight unit="KG"> 3500.0 </emptyweight>  <!-- 空机重量：3500 千克 -->
+
+        <!-- 物资 #1: 位于机腹前部，第一个空投挂载点 -->
+        <pointmass name="CARGO_1">
+            <weight unit="KG"> 300.0 </weight>  <!-- 单份物资重量：300 千克 -->
+            <location unit="M">                 <!-- 挂载位置：机腹下方，z=-0.5 米 -->
+                <x> 4.20 </x> <y> 0.00 </y> <z> -0.50 </z>
+            </location>
+        </pointmass>
+
+        <!-- 物资 #2: 位于重心附近，第二个空投挂载点 -->
+        <pointmass name="CARGO_2">
+            <weight unit="KG"> 300.0 </weight>
+            <location unit="M">
+                <x> 4.40 </x> <y> 0.00 </y> <z> -0.50 </z>
+            </location>
+        </pointmass>
+
+        <!-- 物资 #3: 位于重心附近，第三个空投挂载点 -->
+        <pointmass name="CARGO_3">
+            <weight unit="KG"> 300.0 </weight>
+            <location unit="M">
+                <x> 4.60 </x> <y> 0.00 </y> <z> -0.50 </z>
+            </location>
+        </pointmass>
+
+        <!-- 物资 #4: 位于机腹后部，第四个空投挂载点 -->
+        <pointmass name="CARGO_4">
+            <weight unit="KG"> 300.0 </weight>
+            <location unit="M">
+                <x> 4.80 </x> <y> 0.00 </y> <z> -0.50 </z>
+            </location>
+        </pointmass>
+        <!-- 挂载点设计说明：4 个挂载点总重 1200 千克，实现 1.2 吨空投；
+             位置分布在气动参考点(x=4.5m)附近，保证空投前重心的稳定性；
+             仿真时，将对应点质量的 weight 设为 0，即可实现物资投放。 -->
+    </mass_balance>
+
+    <!-- [3] 起落架与地面反应 (Ground Reactions) -->
+    <!-- 核心作用：定义无人机的起落架配置，用于地面滑行、起飞、着陆的仿真；
+         每个接触点包含位置、摩擦系数、弹簧刚度和阻尼系数，模拟真实的地面交互。 -->
+    <ground_reactions>
+        <!-- 前起落架 (NOSE)：单轮，较软的弹簧，适应地面颠簸 -->
+        <contact type="BOGEY" name="NOSE">
+            <location unit="M"> <x> 1.0 </x> <y> 0.0 </y> <z> -1.8 </z> </location>
+            <static_friction>  0.80 </static_friction>    <!-- 静摩擦系数：0.80 -->
+            <dynamic_friction> 0.50 </dynamic_friction>   <!-- 动摩擦系数：0.50 -->
+            <spring_coeff unit="N/M"> 50000 </spring_coeff>       <!-- 弹簧刚度系数：50000 N/m -->
+            <damping_coeff unit="N/M/SEC"> 5000 </damping_coeff>  <!-- 阻尼系数：5000 N/(m/s) -->
+        </contact>
+        <!-- 主起落架左侧 (MAIN_L)：双轮之一，更硬的弹簧，支撑主要重量 -->
+        <contact type="BOGEY" name="MAIN_L">
+            <location unit="M"> <x> 5.0 </x> <y> -1.5 </y> <z> -1.8 </z> </location>
+            <static_friction>  0.80 </static_friction>
+            <dynamic_friction> 0.50 </dynamic_friction>
+            <spring_coeff unit="N/M"> 150000 </spring_coeff>
+            <damping_coeff unit="N/M/SEC"> 15000 </damping_coeff>
+        </contact>
+        <!-- 主起落架右侧 (MAIN_R)：双轮之一，与左侧对称 -->
+        <contact type="BOGEY" name="MAIN_R">
+            <location unit="M"> <x> 5.0 </x> <y> 1.5 </y> <z> -1.8 </z> </location>
+            <static_friction>  0.80 </static_friction>
+            <dynamic_friction> 0.50 </dynamic_friction>
+            <spring_coeff unit="N/M"> 150000 </spring_coeff>
+            <damping_coeff unit="N/M/SEC"> 15000 </damping_coeff>
+        </contact>
+    </ground_reactions>
+
+    <!-- [4] 推进系统 (Propulsion) - Minimal 最小配置 -->
+    <!-- 设计目的：给 HY100 补上“能用”的最小推力/油门通道，
+         让 Step5 级联纵向控制中的 throttle_cmd 真正影响空速/能量。 -->
+    <!-- 设计说明：
+         1. 采用 turbine_engine + direct thruster 架构，推力由发动机模型直接计算；
+         2. 配置一个小燃油箱，影响总重很小，但可避免无油导致发动机熄火；
+         3. 发动机安装在气动参考点，方向与机身轴线一致，保证推力沿纵向。 -->
+    <propulsion>
+        <!-- 涡轮喷气发动机：引用外部发动机模型文件 HY100_Turbojet，命名为 HY100_Engine -->
+        <engine file="engine/HY100_Turbojet.xml" name="HY100_Engine">
+            <feed>0</feed>  <!-- 燃油供应：来自编号为 0 的燃油箱 -->
+            <!-- 推力器：采用 direct 类型，推力直接由发动机模型输出,引用 JSBSim 内置的 direct 推力器模型（无外部文件），仅声明推力器类型 -->
+            <thruster file="direct">
+                <!-- 推力器安装位置：气动参考点 (x=4.5, y=0, z=0) -->
+                <location unit="M">
+                    <x>4.5</x>
+                    <y>0.0</y>
+                    <z>0.0</z>
+                </location>
+                <!-- 推力器安装方向：无偏角，沿机身轴线向前（推力向后） -->
+                <orient unit="DEG">
+                    <roll>0.0</roll>
+                    <pitch>0.0</pitch>
+                    <yaw>0.0</yaw>
+                </orient>
+            </thruster>
+        </engine>
+
+        <!-- 燃油箱：编号为 0，为发动机提供燃油 -->
+        <tank type="FUEL"> <!-- Tank number 0 -->
+            <!-- 油箱位置：气动参考点，与发动机位置一致 -->
+            <location unit="M">
+                <x>4.5</x>
+                <y>0.0</y>
+                <z>0.0</z>
+            </location>
+            <capacity unit="LBS">200</capacity>  <!-- 油箱总容量：200 磅 -->
+            <contents unit="LBS">120</contents>  <!-- 当前油量：120 磅（约 54 千克） -->
+        </tank>
+    </propulsion>
+
+    <!-- [4] 飞行控制系统 (Flight Control System) -->
+    <!-- 核心作用：定义无人机的控制通道，实现飞控指令到执行机构的映射；
+         此处仅实现纵向控制的两个核心通道：俯仰通道（升降舵）和油门通道，满足级联控制需求。 -->
+    <flight_control name="HY100_FCS">
+        <!-- 俯仰控制通道 (Pitch)：处理升降舵指令，输出升降舵实际偏角 -->
+        <channel name="Pitch">
+            <!-- 信号求和器：对升降舵指令进行限幅 -->
+            <summer name="Elevator Sum">
+                <input> fcs/elevator-cmd-norm </input>  <!-- 输入：归一化升降舵指令（来自飞控算法） -->
+                <clipto> <min> -1.0 </min> <max> 1.0 </max> </clipto>  <!-- 限幅范围：[-1, 1] -->
+            </summer>
+            <!-- 舵面缩放器：将归一化指令转换为实际的舵面偏角（度） -->
+            <aerosurface_scale name="Elevator Control">
+                <input>fcs/elevator-cmd-norm</input>  <!-- 输入：归一化升降舵指令 -->
+                <range>                               <!-- 输出范围：升降舵的最大偏角 -->
+                    <min> -30 </min>  <!-- 最小偏角：-30 度（上仰） -->
+                    <max>  30 </max>  <!-- 最大偏角：+30 度（下俯） -->
+                </range>
+                <output>fcs/elevator-pos-deg</output>  <!-- 输出：升降舵实际偏角（度），传递给气动力模型 -->
+            </aerosurface_scale>
+        </channel>
+
+        <!-- 油门控制通道 (Throttle)：最小配置，实现指令的直通传递 -->
+        <!-- 设计说明：JSBSim 的发动机通常读取 throttle-pos-norm 作为节流阀位置；
+             此处将 throttle-cmd-norm 直通映射到 throttle-pos-norm，
+             Python 侧飞控算法可直接写 throttle-cmd-norm，实现油门的闭环控制。 -->
+        <channel name="Throttle">
+            <pure_gain name="Throttle PassThrough">
+                <input>fcs/throttle-cmd-norm</input>  <!-- 输入：归一化油门指令（来自飞控算法） -->
+                <gain>1</gain>                        <!-- 增益：1，直通传递 -->
+                <output>fcs/throttle-pos-norm</output> <!-- 输出：归一化油门位置，传递给发动机模型 -->
+            </pure_gain>
+        </channel>
+    </flight_control>
+
+    <!-- [5] 空气动力学模型 (Aerodynamics) -->
+    <!-- 核心作用：定义无人机的气动力和力矩计算逻辑，是飞行动力学仿真的核心；
+         此处仅实现纵向气动力/力矩：升力、阻力、俯仰力矩，满足纵向控制的需求；
+         所有气动力的计算都基于动压、机翼面积和相应的系数，力矩还需乘以参考弦长。 -->
+    <aerodynamics>
+        <!-- 升力轴 (LIFT)：沿机身垂向，向上为正，决定无人机的上升和下降 -->
+        <axis name="LIFT">
+            <function name="aero/force/Lift_alpha">
+                <description>Lift due to alpha</description>  <!-- 升力由迎角 alpha 决定 -->
+                <product>  <!-- 升力计算公式：L = q_bar * S_w * C_L(alpha) -->
+                    <property>aero/qbar-psf</property>    <!-- 动压：单位为磅/平方英尺 -->
+                    <property>metrics/Sw-sqft</property>  <!-- 机翼面积：单位为平方英尺 -->
+                    <!-- 查表函数：迎角 alpha 到升力系数 C_L 的非线性映射 -->
+                    <table>
+                        <independentVar lookup="row">aero/alpha-rad</independentVar>  <!-- 独立变量：迎角（弧度） -->
+                        <tableData>  <!-- 查表数据：[迎角(rad), 升力系数C_L] -->
+                            -0.20  -0.750  <!-- 迎角 -0.2 rad，C_L = -0.750（负升力） -->
+                             0.00   0.250  <!-- 迎角 0 rad，C_L = 0.250（零升力系数） -->
+                             0.26   1.400  <!-- 迎角 0.26 rad，C_L = 1.400（最大升力系数，失速迎角） -->
+                             0.60   0.710  <!-- 迎角 0.6 rad，C_L = 0.710（失速后，升力系数下降） -->
+                        </tableData>
+                    </table>
+                </product>
+            </function>
+        </axis>
+
+        <!-- 阻力轴 (DRAG)：沿机身纵向，向后为正，决定无人机的空速和能量消耗 -->
+        <axis name="DRAG">
+            <!-- 基本阻力 (Drag_basic)：零升阻力，与升力无关，是飞机的基本阻力 -->
+            <function name="aero/force/Drag_basic">
+                <description>Drag at zero lift</description>
+                <product>  <!-- 计算公式：D_basic = q_bar * S_w * C_D0 -->
+                    <property>aero/qbar-psf</property>
+                    <property>metrics/Sw-sqft</property>
+                    <value> 0.025 </value>  <!-- 零升阻力系数 C_D0 = 0.025 -->
+                </product>
+            </function>
+            <!-- 诱导阻力 (Drag_induced)：由升力产生的阻力，与升力系数的平方成正比 -->
+            <function name="aero/force/Drag_induced">
+                <description>Induced drag</description>
+                <product>  <!-- 计算公式：D_induced = q_bar * S_w * C_L² * K -->
+                    <property>aero/qbar-psf</property>
+                    <property>metrics/Sw-sqft</property>
+                    <property>aero/cl-squared</property>  <!-- 升力系数的平方 C_L² -->
+                    <value> 0.043 </value>  <!-- 诱导阻力因子 K = 0.043 -->
+                </product>
+            </function>
+        </axis>
+
+        <!-- 俯仰力矩轴 (PITCH)：绕机身横向轴，决定无人机的俯仰姿态，是纵向控制的核心 -->
+        <axis name="PITCH">
+            <!-- 迎角俯仰力矩 (Pitch_alpha)：由迎角产生的俯仰力矩，决定飞机的静稳定性 -->
+            <function name="aero/moment/Pitch_alpha">
+                <description>Pitch moment due to alpha</description>
+                <product>  <!-- 计算公式：M_alpha = q_bar * S_w * c_bar * C_m_alpha * alpha -->
+                    <property>aero/qbar-psf</property>
+                    <property>metrics/Sw-sqft</property>
+                    <property>metrics/cbarw-ft</property>  <!-- 机翼平均气动弦长，单位为英尺 -->
+                    <property>aero/alpha-rad</property>    <!-- 迎角，单位为弧度 -->
+                    <value> -0.5 </value>  <!-- 力矩系数 C_m_alpha = -0.5，负号表示静稳定 -->
+                </product>
+                <!-- 静稳定说明：迎角增大时，产生低头力矩，使飞机自动恢复到平衡迎角 -->
+            </function>
+            <!-- 升降舵俯仰力矩 (Pitch_elevator)：由升降舵偏角产生的俯仰力矩，是控制飞机俯仰的核心 -->
+            <function name="aero/moment/Pitch_elevator">
+                <description>Pitch moment due to elevator</description>
+                <product>  <!-- 计算公式：M_elevator = q_bar * S_w * c_bar * C_m_elevator * delta_elevator -->
+                    <property>aero/qbar-psf</property>
+                    <property>metrics/Sw-sqft</property>
+                    <property>metrics/cbarw-ft</property>
+                    <property>fcs/elevator-pos-rad</property>  <!-- 升降舵偏角，单位为弧度 -->
+                    <value> -1.2 </value>  <!-- 力矩系数 C_m_elevator = -1.2 -->
+                </product>
+                <!-- 控制逻辑说明：升降舵上偏（delta_elevator 为负）时，产生抬头力矩（M_elevator 为正）；
+                     升降舵下偏（delta_elevator 为正）时，产生低头力矩（M_elevator 为负），符合常规飞机控制逻辑。 -->
+            </function>
+            <!-- 俯仰阻尼力矩 (Pitch_damp)：由俯仰角速度产生的阻尼力矩，抑制飞机的俯仰振荡，提高稳定性 -->
+            <function name="aero/moment/Pitch_damp">
+                <description>Pitch moment due to pitch rate</description>
+                <product>  <!-- 计算公式：M_damp = q_bar * S_w * c_bar * (c_bar / 2V) * C_m_q * q -->
+                    <property>aero/qbar-psf</property>
+                    <property>metrics/Sw-sqft</property>
+                    <property>metrics/cbarw-ft</property>
+                    <property>aero/ci2vel</property>  <!-- c_bar / (2 * V)，速度相关的阻尼因子 -->
+                    <property>velocities/q-aero-rad_sec</property>  <!-- 俯仰角速度，单位为弧度/秒 -->
+                    <value> -15 </value>  <!-- 阻尼力矩系数 C_m_q = -15，负号表示阻尼作用 -->
+                </product>
+                <!-- 阻尼作用说明：俯仰角速度越大，阻尼力矩越大，使飞机的俯仰振荡快速衰减，提高飞行稳定性。 -->
+            </function>
+        </axis>
+    </aerodynamics>
+
+</fdm_config>

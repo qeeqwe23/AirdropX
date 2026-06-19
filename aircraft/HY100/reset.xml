@@ -1,0 +1,610 @@
+<?xml version="1.0"?>
+
+<!-- 主属性列表，包含通用人物行走动画配置文件 -->
+<PropertyList include="Aircraft/Generic/Human/Include/walker-include.xml">
+
+	<!-- 模拟核心配置段 -->
+	<sim>
+
+		<!-- 飞机描述：通用原子 MQ-9 死神无人机（可挂载武器） -->
+		<description>General Atomics MQ-9 Reaper (bombable)</description>
+		<!-- 飞机模型版本 -->
+		<aircraft-version>1.2</aircraft-version>
+		<!-- 作者信息 -->
+		<author>Petar Jedvaj, J Maverick 16</author>
+		<!-- 开发状态：测试版 -->
+		<status>Alpha</status>
+		<!-- 飞机各模块评分（1-5 分） -->
+		<rating>
+			<FDM type="int">1</FDM>                <!-- 飞行动力学模型评分 -->
+			<systems type="int">1</systems>        <!-- 系统模拟评分 -->
+			<cockpit type="int">1</cockpit>        <!-- 座舱模拟评分 -->
+			<model type="int">2</model>            <!-- 3D 模型精度评分 -->
+		</rating>
+		<!-- 飞行模型类型：JSBSim -->
+		<flight-model>jsb</flight-model>
+		<!-- 气动配置文件：MQ-9-JSBSim.xml -->
+		<aero>MQ-9-JSBSim</aero>
+
+		<!-- 启动画面配置 -->
+		<startup>
+			<splash-texture>Aircraft/MQ-9/Splash.png</splash-texture>
+		</startup>
+
+		<!-- 最低支持 FlightGear 版本 -->
+		<minimum-fg-version>2018.2</minimum-fg-version>
+
+	    <!-- 3D 模型配置 -->
+	    <model>
+			<!-- 3D 模型文件路径 -->
+			<path>Aircraft/MQ-9/Models/MQ-9.xml</path>
+			<!-- 涂装配置 -->
+			<livery>
+				<file type="string"/>
+			</livery>
+			<!-- 光电转塔 / 传感器炮塔配置 -->
+			<turret n="0">
+        		<heading>0</heading>        <!-- 初始航向 -->
+        		<pitch>10</pitch>           <!-- 初始俯仰角 -->
+			</turret>
+	        <!-- 人物角色配置 -->
+	        <walker>
+	            <gender>1</gender>                     <!-- 人物性别 -->
+	            <altitude-ft>-5.0</altitude-ft>        <!-- 人物高度偏移 -->
+	        </walker>
+            <!-- 地图出口默认位置 -->
+            <map>
+                <default_exit>
+                    <x-offset-m type="float">-0.35</x-offset-m>
+                    <y-offset-m type="float">-0.84</y-offset-m>
+                </default_exit>
+            </map>
+	    </model>
+
+		<!-- 子模型（如武器、吊舱） -->
+		<submodels>
+			<serviceable type="bool">1</serviceable>
+			<path>Aircraft/MQ-9/Models/Submodels.xml</path>
+		</submodels>
+
+		<!-- 声音配置文件 -->
+		<sound>
+			<path>Aircraft/MQ-9/Sounds/Sounds.xml</path>
+		</sound>
+
+		<!-- 飞机系统 -->
+		<systems>
+			<!-- 电气系统 -->
+			<electrical>
+				<path>Aircraft/Generic/generic-electrical.xml</path>
+			</electrical>
+		</systems>
+
+		<!-- 多人联机系统 -->
+		<mp-systems>
+			<radar-enabled type="bool">true</radar-enabled>           <!-- 雷达开启 -->
+			<ecm-rwr-enabled type="bool">true</ecm-rwr-enabled>       <!-- 电子对抗与雷达告警 -->
+			<combat-enabled type="bool">true</combat-enabled>          <!-- 战斗模式开启 -->
+		</mp-systems>
+
+		<!-- 仪表设备 -->
+		<instrumentation>
+			<!-- 雷达高度表 -->
+			<radar-altimeter>
+				<limit-bug type="double">250</limit-bug>    <!-- 最低高度警告 -->
+			</radar-altimeter>
+
+			<!-- 警告系统 -->
+			<warnings>
+				<master-caution type="bool">0</master-caution>   <!-- 主警告灯默认关闭 -->
+			</warnings>
+		</instrumentation>
+
+		<!-- 平视显示器 HUD -->
+		<hud>
+			<path n="1">Aircraft/MQ-9/HUD.xml</path>        <!-- HUD 配置文件 -->
+			<visibility n="1">true</visibility>             <!-- 默认显示 -->
+
+			<!-- HUD 颜色调色板 -->
+			<palette>
+				<!-- 颜色 0：绿色系 -->
+				<color n="0">
+					<alpha type="float">0.85</alpha>
+					<antialiased type="bool">true</antialiased>
+					<brightness type="float">0.85</brightness>
+					<transparent type="bool">true</transparent>
+					<red type="float">0.38</red>
+					<green type="float">1.0</green>
+					<blue type="float">0.22</blue>
+				</color>
+				<!-- 颜色 1：白色 -->
+				<color n="1">
+					<alpha type="float">0.85</alpha>
+					<antialiased type="bool">true</antialiased>
+					<brightness type="float">0.85</brightness>
+					<transparent type="bool">true</transparent>
+					<red type="float">1.0</red>
+					<green type="float">1.0</green>
+					<blue type="float">1.0</blue>
+				</color>
+				<!-- 颜色 2：红色 -->
+				<color n="2">
+					<alpha type="float">0.85</alpha>
+					<antialiased type="bool">true</antialiased>
+					<brightness type="float">0.85</brightness>
+					<transparent type="bool">true</transparent>
+					<red type="float">1.0</red>
+					<green type="float">0.2</green>
+					<blue type="float">0.0</blue>
+				</color>
+			</palette>
+
+		</hud>
+
+		<!-- 视角配置：100 号视角 = 传感器视角 -->
+		<view n="100">
+			<name>Sensor View</name>
+			<type>lookfrom</type>
+			<internal archive="y">true</internal>
+			<config>
+				<from-model type="bool">true</from-model>
+				<from-model-idx type="int">0</from-model-idx>
+				<ground-level-nearplane-m type="double">0.01f</ground-level-nearplane-m>
+				<pitch-offset-deg>-5</pitch-offset-deg>
+				<x-offset-m archive="y">  0.0000 </x-offset-m>
+				<y-offset-m archive="y"> -0.2792 </y-offset-m>
+				<z-offset-m archive="y"> -4.3564 </z-offset-m>
+				<default-field-of-view-deg> 70 </default-field-of-view-deg>
+				<limits>
+					<left>
+						<heading-max-deg>-179</heading-max-deg>
+						<x-offset-threshold-deg>0</x-offset-threshold-deg>
+						<x-offset-max-m>0</x-offset-max-m>
+					</left>
+					<right>
+						<heading-max-deg>179</heading-max-deg>
+						<x-offset-threshold-deg>0</x-offset-threshold-deg>
+						<x-offset-max-m>0</x-offset-max-m>
+					</right>
+					<enabled>1</enabled>
+				</limits>
+			</config>
+		</view>
+
+		<!-- 顶部菜单 -->
+		<menubar>
+			<default>
+				<!-- 自定义 MQ-9 菜单 -->
+				<menu n="100">
+
+					<label>MQ-9</label>
+					<enabled type="bool">true</enabled>
+
+					<!-- 自动启动选项 -->
+					<item>
+						<label>Autostart</label>
+						<binding>
+							<command>property-toggle</command>
+							<property>controls/engines/start1</property>
+						</binding>
+						<binding>
+							<command>property-toggle</command>
+							<property>controls/engines/run1</property>
+						</binding>
+						<binding>
+							<command>property-toggle</command>
+							<property>controls/engines/abort1</property>
+						</binding>
+						<mod-up>
+							<binding>
+								<command>null</command>
+							</binding>
+						</mod-up>
+					</item>
+
+					<!-- 选择涂装 -->
+					<item>
+						<label>Select Livery</label>
+						<binding>
+							<command>nasal</command>
+							<script>aircraft.livery.dialog.toggle()</script>
+						</binding>
+					</item>
+
+				</menu>
+			</default>
+		</menubar>
+
+		<!-- 帮助说明 -->
+		<help>
+
+			<title>General Atomics MQ-9 Reaper</title>
+
+			<key>
+				<name>1/2/3/4/5/6</name>
+				<desc>选择挂点</desc>
+			</key>
+
+			<key>
+				<name>d</name>
+				<desc>取消所有挂点选择</desc>
+			</key>
+
+			<key>
+				<name>Ctrl-O</name>
+				<desc>开关红外模式</desc>
+			</key>
+
+			<key>
+				<name>Ctrl-L</name>
+				<desc>开关激光指引</desc>
+			</key>
+
+			<key>
+				<name>Shift-L</name>
+				<desc>开关所有灯光</desc>
+			</key>
+
+			<key>
+				<name>f</name>
+				<desc>释放所选挂点武器</desc>
+			</key>
+
+			<line>MQ-9 > 自动启动</line>
+			<line>MQ-9 > 选择涂装</line>
+			<line>传感器视角中使用鼠标右键移动传感器</line>
+			<line>HUD 随视角变化</line>
+			<line>停机刹车默认开启</line>
+
+		</help>
+
+	</sim>
+
+	<!-- 多人联机损伤模型 -->
+	<payload>
+		<armament>
+			<msg type="bool">true</msg>
+		</armament>
+	</payload>
+
+	<!-- 武器挂点系统 -->
+	<fdm>
+		<jsbsim>
+			<systems>
+				<armament>
+					<!-- 6 个武器挂点，默认未选中 -->
+					<station1>
+						<selected type="double">0</selected>
+					</station1>
+					<station2>
+						<selected type="double">0</selected>
+					</station2>
+					<station3>
+						<selected type="double">0</selected>
+					</station3>
+					<station4>
+						<selected type="double">0</selected>
+					</station4>
+					<station5>
+						<selected type="double">0</selected>
+					</station5>
+					<station6>
+						<selected type="double">0</selected>
+					</station6>
+				</armament>
+			</systems>
+		</jsbsim>
+	</fdm>
+
+	<!-- 键盘控制 -->
+	<input>
+		<keyboard>
+
+			<!-- 数字键 1：选择挂点 1 -->
+			<key n="49">
+				<name>1</name>
+				<desc>Station 1</desc>
+				<binding>
+					 <command>property-toggle</command>
+					<property>fdm/jsbsim/systems/armament/station1/selected</property>
+				</binding>
+			</key>
+
+			<!-- 数字键 2：选择挂点 2 -->
+			<key n="50">
+				<name>2</name>
+				<desc>Station 2</desc>
+				<binding>
+					<command>property-toggle</command>
+					<property>fdm/jsbsim/systems/armament/station2/selected</property>
+				</binding>
+			</key>
+
+			<!-- 数字键 3：选择挂点 3 -->
+			<key n="51">
+				<name>3</name>
+				<desc>Station 3</desc>
+				<binding>
+					<command>property-toggle</command>
+					<property>fdm/jsbsim/systems/armament/station3/selected</property>
+				</binding>
+			</key>
+
+			<!-- 数字键 4：选择挂点 4 -->
+			<key n="52">
+				<name>4</name>
+				<desc>Station 4</desc>
+				<binding>
+					<command>property-toggle</command>
+					<property>fdm/jsbsim/systems/armament/station4/selected</property>
+				</binding>
+			</key>
+
+			<!-- 数字键 5：选择挂点 5 -->
+			<key n="53">
+				<name>5</name>
+				<desc>Station 5</desc>
+				<binding>
+					<command>property-toggle</command>
+					<property>fdm/jsbsim/systems/armament/station5/selected</property>
+				</binding>
+			</key>
+
+			<!-- 数字键 6：选择挂点 6 -->
+			<key n="54">
+				<name>6</name>
+				<desc>Station 6</desc>
+				<binding>
+					<command>property-toggle</command>
+					<property>fdm/jsbsim/systems/armament/station6/selected</property>
+				</binding>
+			</key>
+
+			<!-- 按键 d：取消所有挂点选择 -->
+			<key n="100">
+				<name>d</name>
+				<desc>Deselect all stations</desc>
+				<binding>
+					<command>property-assign</command>
+					<property>fdm/jsbsim/systems/armament/station1/selected</property>
+					<value type="int">0</value>
+				</binding>
+				<binding>
+					<command>property-assign</command>
+					<property>fdm/jsbsim/systems/armament/station2/selected</property>
+					<value type="int">0</value>
+				</binding>
+				<binding>
+					<command>property-assign</command>
+					<property>fdm/jsbsim/systems/armament/station3/selected</property>
+					<value type="int">0</value>
+				</binding>
+			</key>
+
+			<!-- 按键 f：释放所选武器 -->
+			<key n="102">
+				<name>f</name>
+				<desc>Release selected store</desc>
+				<binding>
+					<command>property-assign</command>
+					<property>fdm/jsbsim/systems/armament/release</property>
+					<value>1</value>
+				</binding>
+				<mod-up>
+					<binding>
+						<command>property-assign</command>
+						<property>fdm/jsbsim/systems/armament/release</property>
+						<value>0</value>
+					</binding>
+				</mod-up>
+			</key>
+
+			<!-- Ctrl-L：开关激光指引 -->
+			<key n="12">
+          		<name>Ctrl-L</name>
+          		<desc>LaserArm</desc>
+          		<binding>
+            		<command>property-toggle</command>
+            		<property>/controls/armament/laserarm</property>
+          		</binding>
+       		</key>
+
+			<!-- Ctrl-O：开关红外视觉 -->
+			<key n="15">
+          		<name>Ctrl-O</name>
+          		<desc>Toggle IR</desc>
+          		<binding>
+            		<command>property-toggle</command>
+            		<property>/sim/rendering/als-filters/use-filtering</property>
+          		</binding>
+				<binding>
+            		<command>property-toggle</command>
+            		<property>/sim/rendering/als-filters/use-IR-vision</property>
+          		</binding>
+				<binding>
+					<command>property-toggle</command>
+					<property>/sim/hud/current-color</property>
+				</binding>
+       		</key>
+
+			<!-- Shift-L：开关所有灯光 -->
+			<key n="76">
+          		<name>Shift-L</name>
+          		<desc>LightsToggle</desc>
+          		<binding>
+        			<command>property-toggle</command>
+        			<property>/controls/lighting/nav-lights-switch</property>
+				</binding>
+				<binding>
+        			<command>property-toggle</command>
+        			<property>/controls/lighting/beacon-switch</property>
+				</binding>
+				<binding>
+        			<command>property-toggle</command>
+        			<property>/controls/lighting/strobe-switch</property>
+				</binding>
+       		</key>
+
+		</keyboard>
+	</input>
+
+	<!-- 控制系统 -->
+	<controls>
+		<!-- 武器系统 -->
+		<armament>
+			<masterarm type="bool">false</masterarm>       <!-- 总武器开关 -->
+			<laserarm type="bool">false</laserarm>          <!-- 激光开关 -->
+		</armament>
+		<!-- 发动机控制 -->
+		<engines>
+			<run1 type="bool">true</run1>          <!-- 发动机运行 -->
+			<start1 type="bool">false</start1>    <!-- 发动机启动 -->
+			<abort1 type="bool">false</abort1>    <!-- 中断启动 -->
+		</engines>
+
+		<!-- 起落架 -->
+		<gear>
+			<brake-parking type="double">1</brake-parking>   <!-- 停机刹车默认开启 -->
+		</gear>
+	</controls>
+
+	<!-- 电气系统输出 -->
+	<systems>
+		<electrical>
+			<outputs>
+				<comm n="0" type="float">28</comm>    <!-- 通讯 0 电压 28V -->
+				<comm n="1" type="float">28</comm>    <!-- 通讯 1 电压 28V -->
+			</outputs>
+		</electrical>
+	</systems>
+
+	<!-- 仪表与导航 -->
+	<instrumentation>
+
+		<enav>
+			<selected type="int">3</selected>
+		</enav>
+
+		<!-- 雷达系统 -->
+		<radar>
+			<range type="int" archive="y">20</range>
+			<range-factor type="double" archive="n">0.001888</range-factor>
+			<minimized type="bool" archive="y">false</minimized>
+			<selected type="int">3</selected>
+			<enabled type="bool">true</enabled>
+			<az-field type="double">120</az-field>
+			<range type="double">150</range>
+			<range-selected type="double">50</range-selected>
+			<radar2-range type="double">150</radar2-range>
+			<display-rdr type="bool">true</display-rdr>
+			<radar-standby type="int">3</radar-standby>
+			<mode>
+				<rws type="bool">true</rws>
+				<tws-auto type="bool">false</tws-auto>
+			</mode>
+		</radar>
+
+		<!-- 二级雷达 -->
+		<radar2>
+			<sweep-width-m type="double">0.0844</sweep-width-m>
+			<range-width-m type="double">0.0846</range-width-m>
+			<radius-ppi-display-m type="double">0.0846</radius-ppi-display-m>
+			<hud-eye-dist-m type="double">0.766</hud-eye-dist-m>
+			<hud-radius-m type="double">0.071</hud-radius-m>
+			<hud-vertical-offset-m type="double">-0.025</hud-vertical-offset-m>
+		</radar2>
+
+		<!-- 雷达告警系统 -->
+		<rwr>
+			<display-lighting-intens type="double">0.4</display-lighting-intens>
+			<symbology-lighting-intens type="double">1</symbology-lighting-intens>
+		</rwr>
+
+	</instrumentation>
+
+	<!-- 环境设置 -->
+	<environment>
+		<turbulence>
+			<use-cloud-turbulence>true</use-cloud-turbulence>   <!-- 启用云层湍流 -->
+		</turbulence>
+	</environment>
+
+	<!-- 起落架物理效果 -->
+	<gear>
+		<gear n="0">
+			<tyre-smoke type="int">0</tyre-smoke>
+			<sprayspeed-ms type="double">0</sprayspeed-ms>
+			<spray-density type="double">0</spray-density>
+			<caster-angle-deg-damped type="double">0</caster-angle-deg-damped>
+		</gear>
+		<gear n="1">
+			<tyre-smoke type="int">0</tyre-smoke>
+			<sprayspeed-ms type="double">0</sprayspeed-ms>
+			<spray-density type="double">0</spray-density>
+		</gear>
+		<gear n="2">
+			<tyre-smoke type="int">0</tyre-smoke>
+			<sprayspeed-ms type="double">0</sprayspeed-ms>
+			<spray-density type="double">0</spray-density>
+		</gear>
+	</gear>
+
+	<!-- Nasal 脚本模块 -->
+	<nasal>
+
+		<Liveries>
+			<file>Aircraft/MQ-9/Nasal/Liveries.nas</file>
+		</Liveries>
+
+		<Engine>
+			<file>Aircraft/MQ-9/Nasal/Engine.nas</file>
+			<module>MQ-9</module>
+		</Engine>
+
+		<Lights>
+			<file>Aircraft/MQ-9/Nasal/Lights.nas</file>
+		</Lights>
+
+		<HUD>
+			<file>Aircraft/MQ-9/Nasal/HUD.nas</file>
+		</HUD>
+
+		<Tyresmoke>
+			<file>Aircraft/MQ-9/Nasal/Tyresmoke.nas</file>
+		</Tyresmoke>
+
+		<Crash>
+			<file>Aircraft/MQ-9/Nasal/Crash.nas</file>
+		</Crash>
+
+		<Tracking>
+			<file>Aircraft/MQ-9/Nasal/Tracking.nas</file>
+		</Tracking>
+
+		<Turret>
+			<file>Aircraft/MQ-9/Nasal/Turret.nas</file>
+		</Turret>
+
+		<rwr>
+			<file>Aircraft/Instruments-3d/rwr/rwr.nas</file>
+		</rwr>
+
+		<radar2>
+			<file>Aircraft/Instruments-3d/radar2/radar2.nas</file>
+		</radar2>
+
+		<Radar>
+			<file>Aircraft/MQ-9/Nasal/Radar.nas</file>
+		</Radar>
+
+		<ENAV>
+			<file>Aircraft/MQ-9/Nasal/ENAV.nas</file>
+		</ENAV>
+
+		<damage>
+			<file>Aircraft/MQ-9/Nasal/damage.nas</file>
+		</damage>
+
+	</nasal>
+
+</PropertyList>

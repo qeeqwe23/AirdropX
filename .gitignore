@@ -1,0 +1,9 @@
+slprj/
+matlab/slprj/
+matlab/results/
+matlab/outputs/
+*.slxc
+*.slx.autosave
+*.zip
+__pycache__/
+.venv/

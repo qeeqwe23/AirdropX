@@ -1,0 +1,148 @@
+<?xml version="1.0"?>
+<!--
+  MQ-9 Reaper Cargo - 飞行控制系统 (FCS)
+  TC-MQ9-01: 非武器货运空投构型
+  包含：升降舵、副翼、方向舵三通道
+  升降舵范围：±25 deg（0.436 rad）
+  升降舵约定：正值 cmd = 低头（下降），负值 cmd = 抬头（上升）
+-->
+<system name="Controls">
+
+  <!-- ═══════════════════════════════════════════════════
+       纵向通道（俯仰 / 升降舵）
+       输入：fcs/elevator-cmd-norm  [-1, +1]
+       输出：fcs/elevator-pos-rad   [-0.436, +0.436]
+             fcs/elevator-pos-norm  [-1, +1]
+  ═══════════════════════════════════════════════════ -->
+  <channel name="Pitch">
+
+    <summer name="Pitch Trim Sum">
+      <input>fcs/elevator-cmd-norm</input>
+      <input>fcs/pitch-trim-cmd-norm</input>
+      <clipto>
+        <min> -1 </min>
+        <max>  1 </max>
+      </clipto>
+    </summer>
+
+    <!-- 正向映射：cmd=+1 → pos-rad=+0.4363
+         Cmde=+2.0259（已修正）: pos-rad=+0.4363 → Cm=+0.884（正Cm=低头）✓
+         与 JSBSim 标准约定一致：正值 elevator-cmd = 低头 -->
+    <aerosurface_scale name="Elevator Control">
+      <input>fcs/pitch-trim-sum</input>
+      <range>
+        <min> -0.4363 </min>
+        <max>  0.4363 </max>
+      </range>
+      <output>fcs/elevator-pos-rad</output>
+    </aerosurface_scale>
+
+    <aerosurface_scale name="Elevator Normalized">
+      <input>fcs/elevator-pos-rad</input>
+      <domain>
+        <min>-0.4363</min>
+        <max> 0.4363</max>
+      </domain>
+      <range>
+        <min>-1</min>
+        <max> 1</max>
+      </range>
+      <output>fcs/elevator-pos-norm</output>
+    </aerosurface_scale>
+
+  </channel>
+
+  <!-- ═══════════════════════════════════════════════════
+       横向通道（滚转 / 副翼）
+       输入：fcs/aileron-cmd-norm  [-1, +1]
+       输出：fcs/left-aileron-pos-rad
+             fcs/right-aileron-pos-rad
+  ═══════════════════════════════════════════════════ -->
+  <channel name="Roll">
+
+    <summer name="Roll Trim Sum">
+      <input>fcs/aileron-cmd-norm</input>
+      <input>fcs/roll-trim-cmd-norm</input>
+      <clipto>
+        <min> -1 </min>
+        <max>  1 </max>
+      </clipto>
+    </summer>
+
+    <aerosurface_scale name="Left Aileron Control">
+      <input>fcs/roll-trim-sum</input>
+      <range>
+        <min> -0.3491 </min>
+        <max>  0.3491 </max>
+      </range>
+      <output>fcs/left-aileron-pos-rad</output>
+    </aerosurface_scale>
+
+    <aerosurface_scale name="Right Aileron Control">
+      <input>fcs/roll-trim-sum</input>
+      <gain>-1</gain>
+      <range>
+        <min> -0.3491 </min>
+        <max>  0.3491 </max>
+      </range>
+      <output>fcs/right-aileron-pos-rad</output>
+    </aerosurface_scale>
+
+  </channel>
+
+  <!-- ═══════════════════════════════════════════════════
+       航向通道（偏航 / 方向舵）
+       输入：fcs/rudder-cmd-norm  [-1, +1]
+       输出：fcs/rudder-pos-rad
+  ═══════════════════════════════════════════════════ -->
+  <channel name="Yaw">
+
+    <summer name="Yaw Trim Sum">
+      <input>fcs/rudder-cmd-norm</input>
+      <input>fcs/yaw-trim-cmd-norm</input>
+      <clipto>
+        <min> -1 </min>
+        <max>  1 </max>
+      </clipto>
+    </summer>
+
+    <aerosurface_scale name="Rudder Control">
+      <input>fcs/yaw-trim-sum</input>
+      <range>
+        <min> -0.3491 </min>
+        <max>  0.3491 </max>
+      </range>
+      <output>fcs/rudder-pos-rad</output>
+    </aerosurface_scale>
+
+    <aerosurface_scale name="Rudder Normalized">
+      <input>fcs/rudder-pos-rad</input>
+      <domain>
+        <min>-0.3491</min>
+        <max> 0.3491</max>
+      </domain>
+      <range>
+        <min>-1</min>
+        <max> 1</max>
+      </range>
+      <output>fcs/rudder-pos-norm</output>
+    </aerosurface_scale>
+
+  </channel>
+
+  <!-- ═══════════════════════════════════════════════════
+       油门通道
+       输入：fcs/throttle-cmd-norm[0]  [0, 1]
+       输出：fcs/throttle-pos-norm[0]
+  ═══════════════════════════════════════════════════ -->
+  <channel name="Throttle">
+
+    <pure_gain name="Throttle 0">
+      <input>fcs/throttle-cmd-norm[0]</input>
+      <gain>1.0</gain>
+      <output>fcs/throttle-pos-norm[0]</output>
+    </pure_gain>
+
+  </channel>
+
+</system>

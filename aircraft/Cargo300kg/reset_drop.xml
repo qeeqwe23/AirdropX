@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!--
+  货物弹道仿真初始条件模板
+  说明：此文件为默认值，实际仿真时由 cargo_ballistic_jsbsim.py 通过
+  JSBSim 属性接口动态覆盖（高度、速度、风速均在运行时注入）
+-->
+<initialize name="reset_drop">
+  <!-- 初始速度：沿正北方向飞行（与 MQ-9 任务一致），默认 78.6 m/s -->
+  <!-- 注意：实际值在运行时通过 ic/vn-fps 等属性覆盖 -->
+  <vn unit="M/SEC"> 78.6168 </vn>
+  <ve unit="M/SEC">  0.0    </ve>
+  <vd unit="M/SEC">  0.0    </vd>
+  <!-- 初始位置：成都平原上空，高度 20m -->
+  <latitude  unit="DEG"> 30.0 </latitude>
+  <longitude unit="DEG">103.0 </longitude>
+  <altitude  unit="M">   20.0 </altitude>
+  <!-- 初始姿态：水平，无旋转 -->
+  <phi   unit="DEG"> 0.0 </phi>
+  <theta unit="DEG"> 0.0 </theta>
+  <psi   unit="DEG"> 0.0 </psi>
+  <!-- 初始角速度：零 -->
+  <p unit="DEG/SEC"> 0.0 </p>
+  <q unit="DEG/SEC"> 0.0 </q>
+  <r unit="DEG/SEC"> 0.0 </r>
+</initialize>

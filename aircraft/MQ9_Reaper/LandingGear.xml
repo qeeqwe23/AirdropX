@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<!--
+  MQ-9 Reaper Cargo - 起落架控制系统
+  TC-MQ9-01: 非武器货运空投构型
+  空投任务中起落架收起（retracted）
+  fcs/gear-no-wow：空中=1（无地面接触），地面=0
+-->
+<system name="LandingGear">
+
+  <channel name="Landing Gear">
+
+    <!-- 起落架位置控制 -->
+    <kinematic name="Gear Control">
+      <input>gear/gear-cmd-norm</input>
+      <traverse>
+        <setting>
+          <position>0</position>
+          <time>0</time>
+        </setting>
+        <setting>
+          <position>1</position>
+          <time>5</time>
+        </setting>
+      </traverse>
+      <output>gear/gear-pos-norm</output>
+    </kinematic>
+
+  </channel>
+
+  <channel name="WOW Logic">
+
+    <!-- gear-no-wow: 1 = 空中（无轮载），0 = 地面接触
+         使用 gear/wow 取反：空中时 gear/wow=0 -> gear-no-wow=1 -->
+    <switch name="fcs/gear-no-wow">
+      <default value="1"/>
+      <test logic="AND" value="0">
+        gear/unit[0]/WOW GT 0
+      </test>
+      <clipto>
+        <min>0</min>
+        <max>1</max>
+      </clipto>
+      <output>fcs/gear-no-wow</output>
+    </switch>
+
+  </channel>
+
+</system>

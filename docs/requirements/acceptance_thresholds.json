@@ -1,0 +1,79 @@
+{
+  "schema_version": "1.0",
+  "project": "AirdropX",
+  "phase": "20m无伞空投技术要求对齐",
+  "requirements": [
+    {
+      "id": "REQ-FC-01",
+      "category": "超低空飞行控制",
+      "description": "20m超低空高度保持误差 ≤2m",
+      "threshold": 2.0,
+      "unit": "m",
+      "metric_name": "max_altitude_error_steady"
+    },
+    {
+      "id": "REQ-FC-02",
+      "category": "超低空飞行控制",
+      "description": "20m超低空航迹跟踪误差 ≤5m",
+      "threshold": 5.0,
+      "unit": "m",
+      "metric_name": "cross_track_error_steady_p95"
+    },
+    {
+      "id": "REQ-FC-03",
+      "category": "超低空飞行控制",
+      "description": "最大载重连投高度误差 ≤4m",
+      "threshold": 4.0,
+      "unit": "m",
+      "metric_name": "max_altitude_error_drop"
+    },
+    {
+      "id": "REQ-FC-04",
+      "category": "超低空飞行控制",
+      "description": "最大载重连投航迹误差 ≤5m",
+      "threshold": 5.0,
+      "unit": "m",
+      "metric_name": "cross_track_error_drop_p95"
+    },
+    {
+      "id": "REQ-DROP-01",
+      "category": "高精度投放控制",
+      "description": "20m无伞投放 CEP50_to_target ≤20m",
+      "threshold": 20.0,
+      "unit": "m",
+      "metric_name": "cep50_to_target"
+    },
+    {
+      "id": "REQ-DROP-02",
+      "category": "高精度投放控制",
+      "description": "50m无伞投放 CEP50_to_target ≤50m",
+      "threshold": 50.0,
+      "unit": "m",
+      "metric_name": "cep50_to_target_50m"
+    },
+    {
+      "id": "REQ-DROP-03",
+      "category": "高精度投放控制",
+      "description": "300m有伞投放 CEP50_to_target ≤100m",
+      "threshold": 100.0,
+      "unit": "m",
+      "metric_name": "cep50_to_target_300m"
+    },
+    {
+      "id": "REQ-ENV-01",
+      "category": "环境适应性",
+      "description": "风速/气压/温度变化下控制补偿有效",
+      "threshold": null,
+      "unit": null,
+      "metric_name": "env_compensation_pass"
+    },
+    {
+      "id": "REQ-ENG-01",
+      "category": "工程实现",
+      "description": "算法工程可实现、稳定可靠",
+      "threshold": null,
+      "unit": null,
+      "metric_name": "engineering_stability_pass"
+    }
+  ]
+}
