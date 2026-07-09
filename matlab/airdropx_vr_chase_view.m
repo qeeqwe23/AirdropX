@@ -12,10 +12,11 @@ forward = [sin(heading); 0.0; -cos(heading)];
 right = [cos(heading); 0.0; sin(heading)];
 back = -forward;
 
-% Oblique chase view: behind, above, and slightly to the right. This keeps
-% the aircraft, released cargo, and ground impact area in the same view.
-position = aircraft_pos + 185.0 * back + 85.0 * right + [0.0; 115.0; 0.0];
-target = aircraft_pos + 120.0 * forward + [0.0; -28.0; 0.0];
+% Close chase view: slightly behind, above, and to the right of the aircraft.
+% Keep the target near the aircraft body so the camera does not frame a large
+% empty forward area.
+position = aircraft_pos + 48.0 * back + 12.0 * right + [0.0; 24.0; 0.0];
+target = aircraft_pos + 10.0 * forward + [0.0; 2.0; 0.0];
 
 orientation = look_at_orientation(position, target);
 end

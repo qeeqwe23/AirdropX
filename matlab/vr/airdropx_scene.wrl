@@ -39,8 +39,8 @@ Viewpoint {
 }
 
 DEF ChaseView Viewpoint {
-  position 0 42 55
-  orientation 1 0 0 -0.25
+  position 0 56 52
+  orientation 1 0 0 -0.40
   description "Auto Chase"
 }
 
@@ -90,6 +90,7 @@ DEF Target Transform {
 DEF Aircraft Transform {
   translation 0 20 0
   rotation 0 1 0 1.5707963
+  scale 2.0 2.0 2.0
   children [
     # MQ-9 style slender fuselage. Local +X is the nose.
     Transform {
