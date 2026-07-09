@@ -52,16 +52,19 @@ local_ensure_chart_parameters(model, "DropSchedule", [
     "airdropx_fixed_drop_total"]);
 
 local_set_emchart_script(model, "PD_NW20", [
-    "function [elevator_delta, throttle_cmd, delta_m_signal, h_err, u_pd, drop_trim_bias, u_total, u_out, saturated] = PD_NW20(altitude_m, vz_up_mps, airspeed_mps, mass_kg, drop_count)"
+    "function [elevator_delta, throttle_cmd, delta_m_signal, h_err, u_pd, drop_trim_bias, u_total, u_out, saturated] = PD_NW20(altitude_m, vz_up_mps, airspeed_mps, mass_kg, drop_count, pitch_deg)"
     "%#codegen"
     ""
     "[elevator_delta, throttle_cmd, delta_m_signal, h_err, u_pd, drop_trim_bias, u_total, u_out, saturated] = ..."
-    "    airdropx_pd_nw20_block(altitude_m, vz_up_mps, airspeed_mps, mass_kg, drop_count, ..."
+    "    airdropx_pd_nw20_block(altitude_m, vz_up_mps, airspeed_mps, pitch_deg, mass_kg, drop_count, ..."
     "        airdropx_target_altitude_m, airdropx_pd_Kp, airdropx_pd_Kd, ..."
     "        airdropx_pd_u_limit, airdropx_pd_u_rate_limit, airdropx_pd_K_mass, ..."
     "        airdropx_pd_bias_rate_limit, airdropx_pd_throttle_kp, ..."
-    "        airdropx_pd_throttle_fixed, airdropx_pd_v_ref_mps, ..."
-    "        airdropx_drop_mass_signal_kg, airdropx_initial_elevator_delta);"
+    "        airdropx_pd_throttle_fixed, airdropx_pd_throttle_alt_kp, ..."
+    "        airdropx_pd_throttle_vz_kd, airdropx_pd_v_ref_mps, ..."
+    "        airdropx_drop_mass_signal_kg, airdropx_initial_elevator_delta, ..."
+    "        airdropx_pd_pitch_ref_deg, airdropx_pd_pitch_kp, airdropx_pd_pitch_limit, ..."
+    "        airdropx_pd_pitch_rate_kd, airdropx_pd_pitch_rate_limit, airdropx_pd_dt_s);"
     ""
     "end"]);
 local_ensure_chart_parameters(model, "PD_NW20", [
@@ -74,9 +77,20 @@ local_ensure_chart_parameters(model, "PD_NW20", [
     "airdropx_pd_bias_rate_limit"
     "airdropx_pd_throttle_kp"
     "airdropx_pd_throttle_fixed"
+    "airdropx_pd_throttle_alt_kp"
+    "airdropx_pd_throttle_vz_kd"
     "airdropx_pd_v_ref_mps"
+    "airdropx_pd_pitch_ref_deg"
+    "airdropx_pd_pitch_kp"
+    "airdropx_pd_pitch_limit"
+    "airdropx_pd_pitch_rate_kd"
+    "airdropx_pd_pitch_rate_limit"
+    "airdropx_pd_dt_s"
     "airdropx_drop_mass_signal_kg"
     "airdropx_initial_elevator_delta"]);
+local_set_chart_data_scope(model, "PD_NW20", "pitch_deg", "Input");
+set_param(model, "SimulationCommand", "update");
+local_connect_src_to_chart_input(model, "Demux", 6, "PD_NW20", 6, "pitch_deg");
 
 local_set_emchart_script(model, "CARP_CEP", [
     "function [drop_cmd, release_latched, in_window, low_alt_safe, t_to_release_s, release_n_m, release_e_m, predicted_impact_n_m, predicted_impact_e_m, miss_distance_m, cep50_to_target_m, actual_release_n_m, actual_release_e_m, actual_release_alt_m, release_airspeed_mps, release_heading_deg, release_wind_n_mps, release_wind_e_mps, schedule_done] = CARP_CEP(t, pos_n_m, pos_e_m, altitude_m, airspeed_mps, heading_deg, wind_n_mps, wind_e_mps, drop_count)"
@@ -195,6 +209,39 @@ for i = 1:numel(names)
     end
     data.Scope = "Parameter";
 end
+end
+
+function local_set_chart_data_scope(model, chartName, dataName, scope)
+chart = local_find_emchart(model, chartName);
+data = chart.find("-isa", "Stateflow.Data", "Name", char(dataName));
+if isempty(data)
+    data = Stateflow.Data(chart);
+    data.Name = char(dataName);
+else
+    data = data(1);
+end
+data.Scope = char(scope);
+end
+
+function local_connect_src_to_chart_input(model, srcBlockName, srcPortIndex, chartName, dstPortIndex, lineName)
+chart = local_find_emchart(model, chartName);
+srcPath = char(string(model) + "/" + string(srcBlockName));
+srcPorts = get_param(srcPath, "PortHandles");
+dstPorts = get_param(char(chart.Path), "PortHandles");
+
+if numel(srcPorts.Outport) < srcPortIndex || numel(dstPorts.Inport) < dstPortIndex
+    error("Cannot connect %s/%d to %s/%d: port index out of range.", ...
+        srcBlockName, srcPortIndex, chartName, dstPortIndex);
+end
+
+dstLine = get_param(dstPorts.Inport(dstPortIndex), "Line");
+if dstLine ~= -1
+    delete_line(dstLine);
+end
+
+newLine = add_line(model, srcPorts.Outport(srcPortIndex), dstPorts.Inport(dstPortIndex), ...
+    "autorouting", "on");
+set_param(newLine, "Name", lineName);
 end
 
 function local_delete_line(model, src, dst)

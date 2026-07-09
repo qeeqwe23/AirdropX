@@ -202,7 +202,15 @@ names = [
     "pd_bias_rate_limit"
     "pd_throttle_kp"
     "pd_throttle_fixed"
+    "pd_throttle_alt_kp"
+    "pd_throttle_vz_kd"
     "pd_v_ref_mps"
+    "pd_pitch_ref_deg"
+    "pd_pitch_kp"
+    "pd_pitch_limit"
+    "pd_pitch_rate_kd"
+    "pd_pitch_rate_limit"
+    "pd_dt_s"
     "drop_mass_signal_kg"
     "drop_mode"
     ];
@@ -221,7 +229,15 @@ values = [
     cfg.control.pd_gains.bias_rate_limit
     cfg.control.pd_gains.throttle_kp
     cfg.control.pd_gains.throttle_fixed
+    cfg.control.pd_gains.throttle_alt_kp
+    cfg.control.pd_gains.throttle_vz_kd
     cfg.control.pd_gains.v_ref_mps
+    cfg.control.pd_gains.pitch_ref_deg
+    cfg.control.pd_gains.pitch_kp
+    cfg.control.pd_gains.pitch_limit
+    cfg.control.pd_gains.pitch_rate_kd
+    cfg.control.pd_gains.pitch_rate_limit
+    cfg.control.pd_gains.dt_s
     cfg.control.drop_mass_signal_kg
     cfg.drop_mode
     ];
