@@ -10,18 +10,18 @@
        配平分析：Sw=23.90m^2, CL_0=0.4077, m=3423kg, h=20m
        v_trim = sqrt(2*W/(rho*Sw*CL_0)) = sqrt(2*33580/(1.225*23.90*0.4077)) = 75.0 m/s
        在 v=90m/s 时升力/重力=1.44（过剩），在 v=75m/s 时升力/重力≈1.00（配平）-->
-  <ubody unit="M/SEC">45</ubody>
+  <ubody unit="M/SEC">55.47836138</ubody>
   <!-- vbody: 机体侧向速度，初始为 0 -->
   <vbody unit="M/SEC">0.0</vbody>
   <!-- wbody: 机体法向速度，初始为 0（水平飞行） -->
-  <wbody unit="M/SEC">0.0</wbody>
+  <wbody unit="M/SEC">1.549650949</wbody>
 
   <!-- 初始地理位置：成都平原上空（经纬度仅用于大气模型参考） -->
   <latitude  unit="DEG">30.0</latitude>
   <longitude unit="DEG">103.0</longitude>
 
   <!-- 初始高度：20m AGL（低空无伞投放任务高度） -->
-  <altitude unit="M">20.0</altitude>
+  <altitude unit="M">20</altitude>
 
   <!-- 初始姿态角：水平飞行，无滚转/俯仰/偏航 -->
   <phi   unit="DEG">0.0</phi>   <!-- 滚转角 -->

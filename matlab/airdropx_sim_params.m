@@ -35,8 +35,19 @@ cfg.sim.stop_time_s = 30.0;
 cfg.dt = dt;
 
 cfg.initial.airspeed_mps = 45.0;
+if isfinite(double(opts.InitialAirspeedMps))
+    cfg.initial.airspeed_mps = double(opts.InitialAirspeedMps);
+end
+cfg.initial.altitude_m = 20.0;
+if isfinite(double(opts.InitialAltitudeM))
+    cfg.initial.altitude_m = double(opts.InitialAltitudeM);
+end
 cfg.initial.theta_deg = 4.0;
+if isfinite(double(opts.InitialPitchDeg))
+    cfg.initial.theta_deg = double(opts.InitialPitchDeg);
+end
 cfg.initial.pitch_deg = cfg.initial.theta_deg;
+cfg.initial.flight_path_deg = double(opts.InitialFlightPathDeg);
 cfg.initial.use_generated_ic = usingGeneratedIc;
 cfg.initial.generated_ic_name = icName;
 cfg.initial.template_ic_name = icTemplateName;
@@ -127,7 +138,8 @@ cfg.model = string(opts.Model);
 if cfg.initial.use_generated_ic
     local_write_initial_condition(cfg.initial.template_ic_name, ...
         cfg.initial.generated_ic_name, cfg.initial.airspeed_mps, ...
-        cfg.initial.pitch_deg);
+        cfg.initial.pitch_deg, cfg.initial.flight_path_deg, ...
+        cfg.initial.altitude_m);
 end
 
 if opts.AssignBase
@@ -142,6 +154,10 @@ opts.IcName = "";
 opts.Dt = 1/120;
 opts.Model = "untitled1";
 opts.AssignBase = false;
+opts.InitialAirspeedMps = NaN;
+opts.InitialAltitudeM = NaN;
+opts.InitialPitchDeg = NaN;
+opts.InitialFlightPathDeg = NaN;
 
 if mod(numel(varargin), 2) ~= 0
     error("Options must be name-value pairs.");
@@ -173,8 +189,10 @@ assignin("base", "airdropx_wind_dir_from_deg", cfg.environment.wind_dir_from_deg
 assignin("base", "airdropx_reset_cmd", cfg.environment.reset_cmd);
 
 assignin("base", "airdropx_initial_airspeed_mps", cfg.initial.airspeed_mps);
+assignin("base", "airdropx_initial_altitude_m", cfg.initial.altitude_m);
 assignin("base", "airdropx_initial_theta_deg", cfg.initial.theta_deg);
 assignin("base", "airdropx_initial_pitch_deg", cfg.initial.pitch_deg);
+assignin("base", "airdropx_initial_flight_path_deg", cfg.initial.flight_path_deg);
 assignin("base", "airdropx_target_altitude_m", cfg.control.target_altitude_m);
 assignin("base", "airdropx_initial_elevator_delta", cfg.control.initial_elevator_delta);
 assignin("base", "airdropx_initial_throttle_cmd", cfg.control.initial_throttle_cmd);
@@ -219,7 +237,7 @@ assignin("base", "airdropx_ballistics_k_drag", cfg.ballistics.k_drag_calibrated)
 assignin("base", "airdropx_ballistics_side_wind_gain", cfg.ballistics.side_wind_gain);
 end
 
-function local_write_initial_condition(templateName, generatedName, airspeedMps, pitchDeg)
+function local_write_initial_condition(templateName, generatedName, airspeedMps, pitchDeg, flightPathDeg, altitudeM)
 templatePath = local_xml_path(templateName);
 generatedPath = local_xml_path(generatedName);
 
@@ -232,8 +250,26 @@ ubodyExpr = '<ubody\s+unit="M/SEC">[^<]*</ubody>';
 if isempty(regexp(xmlText, ubodyExpr, "once"))
     error("AirdropX initial condition template has no M/SEC ubody field: %s", templatePath);
 end
+if nargin >= 5 && isfinite(double(flightPathDeg))
+    alphaDeg = double(pitchDeg) - double(flightPathDeg);
+    ubodyMps = double(airspeedMps) * cosd(alphaDeg);
+    wbodyMps = double(airspeedMps) * sind(alphaDeg);
+else
+    ubodyMps = double(airspeedMps);
+    wbodyMps = NaN;
+end
+
 xmlText = regexprep(xmlText, ubodyExpr, ...
-    sprintf('<ubody unit="M/SEC">%.10g</ubody>', airspeedMps), "once");
+    sprintf('<ubody unit="M/SEC">%.10g</ubody>', ubodyMps), "once");
+
+if isfinite(wbodyMps)
+    wbodyExpr = '<wbody\s+unit="M/SEC">[^<]*</wbody>';
+    if isempty(regexp(xmlText, wbodyExpr, "once"))
+        error("AirdropX initial condition template has no M/SEC wbody field: %s", templatePath);
+    end
+    xmlText = regexprep(xmlText, wbodyExpr, ...
+        sprintf('<wbody unit="M/SEC">%.10g</wbody>', wbodyMps), "once");
+end
 
 thetaExpr = '<theta\s+unit="DEG">[^<]*</theta>';
 if isempty(regexp(xmlText, thetaExpr, "once"))
@@ -241,6 +277,15 @@ if isempty(regexp(xmlText, thetaExpr, "once"))
 end
 xmlText = regexprep(xmlText, thetaExpr, ...
     sprintf('<theta unit="DEG">%.10g</theta>', pitchDeg), "once");
+
+if nargin >= 6 && isfinite(double(altitudeM))
+    altitudeExpr = '<altitude\s+unit="M">[^<]*</altitude>';
+    if isempty(regexp(xmlText, altitudeExpr, "once"))
+        error("AirdropX initial condition template has no M altitude field: %s", templatePath);
+    end
+    xmlText = regexprep(xmlText, altitudeExpr, ...
+        sprintf('<altitude unit="M">%.10g</altitude>', altitudeM), "once");
+end
 
 generatedDir = fileparts(generatedPath);
 if ~isfolder(generatedDir)
