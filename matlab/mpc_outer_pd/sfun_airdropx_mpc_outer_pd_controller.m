@@ -1,17 +1,17 @@
-function sfun_airdropx_mpc_controller(block)
-%SFUN_AIRDROPX_MPC_CONTROLLER Interpreted MPC controller for Simulink tests.
+function sfun_airdropx_mpc_outer_pd_controller(block)
+%SFUN_AIRDROPX_MPC_OUTER_PD_CONTROLLER MPC outer loop plus PD pitch inner loop.
 %
 % Input vector:
 %   [altitude_m; vz_up_mps; airspeed_mps; pitch_deg; mass_kg; cg_x_m]
 %
 % Output vector:
-%   [elevator_delta; throttle_cmd]
+%   [elevator_delta; throttle_cmd; pitch_ref_deg]
 
 setup(block);
 end
 
 function setup(block)
-block.NumDialogPrms = 1; % identified model .mat path, or ""
+block.NumDialogPrms = 1; % reserved model .mat path, or ""
 
 block.NumInputPorts = 1;
 block.NumOutputPorts = 1;
@@ -21,7 +21,7 @@ block.InputPort(1).DatatypeID = 0;
 block.InputPort(1).Complexity = "Real";
 block.InputPort(1).DirectFeedthrough = true;
 
-block.OutputPort(1).Dimensions = 2;
+block.OutputPort(1).Dimensions = 3;
 block.OutputPort(1).DatatypeID = 0;
 block.OutputPort(1).Complexity = "Real";
 
@@ -34,33 +34,15 @@ block.RegBlockMethod("Outputs", @Outputs);
 end
 
 function Start(block)
-modelMat = block.DialogPrm(1).Data;
-if isstring(modelMat)
-    modelMat = char(modelMat);
-end
-
-if isempty(modelMat) || ~isfile(modelMat)
-    cfg = local_config_from_workspace();
-    cfg.model = airdropx_mpc_nominal_model(cfg);
-else
-    loaded = load(modelMat);
-    if ~isfield(loaded, "cfg") || ~isfield(loaded, "model")
-        error("MPC model MAT must contain cfg and model: %s", modelMat);
-    end
-    cfg = loaded.cfg;
-    cfg.model = loaded.model;
-end
+cfg = local_config_from_workspace();
 cfg = local_apply_workspace_overrides(cfg);
-
-cfg.dt_s = 0.1;
-cfg.prediction_horizon = 25;
-cfg.control_horizon = 8;
 
 data = struct();
 data.cfg = cfg;
-data.controller_state = [];
+data.outer_state = [];
 data.prev_pitch_deg = NaN;
 data.prev_t = NaN;
+data.prev_elevator = local_base_scalar("airdropx_initial_elevator_delta", 0.0);
 local_memory("set", block, data);
 end
 
@@ -69,9 +51,10 @@ data = local_memory("get", block);
 if isempty(data)
     return;
 end
-data.controller_state = [];
+data.outer_state = [];
 data.prev_pitch_deg = NaN;
 data.prev_t = NaN;
+data.prev_elevator = local_base_scalar("airdropx_initial_elevator_delta", 0.0);
 local_memory("set", block, data);
 end
 
@@ -111,11 +94,47 @@ x = [
     cgXM - cfg.reference.cg_x_m
     ];
 
-[cmd, controllerState] = airdropx_mpc_controller(x, data.controller_state, cfg);
-data.controller_state = controllerState;
-local_memory("set", block, data);
+[pitchRefDeg, throttleCmd, outerState] = local_outer_command(x, pitchDeg, qDps, data.outer_state, cfg);
+data.outer_state = outerState;
+elevator = local_inner_pd(pitchDeg, pitchRefDeg, qDps, x, data.prev_elevator, cfg);
+data.prev_elevator = elevator;
 
-block.OutputPort(1).Data = cmd(:);
+local_memory("set", block, data);
+block.OutputPort(1).Data = [elevator; throttleCmd; pitchRefDeg];
+end
+
+function [pitchRefDeg, throttleCmd, outerState] = local_outer_command(x, pitchDeg, qDps, outerState, cfg)
+if isfield(cfg, "outer_pd_allocation") && cfg.outer_pd_allocation.enabled
+    [virtualCmd, outerState] = airdropx_mpc_controller(x, outerState, cfg.direct_mpc);
+    desiredElevator = double(virtualCmd(1));
+    throttleCmd = double(virtualCmd(2));
+    pd = cfg.inner_pd;
+    feedForward = pd.trim_elevator + ...
+        pd.kd * double(qDps) + ...
+        pd.mass_gain_elevator * double(x(6)) + ...
+        pd.cg_gain_elevator * double(x(7));
+    kp = max(abs(pd.kp), eps);
+    pitchRefDeg = double(pitchDeg) - (desiredElevator - feedForward) / kp;
+else
+    [outerCmd, outerState] = airdropx_mpc_controller(x, outerState, cfg);
+    pitchRefDeg = double(outerCmd(1));
+    throttleCmd = double(outerCmd(2));
+end
+pitchRefDeg = min(max(pitchRefDeg, cfg.inner_pd.pitch_ref_min_deg), cfg.inner_pd.pitch_ref_max_deg);
+end
+
+function elevator = local_inner_pd(pitchDeg, pitchRefDeg, qDps, x, prevElevator, cfg)
+pd = cfg.inner_pd;
+raw = pd.trim_elevator + ...
+    pd.kp * (double(pitchDeg) - double(pitchRefDeg)) + ...
+    pd.kd * double(qDps) + ...
+    pd.mass_gain_elevator * double(x(6)) + ...
+    pd.cg_gain_elevator * double(x(7));
+
+du = raw - double(prevElevator);
+du = min(max(du, -pd.elevator_rate_limit), pd.elevator_rate_limit);
+elevator = double(prevElevator) + du;
+elevator = min(max(elevator, -pd.elevator_limit), pd.elevator_limit);
 end
 
 function cfg = local_config_from_workspace()
@@ -124,8 +143,8 @@ targetV = local_base_scalar("airdropx_pd_v_ref_mps", 45.0);
 targetPitch = local_base_scalar("airdropx_pd_pitch_ref_deg", 4.0);
 refMass = local_base_scalar("airdropx_mpc_reference_mass_kg", 3423.0);
 refCg = local_base_scalar("airdropx_mpc_reference_cg_x_m", 5.28048992112182);
-altitudeBias = local_base_scalar("airdropx_mpc_control_altitude_bias_m", 0.0);
-cfg = airdropx_mpc_config( ...
+altitudeBias = local_base_scalar("airdropx_mpc_control_altitude_bias_m", 0.95);
+cfg = airdropx_mpc_outer_pd_config( ...
     "TargetAltitudeM", targetH, ...
     "TargetAirspeedMps", targetV, ...
     "TargetPitchDeg", targetPitch, ...
@@ -136,17 +155,17 @@ end
 
 function cfg = local_apply_workspace_overrides(cfg)
 try
-    if evalin("base", "exist('airdropx_mpc_config_overrides','var')")
-        overrides = evalin("base", "airdropx_mpc_config_overrides");
+    if evalin("base", "exist('airdropx_mpc_outer_pd_config_overrides','var')")
+        overrides = evalin("base", "airdropx_mpc_outer_pd_config_overrides");
         if ~isempty(overrides)
             if ~isstruct(overrides)
-                error("airdropx_mpc_config_overrides must be a struct.");
+                error("airdropx_mpc_outer_pd_config_overrides must be a struct.");
             end
             cfg = local_merge_struct(cfg, overrides);
         end
     end
 catch ME
-    error("Failed to apply MPC config overrides: %s", ME.message);
+    error("Failed to apply MPC outer/PD config overrides: %s", ME.message);
 end
 end
 

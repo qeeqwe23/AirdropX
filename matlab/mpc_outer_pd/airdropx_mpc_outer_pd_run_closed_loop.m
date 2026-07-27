@@ -1,74 +1,43 @@
-function result = airdropx_mpc_run_closed_loop(varargin)
-%AIRDROPX_MPC_RUN_CLOSED_LOOP Run the standalone MPC closed-loop model.
-%
-% This does not modify matlab/untitled1.slx. It simulates
-% matlab/mpc/airdropx_mpc_closed_loop.slx and exports a compact CSV.
+function result = airdropx_mpc_outer_pd_run_closed_loop(varargin)
+%AIRDROPX_MPC_OUTER_PD_RUN_CLOSED_LOOP Run MPC outer + PD inner closed loop.
 
 opts = local_options(varargin{:});
 
 thisFile = mfilename("fullpath");
-mpcDir = string(fileparts(thisFile));
-matlabDir = string(fileparts(mpcDir));
-projectRoot = string(fileparts(matlabDir));
+outerDir = string(fileparts(thisFile));
+matlabDir = string(fileparts(outerDir));
 
 addpath(char(matlabDir));
-addpath(char(mpcDir));
+addpath(char(fullfile(matlabDir, "mpc")));
+addpath(char(outerDir));
 addpath(char(fullfile(matlabDir, "sfunc_jsbsim")));
 addpath(char(fullfile(matlabDir, "vr")));
 
 modelName = string(opts.Model);
-modelPath = fullfile(mpcDir, modelName + ".slx");
+modelPath = fullfile(outerDir, modelName + ".slx");
 if opts.RecreateModel || ~isfile(modelPath)
-    airdropx_mpc_create_closed_loop_model( ...
-        "TargetModel", modelName, ...
-        "ModelMat", opts.ModelMat);
+    airdropx_mpc_outer_pd_create_model("TargetModel", modelName, "DisableVR", false);
 end
 
 outputRoot = string(opts.OutputRoot);
 if strlength(outputRoot) == 0
     stamp = string(datetime("now", "Format", "yyyyMMdd_HHmmss"));
-    outputRoot = string(fullfile(matlabDir, "results", "mpc_closed_loop_" + stamp));
+    outputRoot = string(fullfile(matlabDir, "results", "mpc_outer_pd_closed_loop_" + stamp));
 end
 if ~isfolder(outputRoot)
     mkdir(outputRoot);
 end
 
-airdropx_mpc_setup_id_workspace( ...
-    "Model", modelName, ...
-    "StopTimeS", opts.StopTimeS, ...
-    "TargetAltitudeM", opts.TargetAltitudeM, ...
-    "TargetAirspeedMps", opts.TargetAirspeedMps, ...
-    "TargetPitchDeg", opts.TargetPitchDeg, ...
-    "ControlAltitudeBiasM", opts.ControlAltitudeBiasM, ...
-    "InitialAirspeedMps", opts.InitialAirspeedMps, ...
-    "InitialAltitudeM", opts.InitialAltitudeM, ...
-    "InitialPitchDeg", opts.InitialPitchDeg, ...
-    "InitialFlightPathDeg", opts.InitialFlightPathDeg, ...
-    "InitialElevatorDelta", opts.InitialElevatorDelta, ...
-    "InitialThrottleCmd", opts.InitialThrottleCmd, ...
-    "Force", true);
-local_assign_config_overrides(opts.ConfigOverrides);
+local_setup(opts, modelName);
 
 if bdIsLoaded(modelName)
     close_system(char(modelName), 0);
 end
 load_system(char(modelPath));
-airdropx_mpc_setup_id_workspace( ...
-    "Model", modelName, ...
-    "StopTimeS", opts.StopTimeS, ...
-    "TargetAltitudeM", opts.TargetAltitudeM, ...
-    "TargetAirspeedMps", opts.TargetAirspeedMps, ...
-    "TargetPitchDeg", opts.TargetPitchDeg, ...
-    "ControlAltitudeBiasM", opts.ControlAltitudeBiasM, ...
-    "InitialAirspeedMps", opts.InitialAirspeedMps, ...
-    "InitialAltitudeM", opts.InitialAltitudeM, ...
-    "InitialPitchDeg", opts.InitialPitchDeg, ...
-    "InitialFlightPathDeg", opts.InitialFlightPathDeg, ...
-    "InitialElevatorDelta", opts.InitialElevatorDelta, ...
-    "InitialThrottleCmd", opts.InitialThrottleCmd, ...
-    "Force", true);
-local_assign_config_overrides(opts.ConfigOverrides);
-local_prepare_model_for_batch(modelName);
+local_setup(opts, modelName);
+if opts.DisableVRForBatch
+    local_prepare_model_for_batch(modelName);
+end
 set_param(char(modelName), "InitFcn", local_setup_callback(opts, modelName));
 set_param(char(modelName), ...
     "StopTime", "airdropx_stop_time_s", ...
@@ -78,44 +47,64 @@ set_param(char(modelName), ...
     "SignalLoggingName", "logsout");
 
 out = sim(char(modelName), ...
-    "StopTime", num2str(double(opts.StopTimeS), "%.15g"));
+    "StopTime", num2str(local_sim_stop_time(opts), "%.15g"));
 close_system(char(modelName), 0);
 
-T = local_timeseries_table(out.logsout);
+TFull = local_timeseries_table(out.logsout);
+T = local_crop_warmup(TFull, opts.WarmupTimeS);
 T.target_altitude_m = repmat(double(opts.TargetAltitudeM), height(T), 1);
 T.target_airspeed_mps = repmat(double(opts.TargetAirspeedMps), height(T), 1);
 T.target_pitch_deg = repmat(double(opts.TargetPitchDeg), height(T), 1);
 
 timeseriesCsv = fullfile(outputRoot, "closed_loop_timeseries.csv");
+fullTimeseriesCsv = fullfile(outputRoot, "closed_loop_timeseries_full.csv");
 summaryCsv = fullfile(outputRoot, "summary.csv");
+if double(opts.WarmupTimeS) > 0
+    TFull.target_altitude_m = repmat(double(opts.TargetAltitudeM), height(TFull), 1);
+    TFull.target_airspeed_mps = repmat(double(opts.TargetAirspeedMps), height(TFull), 1);
+    TFull.target_pitch_deg = repmat(double(opts.TargetPitchDeg), height(TFull), 1);
+    writetable(TFull, fullTimeseriesCsv);
+end
 writetable(T, timeseriesCsv);
 summary = airdropx_mpc_evaluate_csv(timeseriesCsv, "OutputFile", summaryCsv);
 
 result = struct();
 result.output_root = outputRoot;
 result.timeseries_csv = string(timeseriesCsv);
+result.full_timeseries_csv = string(fullTimeseriesCsv);
 result.summary_csv = string(summaryCsv);
 result.summary = summary;
 result.out = out;
 
-fprintf("AirdropX MPC closed-loop result written:\n");
+fprintf("AirdropX MPC outer + PD inner result written:\n");
 fprintf("  %s\n", timeseriesCsv);
 fprintf("  %s\n", summaryCsv);
 end
 
-function local_assign_config_overrides(overrides)
-if isempty(overrides)
-    return;
+function local_setup(opts, modelName)
+if evalin("base", "exist('airdropx_mpc_outer_pd_config_overrides','var')")
+    evalin("base", "clear('airdropx_mpc_outer_pd_config_overrides')");
 end
-if ~isstruct(overrides)
-    error("ConfigOverrides must be a struct.");
-end
-assignin("base", "airdropx_mpc_config_overrides", overrides);
+airdropx_mpc_outer_pd_setup_workspace( ...
+    "Model", modelName, ...
+    "StopTimeS", local_sim_stop_time(opts), ...
+    "TargetAltitudeM", opts.TargetAltitudeM, ...
+    "TargetAirspeedMps", opts.TargetAirspeedMps, ...
+    "TargetPitchDeg", opts.TargetPitchDeg, ...
+    "ControlAltitudeBiasM", opts.ControlAltitudeBiasM, ...
+    "InitialAirspeedMps", opts.InitialAirspeedMps, ...
+    "InitialAltitudeM", opts.InitialAltitudeM, ...
+    "InitialPitchDeg", opts.InitialPitchDeg, ...
+    "InitialFlightPathDeg", opts.InitialFlightPathDeg, ...
+    "InitialElevatorDelta", opts.InitialElevatorDelta, ...
+    "InitialThrottleCmd", opts.InitialThrottleCmd, ...
+    "ConfigOverrides", opts.ConfigOverrides);
+local_apply_warmup_schedule(opts);
 end
 
 function callback = local_setup_callback(opts, modelName)
 callback = sprintf([ ...
-    'airdropx_mpc_setup_id_workspace(''Model'',''%s'',' ...
+    'airdropx_mpc_outer_pd_setup_workspace(''Model'',''%s'',' ...
     '''StopTimeS'',%.15g,' ...
     '''TargetAltitudeM'',%.15g,' ...
     '''TargetAirspeedMps'',%.15g,' ...
@@ -126,10 +115,9 @@ callback = sprintf([ ...
     '''InitialPitchDeg'',%.15g,' ...
     '''InitialFlightPathDeg'',%.15g,' ...
     '''InitialElevatorDelta'',%.15g,' ...
-    '''InitialThrottleCmd'',%.15g,' ...
-    '''Force'',true);'], ...
+    '''InitialThrottleCmd'',%.15g);%s'], ...
     char(modelName), ...
-    double(opts.StopTimeS), ...
+    local_sim_stop_time(opts), ...
     double(opts.TargetAltitudeM), ...
     double(opts.TargetAirspeedMps), ...
     double(opts.TargetPitchDeg), ...
@@ -139,7 +127,28 @@ callback = sprintf([ ...
     double(opts.InitialPitchDeg), ...
     double(opts.InitialFlightPathDeg), ...
     double(opts.InitialElevatorDelta), ...
-    double(opts.InitialThrottleCmd));
+    double(opts.InitialThrottleCmd), ...
+    local_warmup_callback_suffix(opts));
+end
+
+function totalStopTimeS = local_sim_stop_time(opts)
+totalStopTimeS = double(opts.StopTimeS) + max(0.0, double(opts.WarmupTimeS));
+end
+
+function local_apply_warmup_schedule(opts)
+if ~opts.ShiftDropScheduleForWarmup
+    return;
+end
+dropStartS = double(opts.FixedDropStartS) + max(0.0, double(opts.WarmupTimeS));
+assignin("base", "airdropx_fixed_drop_start_s", dropStartS);
+end
+
+function suffix = local_warmup_callback_suffix(opts)
+suffix = '';
+if opts.ShiftDropScheduleForWarmup
+    dropStartS = double(opts.FixedDropStartS) + max(0.0, double(opts.WarmupTimeS));
+    suffix = sprintf("assignin('base','airdropx_fixed_drop_start_s',%.15g);", dropStartS);
+end
 end
 
 function local_prepare_model_for_batch(modelName)
@@ -148,6 +157,14 @@ blocks = find_system(char(modelName), ...
     "FollowLinks", "on", ...
     "RegExp", "on", ...
     "Name", ".*VR.*");
+try
+    blocks = [blocks; find_system(char(modelName), ...
+        "LookUnderMasks", "all", ...
+        "FollowLinks", "on", ...
+        "BlockType", "S-Function", ...
+        "FunctionName", "vrsfunc")];
+catch
+end
 for i = 1:numel(blocks)
     try
         set_param(blocks{i}, "Commented", "on");
@@ -193,20 +210,33 @@ for i = 1:numel(signals)
 end
 end
 
+function T = local_crop_warmup(TFull, warmupTimeS)
+warmupTimeS = max(0.0, double(warmupTimeS));
+if warmupTimeS <= 0
+    T = TFull;
+    return;
+end
+T = TFull(TFull.time_s >= warmupTimeS, :);
+if isempty(T)
+    error("WarmupTimeS %.3f leaves no samples to evaluate.", warmupTimeS);
+end
+T.time_s = T.time_s - warmupTimeS;
+end
+
 function alias = local_signal_alias(name)
 switch string(name)
     case "altitude_m"
-        alias = "mpc_state_1";
+        alias = "mpc_outer_pd_state_1";
     case "vz_up_mps"
-        alias = "mpc_state_2";
+        alias = "mpc_outer_pd_state_2";
     case "airspeed_mps"
-        alias = "mpc_state_3";
+        alias = "mpc_outer_pd_state_3";
     case "pitch_deg"
-        alias = "mpc_state_4";
+        alias = "mpc_outer_pd_state_4";
     case "mass_kg"
-        alias = "mpc_state_5";
+        alias = "mpc_outer_pd_state_5";
     case "cg_x_m"
-        alias = "mpc_state_6";
+        alias = "mpc_outer_pd_state_6";
     otherwise
         alias = "";
 end
@@ -215,12 +245,10 @@ end
 function [t, y] = local_signal(logs, name)
 t = [];
 y = [];
-
 if isa(logs, "Simulink.SimulationOutput")
     [t, y] = local_signal(logs.logsout, name);
     return;
 end
-
 if isa(logs, "Simulink.SimulationData.Dataset")
     for i = 1:logs.numElements
         el = logs.get(i);
@@ -240,7 +268,6 @@ if isempty(t) || isempty(y)
     yq = NaN(size(tq));
     return;
 end
-
 t = t(:);
 y = y(:);
 yq = NaN(size(tq));
@@ -251,22 +278,25 @@ end
 end
 
 function opts = local_options(varargin)
-opts.Model = "airdropx_mpc_closed_loop";
-opts.ModelMat = "";
+opts.Model = "airdropx_mpc_outer_pd_closed_loop";
 opts.OutputRoot = "";
 opts.StopTimeS = 22.0;
+opts.WarmupTimeS = 0.0;
+opts.FixedDropStartS = 10.0;
+opts.ShiftDropScheduleForWarmup = true;
 opts.TargetAltitudeM = 20.0;
 opts.TargetAirspeedMps = 45.0;
 opts.TargetPitchDeg = 4.0;
 opts.ControlAltitudeBiasM = 0.95;
-opts.InitialAirspeedMps = 55.5;
+opts.InitialAirspeedMps = 55.0;
 opts.InitialAltitudeM = NaN;
 opts.InitialPitchDeg = NaN;
 opts.InitialFlightPathDeg = 2.4;
 opts.InitialElevatorDelta = 0.0;
 opts.InitialThrottleCmd = 0.80;
-opts.RecreateModel = true;
 opts.ConfigOverrides = [];
+opts.RecreateModel = true;
+opts.DisableVRForBatch = true;
 
 if mod(numel(varargin), 2) ~= 0
     error("Options must be name-value pairs.");

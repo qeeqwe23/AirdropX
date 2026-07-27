@@ -134,6 +134,28 @@ matlab/results/<run>/mpc/replay_commands.csv
 over measured states so the suggested elevator/throttle behavior can be reviewed
 before touching Simulink.
 
+## Closed-Loop Iteration
+
+To run an end-to-end closed-loop tuning loop over the standalone MPC model:
+
+```matlab
+opt = airdropx_mpc_optimize_closed_loop("MaxIterations", 9);
+```
+
+The optimizer runs `airdropx_mpc_run_closed_loop` repeatedly, evaluates each
+`summary.csv`, keeps the best score, and writes:
+
+```text
+matlab/results/mpc_optimize_<timestamp>/iteration_summary.csv
+matlab/results/mpc_optimize_<timestamp>/best_run.json
+```
+
+The default search iterates initial airspeed, initial flight-path angle, and
+the MPC control altitude bias around the current tuned 20 m setup. Optional
+`ConfigOverrides` can be passed as a struct and will be applied by the Simulink
+MPC S-function at startup, which allows future sweeps of MPC weights, gains, or
+constraints without editing the baseline files.
+
 ## Manual Closed-Loop Run
 
 If you open `matlab/mpc/airdropx_mpc_closed_loop.slx` manually and press Run,
@@ -153,8 +175,8 @@ callbacks. If the model was created before this helper existed, regenerate it:
 airdropx_mpc_create_closed_loop_model
 ```
 
-For manual visualization, create a separate MPC model that keeps the original VR
-blocks enabled:
+For manual visualization, generate a temporary separate MPC model that keeps the
+original VR blocks enabled:
 
 ```matlab
 airdropx_mpc_create_closed_loop_model( ...
@@ -163,8 +185,9 @@ airdropx_mpc_create_closed_loop_model( ...
 open_system("airdropx_mpc_closed_loop_vr")
 ```
 
-Use the non-VR `airdropx_mpc_closed_loop.slx` for batch runs and metrics; use
-the VR variant only for interactive viewing.
+Use the non-VR `airdropx_mpc_closed_loop.slx` for batch runs and metrics. The
+VR variant is an on-demand interactive viewing copy and is not the canonical
+MPC model.
 
 ## Integration Rule
 
