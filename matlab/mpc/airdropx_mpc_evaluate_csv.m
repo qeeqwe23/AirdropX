@@ -1,4 +1,4 @@
-function result = airdropx_mpc_evaluate_csv(csvPath, varargin)
+﻿function result = airdropx_mpc_evaluate_csv(csvPath, varargin)
 %AIRDROPX_MPC_EVALUATE_CSV Compute tracking and four-drop impact metrics.
 
 opts = local_options(varargin{:});
@@ -108,12 +108,22 @@ function [targetN, targetE] = local_drop_targets(opts, nDrops)
 centerN = double(opts.TargetNorthM);
 centerE = double(opts.TargetEastM);
 if ~isempty(opts.DropTargetNorthM)
-    offsetN = double(opts.DropTargetNorthM(:)) - centerN;
+    northValues = double(opts.DropTargetNorthM(:));
+    if max(abs(northValues - centerN), [], "omitnan") < max(25.0, 0.25 * max(abs(centerN), 1.0))
+        offsetN = northValues - centerN;
+    else
+        offsetN = northValues;
+    end
 else
     offsetN = zeros(max(nDrops, 1), 1);
 end
 if ~isempty(opts.DropTargetEastM)
-    offsetE = double(opts.DropTargetEastM(:)) - centerE;
+    eastValues = double(opts.DropTargetEastM(:));
+    if max(abs(eastValues - centerE), [], "omitnan") < max(25.0, 0.25 * max(abs(centerE), 1.0))
+        offsetE = eastValues - centerE;
+    else
+        offsetE = eastValues;
+    end
 else
     offsetE = zeros(max(nDrops, 1), 1);
 end
@@ -121,7 +131,6 @@ end
 targetN = targetN(1:nDrops);
 targetE = targetE(1:nDrops);
 end
-
 function [impactN, impactE] = local_impact(T, idx)
 vars = string(T.Properties.VariableNames);
 hasRelease = all(ismember([ ...
@@ -133,18 +142,24 @@ if hasRelease
     releaseH = double(T.actual_release_alt_m(idx));
     airspeed = double(T.release_airspeed_mps(idx));
     heading = double(T.release_heading_deg(idx));
-    windN = 0.0;
-    windE = 0.0;
-    if ismember("release_wind_n_mps", vars)
-        windN = double(T.release_wind_n_mps(idx));
+    releaseValid = all(isfinite([releaseN, releaseE, releaseH, airspeed, heading])) && ...
+        releaseH > 0.0 && airspeed > 1.0;
+    if releaseValid
+        windN = 0.0;
+        windE = 0.0;
+        if ismember("release_wind_n_mps", vars)
+            windN = double(T.release_wind_n_mps(idx));
+        end
+        if ismember("release_wind_e_mps", vars)
+            windE = double(T.release_wind_e_mps(idx));
+        end
+        impact = airdropx_carp_release_point(0.0, 0.0, releaseH, airspeed, windE, windN, 0.0, heading);
+        impactN = releaseN + impact.ballistic_n_m + impact.wind_drift_n_m;
+        impactE = releaseE + impact.ballistic_e_m + impact.wind_drift_e_m;
+        return;
     end
-    if ismember("release_wind_e_mps", vars)
-        windE = double(T.release_wind_e_mps(idx));
-    end
-    impact = airdropx_carp_release_point(0.0, 0.0, releaseH, airspeed, windE, windN, 0.0, heading);
-    impactN = releaseN + impact.ballistic_n_m + impact.wind_drift_n_m;
-    impactE = releaseE + impact.ballistic_e_m + impact.wind_drift_e_m;
-elseif ismember("predicted_impact_n_m", vars) && ismember("predicted_impact_e_m", vars)
+end
+if ismember("predicted_impact_n_m", vars) && ismember("predicted_impact_e_m", vars)
     impactN = double(T.predicted_impact_n_m(idx));
     impactE = double(T.predicted_impact_e_m(idx));
 elseif ismember("pos_n_m", vars) && ismember("pos_e_m", vars)

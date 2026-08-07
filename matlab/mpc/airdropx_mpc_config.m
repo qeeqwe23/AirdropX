@@ -1,4 +1,4 @@
-function cfg = airdropx_mpc_config(varargin)
+﻿function cfg = airdropx_mpc_config(varargin)
 %AIRDROPX_MPC_CONFIG Grey-box longitudinal MPC configuration.
 %
 % The controller uses the reduced state described in the technical route.
@@ -81,6 +81,9 @@ cfg.integrator.limit = [25.0; 15.0; deg2rad(12.0)];
 cfg.integrator.gain = [0.010, 0.000, 0.18; ...
                       -0.006, -0.010, 0.000];
 
+cfg.drop_transition.enabled = true;
+cfg.drop_transition.integral_reset_factor = 0.35;
+
 cfg.safety_feedback.enabled = true;
 cfg.safety_feedback.h_deadband_m = 1.0;
 cfg.safety_feedback.vz_deadband_mps = 0.15;
@@ -115,7 +118,7 @@ opts.ControlHorizon = 8;
 opts.TargetAltitudeM = 20.0;
 opts.TargetAirspeedMps = 45.0;
 opts.TargetPitchDeg = 4.0;
-opts.TrimAirspeedMps = 45.0;
+opts.TrimAirspeedMps = [];
 opts.TrimPitchDeg = 4.0;
 opts.ControlAltitudeBiasM = 0.0;
 opts.ReferenceMassKg = 3423.0;
@@ -143,4 +146,12 @@ for i = 1:2:numel(varargin)
     end
     opts.(name) = value;
 end
+
+if isempty(opts.TrimAirspeedMps)
+    opts.TrimAirspeedMps = opts.TargetAirspeedMps;
 end
+end
+
+
+
+

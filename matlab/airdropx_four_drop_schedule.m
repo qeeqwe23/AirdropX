@@ -1,4 +1,4 @@
-function [drop_cmd, next_drop_index, schedule_done] = airdropx_four_drop_schedule(t, start_s, interval_s, pulse_s, drop_total)
+﻿function [drop_cmd, next_drop_index, schedule_done] = airdropx_four_drop_schedule(t, start_s, interval_s, pulse_s, drop_total)
 %AIRDROPX_FOUR_DROP_SCHEDULE Fixed-time 4-drop pulse scheduler.
 % Mirrors the NW20 fixed schedule in ui/simulation_thread.py:
 % first drop at start_s, then interval_s spacing, four drops total.
@@ -24,6 +24,7 @@ t = double(t);
 start_s = double(start_s);
 interval_s = double(interval_s);
 pulse_s = max(double(pulse_s), eps);
+time_tol_s = max(1.0e-9, 1.0e-6 * pulse_s);
 drop_total = max(0.0, floor(double(drop_total)));
 
 drop_cmd = 0.0;
@@ -34,7 +35,7 @@ for i = 0:99
         break;
     end
     ti = start_s + interval_s * double(i);
-    if t >= ti && t < ti + pulse_s
+    if t + time_tol_s >= ti && t < ti + pulse_s + time_tol_s
         drop_cmd = 1.0;
         next_drop_index = double(i + 1);
         break;
@@ -43,3 +44,5 @@ end
 
 schedule_done = double(drop_total <= 0.0 || t >= start_s + interval_s * (drop_total - 1.0) + pulse_s);
 end
+
+

@@ -110,6 +110,7 @@ assignin("base", "airdropx_fixed_drop_total", double(opts.FixedDropTotal));
 
 assignin("base", "airdropx_carp_target_n_m", double(opts.TargetNorthM));
 assignin("base", "airdropx_carp_target_e_m", double(opts.TargetEastM));
+assignin("base", "airdropx_carp_interval_s", double(opts.CarpIntervalS));
 assignin("base", "airdropx_carp_target_offset_n_m", double(opts.DropTargetNorthM(:)));
 assignin("base", "airdropx_carp_target_offset_e_m", double(opts.DropTargetEastM(:)));
 for i = 1:min(4, numel(opts.DropTargetNorthM))
@@ -263,6 +264,7 @@ opts.DropMode = 1.0;
 opts.FixedDropStartS = 10.0;
 opts.FixedDropIntervalS = 0.2;
 opts.FixedDropTotal = 4.0;
+opts.CarpIntervalS = 0.2;
 opts.InitialAirspeedMps = 50.0;
 opts.InitialAltitudeM = 20.0;
 opts.InitialPitchDeg = 4.0;
@@ -273,8 +275,8 @@ opts.InitialThrottleCmd = 0.80;
 opts.TargetAltitudeM = 20.0;
 opts.TargetAirspeedMps = 50.0;
 opts.TargetPitchDeg = 4.0;
-opts.ControlAltitudeBiasM = 0.0;
-opts.ControlPitchBiasDeg = 0.0;
+opts.ControlAltitudeBiasM = 3.0;
+opts.ControlPitchBiasDeg = -5.0;
 opts.TargetNorthM = 1000.0;
 opts.TargetEastM = 0.0;
 opts.DropTargetNorthM = [0.8; 1.6; 2.4; 3.8];
@@ -292,3 +294,5 @@ for i = 1:2:numel(varargin)
     opts.(name) = value;
 end
 end
+
+

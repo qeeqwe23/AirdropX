@@ -1,4 +1,4 @@
-function result = airdropx_run_and_export(varargin)
+﻿function result = airdropx_run_and_export(varargin)
 %AIRDROPX_RUN_AND_EXPORT Run the Simulink model and export CSV tuning data.
 %
 % Usage:
@@ -257,6 +257,9 @@ cfg = local_set_if_present(cfg, overrides, "carp_release_window_s", ["carp", "re
 cfg = local_set_if_present(cfg, overrides, "carp_interval_s", ["carp", "interval_s"]);
 cfg = local_set_if_present(cfg, overrides, "carp_drop_total", ["carp", "drop_total"]);
 cfg = local_set_if_present(cfg, overrides, "carp_min_safe_alt_m", ["carp", "min_safe_alt_m"]);
+cfg = local_set_if_present(cfg, overrides, "carp_target_offset_n_m", ["carp", "target_offset_n_m"]);
+cfg = local_set_if_present(cfg, overrides, "carp_target_offset_e_m", ["carp", "target_offset_e_m"]);
+cfg = local_set_if_present(cfg, overrides, "carp_release_delay_s", ["carp", "release_delay_s"]);
 
 gainNames = [
     "Kp"
@@ -350,6 +353,13 @@ assignin("base", "airdropx_carp_release_window_s", cfg.carp.release_window_s);
 assignin("base", "airdropx_carp_interval_s", cfg.carp.interval_s);
 assignin("base", "airdropx_carp_drop_total", cfg.carp.drop_total);
 assignin("base", "airdropx_carp_min_safe_alt_m", cfg.carp.min_safe_alt_m);
+assignin("base", "airdropx_carp_target_offset_n_m", cfg.carp.target_offset_n_m(:));
+assignin("base", "airdropx_carp_target_offset_e_m", cfg.carp.target_offset_e_m(:));
+assignin("base", "airdropx_carp_release_delay_s", cfg.carp.release_delay_s);
+for i = 1:4
+    assignin("base", sprintf("airdropx_carp_target_offset_n_%d_m", i), local_index_or_zero(cfg.carp.target_offset_n_m, i));
+    assignin("base", sprintf("airdropx_carp_target_offset_e_%d_m", i), local_index_or_zero(cfg.carp.target_offset_e_m, i));
+end
 
 g = cfg.control.pd_gains;
 assignin("base", "airdropx_pd_gains", g);
@@ -452,6 +462,15 @@ T = table( ...
         'max_altitude_m', ...
         'final_altitude_m', ...
         'elevator_sat_rate'});
+end
+
+function value = local_index_or_zero(x, idx)
+x = double(x(:));
+if numel(x) >= idx
+    value = x(idx);
+else
+    value = 0.0;
+end
 end
 
 function T = local_params_table(cfg)
@@ -695,3 +714,4 @@ if isa(logs, "Simulink.SimulationData.Dataset")
     end
 end
 end
+

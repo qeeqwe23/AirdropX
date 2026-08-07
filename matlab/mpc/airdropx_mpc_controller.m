@@ -1,4 +1,4 @@
-function [u, state, diag] = airdropx_mpc_controller(x, state, cfg)
+﻿function [u, state, diag] = airdropx_mpc_controller(x, state, cfg)
 %AIRDROPX_MPC_CONTROLLER One grey-box longitudinal MPC step.
 %
 % x may contain either the five control states or the full seven-state vector:
@@ -52,6 +52,7 @@ end
 if ~isfield(state, "integral_error") || isempty(state.integral_error)
     state.integral_error = zeros(3, 1);
 end
+[state, transitionInfo] = local_drop_transition(dropCount, state, cfg);
 
 [state, integralBias] = local_integral_bias(xCtrl, state, cfg);
 [Phi, GammaFull, affineOffset] = local_prediction_matrices_affine(A, B, c, N);
@@ -86,6 +87,7 @@ state.drop_count = dropCount;
 xPred = freePrediction + Gamma * vStack;
 diag = struct();
 diag.drop_count = dropCount;
+diag.drop_transition = transitionInfo;
 diag.model_source = string(model.source);
 diag.u_trim = uTrim;
 diag.u_raw = uRaw;
@@ -98,6 +100,31 @@ end
 
 function bias = local_direct_output_bias(x, cfg)
 bias = zeros(2, 1);
+end
+
+function [state, info] = local_drop_transition(dropCount, state, cfg)
+info = struct("changed", false, "previous_drop_count", NaN, "reset_factor", 1.0);
+if ~isfield(cfg, "drop_transition") || ~logical(cfg.drop_transition.enabled)
+    return;
+end
+if ~isfield(state, "drop_count") || isempty(state.drop_count)
+    return;
+end
+previousDropCount = double(state.drop_count);
+if previousDropCount == double(dropCount)
+    return;
+end
+resetFactor = 0.35;
+if isfield(cfg.drop_transition, "integral_reset_factor")
+    resetFactor = double(cfg.drop_transition.integral_reset_factor);
+end
+resetFactor = min(max(resetFactor, 0.0), 1.0);
+if isfield(state, "integral_error") && ~isempty(state.integral_error)
+    state.integral_error = resetFactor * double(state.integral_error);
+end
+info.changed = true;
+info.previous_drop_count = previousDropCount;
+info.reset_factor = resetFactor;
 end
 
 function dropCount = local_drop_count_from_state(x, cfg)
@@ -314,3 +341,6 @@ for k = 1:M
     end
 end
 end
+
+
+

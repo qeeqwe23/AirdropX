@@ -1,4 +1,4 @@
-function cfg = airdropx_mpc_outer_pd_config(varargin)
+﻿function cfg = airdropx_mpc_outer_pd_config(varargin)
 %AIRDROPX_MPC_OUTER_PD_CONFIG MPC outer-loop tuning for pitch-reference control.
 
 opts = local_options(varargin{:});
@@ -15,6 +15,10 @@ cfg = airdropx_mpc_config( ...
     "ReferenceCgXM", opts.ReferenceCgXM, ...
     "IncludeModel", false);
 
+cfg.state_names = [
+    cfg.state_names
+    cfg.aux_state_names
+    ];
 cfg.input_names = [
     "pitch_ref_deg"
     "throttle_cmd"
@@ -113,3 +117,4 @@ for i = 1:2:numel(varargin)
     opts.(name) = value;
 end
 end
+

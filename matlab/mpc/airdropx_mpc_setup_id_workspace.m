@@ -1,11 +1,24 @@
-function cfg = airdropx_mpc_setup_id_workspace(varargin)
+﻿function cfg = airdropx_mpc_setup_id_workspace(varargin)
 %AIRDROPX_MPC_SETUP_ID_WORKSPACE Prepare base workspace for preserved SLX files.
 
 opts = local_options(varargin{:});
-addpath(fileparts(mfilename("fullpath")));
-addpath(fileparts(fileparts(mfilename("fullpath"))));
+thisDir = fileparts(mfilename("fullpath"));
+matlabDir = fileparts(thisDir);
+projectRoot = fileparts(matlabDir);
+addpath(thisDir);
+addpath(matlabDir);
+addpath(fullfile(matlabDir, "sfunc_jsbsim"));
+addpath(fullfile(matlabDir, "vr"));
 
-cfg = airdropx_sim_params();
+cfg = airdropx_sim_params( ...
+    "ProjectRoot", projectRoot, ...
+    "Model", opts.Model, ...
+    "AssignBase", true, ...
+    "InitialAirspeedMps", opts.InitialAirspeedMps, ...
+    "InitialAltitudeM", opts.InitialAltitudeM, ...
+    "InitialPitchDeg", opts.InitialPitchDeg, ...
+    "InitialFlightPathDeg", opts.InitialFlightPathDeg, ...
+    "InitialHeadingDeg", opts.InitialHeadingDeg);
 assignin("base", "airdropx_mpc_reference_mass_kg", double(opts.ReferenceMassKg));
 assignin("base", "airdropx_mpc_reference_cg_x_m", double(opts.ReferenceCgXM));
 assignin("base", "airdropx_mpc_control_altitude_bias_m", double(opts.ControlAltitudeBiasM));
@@ -35,6 +48,11 @@ opts.Model = "";
 opts.ReferenceMassKg = 3423.0;
 opts.ReferenceCgXM = 5.28048992112182;
 opts.ControlAltitudeBiasM = 0.0;
+opts.InitialAirspeedMps = NaN;
+opts.InitialAltitudeM = NaN;
+opts.InitialPitchDeg = NaN;
+opts.InitialFlightPathDeg = NaN;
+opts.InitialHeadingDeg = NaN;
 opts.ConfigOverrides = struct();
 opts.UseExcitation = true;
 if mod(numel(varargin), 2) ~= 0
@@ -49,3 +67,4 @@ for i = 1:2:numel(varargin)
     opts.(name) = value;
 end
 end
+
