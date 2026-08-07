@@ -1,39 +1,47 @@
 function [u, state, diag] = airdropx_mpc_controller(x, state, cfg)
-%AIRDROPX_MPC_CONTROLLER One standalone MPC step.
+%AIRDROPX_MPC_CONTROLLER One grey-box longitudinal MPC step.
 %
-% Inputs:
-%   x     - current state vector in cfg.state_names order
-%   state - controller memory, pass [] on first call
-%   cfg   - airdropx_mpc_config output
-%
-% This function is not connected to Simulink. It solves an unconstrained MPC
-% move and then applies input/rate clipping for review and offline replay.
+% x may contain either the five control states or the full seven-state vector:
+%   [h*, Vz, Va*, theta*, q, mass*, cg*]'.
 
 if nargin < 3 || isempty(cfg)
     cfg = airdropx_mpc_config();
 end
-if ~isfield(cfg, "model")
-    cfg.model = airdropx_mpc_nominal_model(cfg);
+if ~isfield(cfg, "model_bank")
+    if isfield(cfg, "model") && ~isempty(cfg.model)
+        cfg.model_bank = repmat({cfg.model}, 5, 1);
+    else
+        cfg.model_bank = airdropx_mpc_greybox_model(cfg);
+    end
 end
 
 x = double(x(:));
-A = double(cfg.model.A);
-B = double(cfg.model.B);
-uTrim = double(cfg.model.u_trim(:));
-if isfield(cfg.model, "c") && ~isempty(cfg.model.c)
-    c = double(cfg.model.c(:));
+
+dropCount = local_drop_count_from_state(x, cfg);
+model = cfg.model_bank{dropCount + 1};
+A = double(model.A);
+B = double(model.B);
+if isfield(model, "c")
+    c = double(model.c(:));
+elseif isfield(model, "d")
+    c = double(model.d(:));
 else
     c = zeros(size(A, 1), 1);
+end
+if isfield(model, "u_trim")
+    uTrim = double(model.u_trim(:));
+else
+    uTrim = double(cfg.trim.u(:));
 end
 
 n = size(A, 1);
 m = size(B, 2);
+if numel(x) < n
+    error("MPC state has %d elements, expected at least %d.", numel(x), n);
+end
+xCtrl = x(1:n);
 N = double(cfg.prediction_horizon);
 M = min(double(cfg.control_horizon), N);
-
-if numel(x) ~= n
-    error("MPC state has %d elements, expected %d.", numel(x), n);
-end
 
 if nargin < 2 || isempty(state)
     state = struct();
@@ -42,118 +50,131 @@ if ~isfield(state, "u_prev") || isempty(state.u_prev)
     state.u_prev = uTrim;
 end
 if ~isfield(state, "integral_error") || isempty(state.integral_error)
-    state.integral_error = zeros(3, 1); % [h_err; v_err; pitch_err]
+    state.integral_error = zeros(3, 1);
 end
 
-integralBias = local_integral_bias(x, state, cfg);
-state.integral_error = integralBias.integral_error;
-
+[state, integralBias] = local_integral_bias(xCtrl, state, cfg);
 [Phi, GammaFull, affineOffset] = local_prediction_matrices_affine(A, B, c, N);
 Gamma = local_hold_after_control_horizon(GammaFull, n, m, N, M);
-duRef = local_equilibrium_delta(B, c, cfg, M, integralBias.input_bias);
 
-Qbar = kron(eye(N), cfg.weights.Q);
+Qbar = kron(eye(N), double(cfg.weights.Q));
 terminalRows = (N - 1) * n + (1:n);
-Qbar(terminalRows, terminalRows) = cfg.weights.terminal_scale * cfg.weights.Q;
-Rbar = kron(eye(M), cfg.weights.R);
-Rdbar = kron(eye(M), cfg.weights.Rd);
-[D, b] = local_rate_matrix(m, M, state.u_prev - uTrim);
+Qbar(terminalRows, terminalRows) = double(cfg.weights.terminal_scale) * double(cfg.weights.Q);
+Rbar = kron(eye(M), double(cfg.weights.R));
+Rdbar = kron(eye(M), double(cfg.weights.Rd));
 
-freePrediction = Phi * x + affineOffset;
+[D, rateOffset] = local_rate_matrix(m, M, state.u_prev - uTrim);
+freePrediction = Phi * xCtrl + affineOffset;
+vRef = repmat(integralBias, M, 1);
+
 H = Gamma' * Qbar * Gamma + Rbar + D' * Rdbar * D;
-f = Gamma' * Qbar * freePrediction - Rbar * duRef - D' * Rdbar * b;
-H = 0.5 * (H + H');
-reg = max(1.0e-7, 1.0e-8 * trace(H) / max(size(H, 1), 1));
-H = H + reg * eye(size(H));
+f = Gamma' * Qbar * freePrediction - Rbar * vRef - D' * Rdbar * rateOffset;
+H = 0.5 * (H + H') + 1.0e-8 * eye(size(H));
 
-if rcond(H) < 1.0e-10
-    duStack = -pinv(H) * f;
-else
-duStack = -H \ f;
-end
-duFirst = duStack(1:m);
-directSafetyBias = local_safety_bias(x, cfg);
-uRaw = uTrim + duFirst + directSafetyBias;
+[vStack, solverInfo] = local_solve_move(H, f, D, rateOffset, uTrim, cfg, M, Gamma, freePrediction, n);
+vFirst = vStack(1:m);
+uRaw = uTrim + vFirst + local_direct_output_bias(xCtrl, cfg);
 
-uPrev = state.u_prev;
-duRate = uRaw - state.u_prev;
-duRate = min(max(duRate, cfg.constraints.du_min(:)), cfg.constraints.du_max(:));
-uRateLimited = state.u_prev + duRate;
-u = min(max(uRateLimited, cfg.constraints.u_min(:)), cfg.constraints.u_max(:));
+du = uRaw - state.u_prev;
+du = min(max(du, double(cfg.constraints.du_min(:))), double(cfg.constraints.du_max(:)));
+u = state.u_prev + du;
+u = min(max(u, double(cfg.constraints.u_min(:))), double(cfg.constraints.u_max(:)));
 
-xPred = freePrediction + Gamma * duStack;
 state.u_prev = u;
+state.drop_count = dropCount;
 
+xPred = freePrediction + Gamma * vStack;
 diag = struct();
-diag.u_raw = uRaw;
-diag.du_raw = uRaw - uPrev;
+diag.drop_count = dropCount;
+diag.model_source = string(model.source);
 diag.u_trim = uTrim;
-diag.u_equilibrium = uTrim + duRef(1:m);
-diag.integral_input_bias = integralBias.input_bias;
-diag.du_first = duFirst;
+diag.u_raw = uRaw;
+diag.v_first = vFirst;
+diag.integral_bias = integralBias;
+diag.direct_output_bias = local_direct_output_bias(xCtrl, cfg);
+diag.solver = solverInfo;
 diag.x_prediction = reshape(xPred, n, N).';
-diag.cost_gradient_norm = norm(f);
-diag.hessian_condition = cond(H);
-diag.hessian_rcond = rcond(H);
-diag.hessian_regularization = reg;
-diag.used_model_source = string(cfg.model.source);
 end
 
-function [Phi, Gamma, affineOffset] = local_prediction_matrices_affine(A, B, c, horizon)
-[Phi, Gamma] = airdropx_mpc_prediction_matrices(A, B, horizon);
-
-n = size(A, 1);
-N = double(horizon);
-affineOffset = zeros(N * n, 1);
-acc = zeros(n, 1);
-for i = 1:N
-    acc = A * acc + c;
-    affineOffset((i - 1) * n + (1:n)) = acc;
-end
+function bias = local_direct_output_bias(x, cfg)
+bias = zeros(2, 1);
 end
 
-function bias = local_integral_bias(x, state, cfg)
-bias = struct();
-bias.integral_error = state.integral_error;
-bias.input_bias = zeros(2, 1);
-
-if ~isfield(cfg, "integral_feedback") || ~cfg.integral_feedback.enabled
-    bias.input_bias = local_mass_cg_bias(x, cfg) + local_safety_bias(x, cfg);
+function dropCount = local_drop_count_from_state(x, cfg)
+dropCount = 0;
+if numel(x) < 6 || ~isfield(cfg, "mass")
     return;
 end
-
-dt = double(cfg.dt_s);
-if ~isfinite(dt) || dt <= 0.0
-    dt = 0.1;
+cargoMass = mean(double(cfg.mass.cargo_mass_kg(:)), "omitnan");
+if ~isfinite(cargoMass) || cargoMass <= 0
+    cargoMass = 300.0;
+end
+massErr = double(x(6));
+dropCount = round(max(0.0, -massErr / cargoMass));
+dropCount = min(max(dropCount, 0), double(cfg.mass.drop_count_max));
 end
 
+function [state, bias] = local_integral_bias(x, state, cfg)
+bias = zeros(2, 1);
+if isfield(cfg, "integral_feedback") && logical(cfg.integral_feedback.enabled)
+    dt = max(double(cfg.dt_s), eps);
+    err = [x(1); x(3); x(4)];
+    state.integral_error = 0.995 * state.integral_error + dt * err;
+    limit = local_integrator_limit(cfg);
+    state.integral_error = min(max(state.integral_error, -limit), limit);
+
+    bias = [
+        cfg.integral_feedback.h_gain_elevator * state.integral_error(1) + ...
+            cfg.integral_feedback.pitch_gain_elevator * state.integral_error(3)
+        cfg.integral_feedback.v_gain_throttle * state.integral_error(2) + ...
+            cfg.integral_feedback.h_gain_throttle * state.integral_error(1)
+        ];
+    limit = double(cfg.integral_feedback.limit(:));
+    bias = min(max(bias, -limit), limit);
+    bias = bias + local_mass_cg_bias(x, cfg) + local_safety_bias(x, cfg);
+    return;
+end
+if ~isfield(cfg, "integrator") || ~logical(cfg.integrator.enabled)
+    bias = local_mass_cg_bias(x, cfg) + local_safety_bias(x, cfg);
+    return;
+end
 err = [x(1); x(3); x(4)];
-newIntegral = 0.995 * state.integral_error + dt * err;
-newIntegral(1) = min(max(newIntegral(1), -cfg.integrator.h_limit), cfg.integrator.h_limit);
-newIntegral(2) = min(max(newIntegral(2), -cfg.integrator.v_limit), cfg.integrator.v_limit);
-newIntegral(3) = min(max(newIntegral(3), -20.0), 20.0);
+dt = max(double(cfg.dt_s), eps);
+state.integral_error = double(cfg.integrator.leak) * state.integral_error + dt * err;
+limit = double(cfg.integrator.limit(:));
+state.integral_error = min(max(state.integral_error, -limit), limit);
+bias = double(cfg.integrator.gain) * state.integral_error;
+uMin = double(cfg.constraints.u_min(:)) - double(cfg.trim.u(:));
+uMax = double(cfg.constraints.u_max(:)) - double(cfg.trim.u(:));
+bias = min(max(bias, uMin), uMax);
+bias = bias + local_mass_cg_bias(x, cfg) + local_safety_bias(x, cfg);
+end
 
-uBias = [
-    cfg.integral_feedback.h_gain_elevator * newIntegral(1) + ...
-        cfg.integral_feedback.pitch_gain_elevator * newIntegral(3)
-    cfg.integral_feedback.v_gain_throttle * newIntegral(2) + ...
-        cfg.integral_feedback.h_gain_throttle * newIntegral(1)
-    ];
-limit = double(cfg.integral_feedback.limit(:));
-uBias = min(max(uBias, -limit), limit);
-
-bias.integral_error = newIntegral;
-bias.input_bias = uBias + local_mass_cg_bias(x, cfg) + local_safety_bias(x, cfg);
+function limit = local_integrator_limit(cfg)
+limit = [25.0; 15.0; 20.0];
+if isfield(cfg, "integrator")
+    if isfield(cfg.integrator, "limit") && numel(cfg.integrator.limit) >= 3
+        limit = double(cfg.integrator.limit(1:3));
+    else
+        if isfield(cfg.integrator, "h_limit")
+            limit(1) = double(cfg.integrator.h_limit);
+        end
+        if isfield(cfg.integrator, "v_limit")
+            limit(2) = double(cfg.integrator.v_limit);
+        end
+    end
+end
+limit = abs(limit(:));
 end
 
 function uBias = local_safety_bias(x, cfg)
 uBias = zeros(2, 1);
-if ~isfield(cfg, "safety_feedback") || ~cfg.safety_feedback.enabled || numel(x) < 2
+if ~isfield(cfg, "safety_feedback") || ~logical(cfg.safety_feedback.enabled) || numel(x) < 2
     return;
 end
 
-hLow = min(0.0, double(x(1)) + cfg.safety_feedback.h_deadband_m);
-vzDown = min(0.0, double(x(2)) + cfg.safety_feedback.vz_deadband_mps);
+hLow = min(0.0, double(x(1)) + double(cfg.safety_feedback.h_deadband_m));
+vzDown = min(0.0, double(x(2)) + double(cfg.safety_feedback.vz_deadband_mps));
 uBias = [
     cfg.safety_feedback.h_gain_elevator * hLow + ...
         cfg.safety_feedback.vz_gain_elevator * vzDown
@@ -167,7 +188,7 @@ end
 
 function uBias = local_mass_cg_bias(x, cfg)
 uBias = zeros(2, 1);
-if ~isfield(cfg, "mass_feedback") || ~cfg.mass_feedback.enabled || numel(x) < 7
+if ~isfield(cfg, "mass_feedback") || ~logical(cfg.mass_feedback.enabled) || numel(x) < 7
     return;
 end
 
@@ -184,24 +205,86 @@ limit = double(cfg.mass_feedback.limit(:));
 uBias = min(max(uBias, -limit), limit);
 end
 
-function duRef = local_equilibrium_delta(B, c, cfg, M, inputBias)
-m = size(B, 2);
-if isfield(cfg.model, "u_equilibrium_delta") && ~isempty(cfg.model.u_equilibrium_delta)
-    duEq = double(cfg.model.u_equilibrium_delta(:));
-else
-    W = double(cfg.weights.Q);
-    rho = 1.0e-3;
-    duEq = -((B' * W * B) + rho * eye(m)) \ (B' * W * c);
+function [Phi, Gamma, affineOffset] = local_prediction_matrices_affine(A, B, c, horizon)
+[Phi, Gamma] = airdropx_mpc_prediction_matrices(A, B, horizon);
+n = size(A, 1);
+affineOffset = zeros(horizon * n, 1);
+acc = zeros(n, 1);
+for k = 1:horizon
+    acc = A * acc + c;
+    affineOffset((k - 1) * n + (1:n)) = acc;
 end
-if nargin >= 5 && ~isempty(inputBias)
-    duEq = duEq + double(inputBias(:));
 end
 
-uTrim = double(cfg.model.u_trim(:));
-uEq = uTrim + duEq;
-uEq = min(max(uEq, cfg.constraints.u_min(:)), cfg.constraints.u_max(:));
-duEq = uEq - uTrim;
-duRef = repmat(duEq, M, 1);
+function [vStack, info] = local_solve_move(H, f, D, rateOffset, uTrim, cfg, M, Gamma, freePrediction, n)
+info = struct("type", "unconstrained", "exitflag", NaN, "message", "", "used_fallback", false);
+if local_use_quadprog(cfg)
+    [lb, ub] = local_input_bounds(uTrim, cfg, M);
+    [Aineq, bineq] = local_rate_inequalities(D, rateOffset, cfg, M);
+    [Ax, bx] = local_state_inequalities(Gamma, freePrediction, cfg, n);
+    Aineq = [Aineq; Ax];
+    bineq = [bineq; bx];
+    try
+        options = optimoptions("quadprog", "Display", "off", ...
+            "MaxIterations", double(cfg.solver.max_iterations));
+        [candidate, ~, exitflag, output] = quadprog(H, f, Aineq, bineq, [], [], lb, ub, [], options);
+        if exitflag > 0 && all(isfinite(candidate))
+            vStack = candidate(:);
+            info.type = "quadprog";
+            info.exitflag = double(exitflag);
+            info.message = string(output.message);
+            return;
+        end
+        info.exitflag = double(exitflag);
+        info.message = string(output.message);
+    catch ME
+        info.message = string(ME.message);
+    end
+    info.used_fallback = true;
+    if isfield(cfg.solver, "fallback") && strcmpi(string(cfg.solver.fallback), "error")
+        error("AirdropX:MPC:QpFailed", "MPC QP failed: %s", info.message);
+    end
+end
+if rcond(H) < 1.0e-10
+    vStack = -pinv(H) * f;
+else
+    vStack = -H \ f;
+end
+end
+
+function tf = local_use_quadprog(cfg)
+tf = isfield(cfg, "solver") && logical(cfg.solver.use_constraints) && ...
+    strcmpi(string(cfg.solver.type), "quadprog") && exist("quadprog", "file") == 2;
+end
+
+function [lb, ub] = local_input_bounds(uTrim, cfg, M)
+uMin = double(cfg.constraints.u_min(:));
+uMax = double(cfg.constraints.u_max(:));
+lb = repmat(uMin - uTrim, M, 1);
+ub = repmat(uMax - uTrim, M, 1);
+end
+
+function [Aineq, bineq] = local_rate_inequalities(D, rateOffset, cfg, M)
+duMin = repmat(double(cfg.constraints.du_min(:)), M, 1);
+duMax = repmat(double(cfg.constraints.du_max(:)), M, 1);
+Aineq = [D; -D];
+bineq = [duMax + rateOffset; -duMin - rateOffset];
+end
+
+function [Aineq, bineq] = local_state_inequalities(Gamma, freePrediction, cfg, n)
+Aineq = [];
+bineq = [];
+if ~isfield(cfg, "constraints") || isempty(cfg.constraints.x_min) || isempty(cfg.constraints.x_max)
+    return;
+end
+N = size(Gamma, 1) / n;
+if numel(cfg.constraints.x_min) ~= n || numel(cfg.constraints.x_max) ~= n
+    return;
+end
+xMin = repmat(double(cfg.constraints.x_min(:)), N, 1);
+xMax = repmat(double(cfg.constraints.x_max(:)), N, 1);
+Aineq = [Gamma; -Gamma];
+bineq = [xMax - freePrediction; -xMin + freePrediction];
 end
 
 function Gamma = local_hold_after_control_horizon(GammaFull, n, m, N, M)
@@ -209,26 +292,24 @@ Gamma = GammaFull(:, 1:(M * m));
 if M >= N
     return;
 end
-
-% The final optimized move is held constant after the control horizon.
+lastCols = (M - 1) * m + (1:m);
 for move = (M + 1):N
     sourceCols = (move - 1) * m + (1:m);
-    lastCols = (M - 1) * m + (1:m);
     Gamma(:, lastCols) = Gamma(:, lastCols) + GammaFull(:, sourceCols);
 end
 end
 
-function [D, b] = local_rate_matrix(m, M, duPrev)
+function [D, rateOffset] = local_rate_matrix(m, M, prevDeviation)
 D = zeros(M * m, M * m);
-b = zeros(M * m, 1);
-for i = 1:M
-    rows = (i - 1) * m + (1:m);
+rateOffset = zeros(M * m, 1);
+for k = 1:M
+    rows = (k - 1) * m + (1:m);
     cols = rows;
     D(rows, cols) = eye(m);
-    if i == 1
-        b(rows) = duPrev(:);
+    if k == 1
+        rateOffset(rows) = prevDeviation(:);
     else
-        prevCols = (i - 2) * m + (1:m);
+        prevCols = (k - 2) * m + (1:m);
         D(rows, prevCols) = -eye(m);
     end
 end

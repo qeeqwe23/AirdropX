@@ -46,6 +46,10 @@ cfg.initial.theta_deg = 4.0;
 if isfinite(double(opts.InitialPitchDeg))
     cfg.initial.theta_deg = double(opts.InitialPitchDeg);
 end
+cfg.initial.heading_deg = 0.0;
+if isfinite(double(opts.InitialHeadingDeg))
+    cfg.initial.heading_deg = double(opts.InitialHeadingDeg);
+end
 cfg.initial.pitch_deg = cfg.initial.theta_deg;
 cfg.initial.flight_path_deg = double(opts.InitialFlightPathDeg);
 cfg.initial.use_generated_ic = usingGeneratedIc;
@@ -100,6 +104,9 @@ cfg.carp.release_window_s = 0.7;
 cfg.carp.interval_s = 0.5;
 cfg.carp.drop_total = 4.0;
 cfg.carp.min_safe_alt_m = 15.0;
+cfg.carp.target_offset_n_m = [0.8; 1.6; 2.4; 3.8];
+cfg.carp.target_offset_e_m = [0.0; 0.0; 0.0; 0.0];
+cfg.carp.release_delay_s = 0.0;
 
 cfg.ballistics.gravity_mps2 = 9.80665;
 cfg.ballistics.calibration_airspeed_mps = 78.6;
@@ -139,7 +146,7 @@ if cfg.initial.use_generated_ic
     local_write_initial_condition(cfg.initial.template_ic_name, ...
         cfg.initial.generated_ic_name, cfg.initial.airspeed_mps, ...
         cfg.initial.pitch_deg, cfg.initial.flight_path_deg, ...
-        cfg.initial.altitude_m);
+        cfg.initial.altitude_m, cfg.initial.heading_deg);
 end
 
 if opts.AssignBase
@@ -158,6 +165,7 @@ opts.InitialAirspeedMps = NaN;
 opts.InitialAltitudeM = NaN;
 opts.InitialPitchDeg = NaN;
 opts.InitialFlightPathDeg = NaN;
+opts.InitialHeadingDeg = NaN;
 
 if mod(numel(varargin), 2) ~= 0
     error("Options must be name-value pairs.");
@@ -192,6 +200,7 @@ assignin("base", "airdropx_initial_airspeed_mps", cfg.initial.airspeed_mps);
 assignin("base", "airdropx_initial_altitude_m", cfg.initial.altitude_m);
 assignin("base", "airdropx_initial_theta_deg", cfg.initial.theta_deg);
 assignin("base", "airdropx_initial_pitch_deg", cfg.initial.pitch_deg);
+assignin("base", "airdropx_initial_heading_deg", cfg.initial.heading_deg);
 assignin("base", "airdropx_initial_flight_path_deg", cfg.initial.flight_path_deg);
 assignin("base", "airdropx_target_altitude_m", cfg.control.target_altitude_m);
 assignin("base", "airdropx_initial_elevator_delta", cfg.control.initial_elevator_delta);
@@ -228,6 +237,13 @@ assignin("base", "airdropx_carp_release_window_s", cfg.carp.release_window_s);
 assignin("base", "airdropx_carp_interval_s", cfg.carp.interval_s);
 assignin("base", "airdropx_carp_drop_total", cfg.carp.drop_total);
 assignin("base", "airdropx_carp_min_safe_alt_m", cfg.carp.min_safe_alt_m);
+assignin("base", "airdropx_carp_target_offset_n_m", cfg.carp.target_offset_n_m);
+assignin("base", "airdropx_carp_target_offset_e_m", cfg.carp.target_offset_e_m);
+assignin("base", "airdropx_carp_release_delay_s", cfg.carp.release_delay_s);
+for i = 1:4
+    assignin("base", sprintf("airdropx_carp_target_offset_n_%d_m", i), cfg.carp.target_offset_n_m(i));
+    assignin("base", sprintf("airdropx_carp_target_offset_e_%d_m", i), cfg.carp.target_offset_e_m(i));
+end
 
 assignin("base", "airdropx_metrics_settling_altitude_band_m", cfg.metrics.settling_altitude_band_m);
 assignin("base", "airdropx_metrics_settling_vz_band_mps", cfg.metrics.settling_vz_band_mps);
@@ -237,7 +253,7 @@ assignin("base", "airdropx_ballistics_k_drag", cfg.ballistics.k_drag_calibrated)
 assignin("base", "airdropx_ballistics_side_wind_gain", cfg.ballistics.side_wind_gain);
 end
 
-function local_write_initial_condition(templateName, generatedName, airspeedMps, pitchDeg, flightPathDeg, altitudeM)
+function local_write_initial_condition(templateName, generatedName, airspeedMps, pitchDeg, flightPathDeg, altitudeM, headingDeg)
 templatePath = local_xml_path(templateName);
 generatedPath = local_xml_path(generatedName);
 
@@ -285,6 +301,15 @@ if nargin >= 6 && isfinite(double(altitudeM))
     end
     xmlText = regexprep(xmlText, altitudeExpr, ...
         sprintf('<altitude unit="M">%.10g</altitude>', altitudeM), "once");
+end
+
+if nargin >= 7 && isfinite(double(headingDeg))
+    psiExpr = '<psi\s+unit="DEG">[^<]*</psi>';
+    if isempty(regexp(xmlText, psiExpr, "once"))
+        error("AirdropX initial condition template has no DEG psi field: %s", templatePath);
+    end
+    xmlText = regexprep(xmlText, psiExpr, ...
+        sprintf('<psi unit="DEG">%.10g</psi>', headingDeg), "once");
 end
 
 generatedDir = fileparts(generatedPath);

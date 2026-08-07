@@ -92,6 +92,13 @@ targetE = double(opts.TargetE);
 [tPsi, heading] = local_signal(logs, "heading_deg");
 [tWn, windN] = local_signal(logs, "wind_n_mps");
 [tWe, windE] = local_signal(logs, "wind_e_mps");
+[tRelN, actualRelN] = local_signal(logs, "actual_release_n_m");
+[tRelE, actualRelE] = local_signal(logs, "actual_release_e_m");
+[tRelH, actualRelH] = local_signal(logs, "actual_release_alt_m");
+[tRelV, actualRelV] = local_signal(logs, "release_airspeed_mps");
+[tRelPsi, actualRelHeading] = local_signal(logs, "release_heading_deg");
+[tRelWn, actualRelWn] = local_signal(logs, "release_wind_n_mps");
+[tRelWe, actualRelWe] = local_signal(logs, "release_wind_e_mps");
 
 if isempty(dropCount)
     error("Could not find drop_count in logs.");
@@ -119,6 +126,23 @@ for k = 1:nDrops
     hdg0 = local_sample_at(tPsi, heading, tk);
     wn0 = local_sample_at(tWn, windN, tk);
     we0 = local_sample_at(tWe, windE, tk);
+
+    loggedN = local_sample_at(tRelN, actualRelN, tk);
+    loggedE = local_sample_at(tRelE, actualRelE, tk);
+    loggedH = local_sample_at(tRelH, actualRelH, tk);
+    if isfinite(loggedN) && isfinite(loggedE) && isfinite(loggedH) && loggedH > 0.0
+        releaseN = loggedN;
+        releaseE = loggedE;
+        releaseH = loggedH;
+    end
+    loggedV = local_sample_at(tRelV, actualRelV, tk);
+    loggedHeading = local_sample_at(tRelPsi, actualRelHeading, tk);
+    loggedWn = local_sample_at(tRelWn, actualRelWn, tk);
+    loggedWe = local_sample_at(tRelWe, actualRelWe, tk);
+    if isfinite(loggedV) && loggedV > 0.0, v0 = loggedV; end
+    if isfinite(loggedHeading), hdg0 = loggedHeading; end
+    if isfinite(loggedWn), wn0 = loggedWn; end
+    if isfinite(loggedWe), we0 = loggedWe; end
 
     if ~isfinite(releaseH), releaseH = cfg.control.target_altitude_m; end
     if ~isfinite(v0), v0 = cfg.ballistics.calibration_airspeed_mps; end

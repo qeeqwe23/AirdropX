@@ -11,11 +11,16 @@ pitch_ref_deg + measured pitch/q -> PD inner loop -> elevator_delta
 [elevator_delta, throttle_cmd] -> JSBSim plant
 ```
 
-By default the outer loop uses the validated direct-MPC longitudinal demand as
-an equivalent control allocation target, then converts that demand into a
-pitch-reference command through the PD inner-loop inverse. Setting
-`UseDirectMpcAllocation` to `false` switches to the pure pitch-reference nominal
-outer model in this folder.
+By default the outer loop uses the pure pitch-reference nominal model in this
+folder: MPC commands `pitch_ref_deg` and `throttle_cmd`, then the PD inner loop
+commands elevator. Set `UseDirectMpcAllocation` to `true` only when you want to
+exercise the older direct-MPC allocation bridge.
+
+The shared MPC solver defaults to constrained `quadprog` optimization when it is
+available, so both the direct-MPC allocation mode and the pure pitch-reference
+outer model honor configured input and rate limits inside the optimized move
+sequence. If `quadprog` is unavailable, the solver automatically falls back to
+the historical unconstrained move with final clipping.
 
 The generated Simulink model is:
 
@@ -48,15 +53,38 @@ addpath("matlab/mpc_outer_pd")
 r = airdropx_mpc_outer_pd_run_closed_loop;
 ```
 
-Run a warm-up case where the aircraft first flies for 20 s, then exports and
-evaluates the following 30 s as a fresh time window. The fixed four-drop
-schedule is shifted with the warm-up, so the first drop still appears at
-`t = 10 s` in the exported CSV. The optimized warm-up preset prioritizes
-altitude and pitch over airspeed:
+Run the validated warm-up CARP case where the aircraft first flies for 20 s,
+then exports and evaluates the following 30 s as a fresh time window. The
+optimized warm-up preset uses a 20 m / 50 m/s / 4 deg reference and prioritizes
+safe altitude, pitch stability, and four-drop release completion:
 
 ```matlab
 r = airdropx_mpc_outer_pd_run_optimized_warmup;
 ```
+
+The optimized CARP preset uses four separate along-track drop targets relative
+to the target center:
+
+```matlab
+[0.8; 1.6; 2.4; 3.8]  % north offsets in meters
+```
+
+The CARP gate now waits for the aircraft to cross the release line before
+latching the first release. The release window remains available as a
+diagnostic tolerance, but it no longer causes an early release as soon as the
+aircraft enters the window.
+
+To sweep ballistic drag sensitivity while keeping the four different targets:
+
+```matlab
+s = airdropx_mpc_outer_pd_sweep_drag_targets( ...
+    "DragScales", [0.85; 1.0; 1.15], ...
+    "TargetSpreadsM", 0.8);
+```
+
+The sweep writes `sweep_summary.csv` and `best_drag_target_case.json` under
+`matlab/results/mpc_outer_pd_drag_target_sweep_<timestamp>/`, with per-drop
+miss columns for all four cargo releases.
 
 Run optimization and compare against the direct MPC baseline:
 
