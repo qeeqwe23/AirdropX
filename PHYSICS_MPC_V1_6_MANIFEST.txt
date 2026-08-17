@@ -1,0 +1,11 @@
+Physics MPC v1.6 Stability NO-MEX patch
+version=physics_mpc_v1_6_cert_horizon_nomex
+mex_rebuild_required=false
+parallel_strategy=3 speed workers; cfg0->cfg4 sequential inside each speed
+elevator_coordinate=true physical total from MEX elevator_cmd_norm
+cfg_seed_coordinate=physical elevator + throttle + equilibrium pitch
+pitch_role=state consistency only; never Newton actuator
+runtime_hidden_elevator=latched once at startup speed
+online_learning=false
+bayesopt=false
+model_order_search=false

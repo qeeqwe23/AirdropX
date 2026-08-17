@@ -1,0 +1,397 @@
+D:\vscode project\AirdropX\aircraft\Cargo300kg\Cargo300kg.xml:57: Ixx = Iyy = Izz = m*(a^2+b^2)/12 = 300*(0.49+0.49)/12 = 24.5 kg*m^2 = 18.07 slug*ft^2 -->
+D:\vscode project\AirdropX\aircraft\Cargo300kg\Cargo300kg.xml:58: <ixx unit="SLUG*FT2">  18.07 </ixx>
+D:\vscode project\AirdropX\aircraft\Cargo300kg\Cargo300kg.xml:59: <iyy unit="SLUG*FT2">  18.07 </iyy>
+D:\vscode project\AirdropX\aircraft\Cargo300kg\Cargo300kg.xml:60: <izz unit="SLUG*FT2">  18.07 </izz>
+D:\vscode project\AirdropX\aircraft\HY100\HY100.xml:57: <ixx unit="SLUG*FT2">  11931.18 </ixx>
+D:\vscode project\AirdropX\aircraft\HY100\HY100.xml:59: <iyy unit="SLUG*FT2">   6420.77 </iyy>
+D:\vscode project\AirdropX\aircraft\HY100\HY100.xml:61: <izz unit="SLUG*FT2">  17344.61 </izz>
+D:\vscode project\AirdropX\aircraft\HY100\HY100.xml:71: <pointmass name="Payload">
+D:\vscode project\AirdropX\aircraft\HY100\HY100.xml:73: <location name="POINTMASS" unit="IN">
+D:\vscode project\AirdropX\aircraft\HY100\HY100.xml:78: </pointmass>
+D:\vscode project\AirdropX\aircraft\HY100\HY100.xml:81: <pointmass name="station1">
+D:\vscode project\AirdropX\aircraft\HY100\HY100.xml:83: <location name="POINTMASS" unit="IN">
+D:\vscode project\AirdropX\aircraft\HY100\HY100.xml:88: </pointmass>
+D:\vscode project\AirdropX\aircraft\HY100\HY100.xml:91: <pointmass name="station2">
+D:\vscode project\AirdropX\aircraft\HY100\HY100.xml:93: <location name="POINTMASS" unit="IN">
+D:\vscode project\AirdropX\aircraft\HY100\HY100.xml:98: </pointmass>
+D:\vscode project\AirdropX\aircraft\HY100\HY100.xml:101: <pointmass name="station3">
+D:\vscode project\AirdropX\aircraft\HY100\HY100.xml:103: <location name="POINTMASS" unit="IN">
+D:\vscode project\AirdropX\aircraft\HY100\HY100.xml:108: </pointmass>
+D:\vscode project\AirdropX\aircraft\HY100\HY100.xml:111: <pointmass name="station4">
+D:\vscode project\AirdropX\aircraft\HY100\HY100.xml:113: <location name="POINTMASS" unit="IN">
+D:\vscode project\AirdropX\aircraft\HY100\HY100.xml:118: </pointmass>
+D:\vscode project\AirdropX\aircraft\HY100\HY100.xml:121: <pointmass name="station5">
+D:\vscode project\AirdropX\aircraft\HY100\HY100.xml:123: <location name="POINTMASS" unit="IN">
+D:\vscode project\AirdropX\aircraft\HY100\HY100.xml:128: </pointmass>
+D:\vscode project\AirdropX\aircraft\HY100\HY100.xml:131: <pointmass name="station6">
+D:\vscode project\AirdropX\aircraft\HY100\HY100.xml:133: <location name="POINTMASS" unit="IN">
+D:\vscode project\AirdropX\aircraft\HY100\HY100.xml:138: </pointmass>
+D:\vscode project\AirdropX\aircraft\HY100\reset.xml:264: <payload>
+D:\vscode project\AirdropX\aircraft\HY100\reset.xml:268: </payload>
+D:\vscode project\AirdropX\aircraft\MQ9_Reaper\MQ9_Reaper.xml:57: <ixx unit="SLUG*FT2">  11931.18 </ixx>
+D:\vscode project\AirdropX\aircraft\MQ9_Reaper\MQ9_Reaper.xml:59: <iyy unit="SLUG*FT2">   6420.77 </iyy>
+D:\vscode project\AirdropX\aircraft\MQ9_Reaper\MQ9_Reaper.xml:61: <izz unit="SLUG*FT2">  17344.61 </izz>
+D:\vscode project\AirdropX\aircraft\MQ9_Reaper\MQ9_Reaper.xml:72: <pointmass name="CARGO_1">
+D:\vscode project\AirdropX\aircraft\MQ9_Reaper\MQ9_Reaper.xml:74: <location name="POINTMASS" unit="IN">
+D:\vscode project\AirdropX\aircraft\MQ9_Reaper\MQ9_Reaper.xml:79: </pointmass>
+D:\vscode project\AirdropX\aircraft\MQ9_Reaper\MQ9_Reaper.xml:81: <pointmass name="CARGO_2">
+D:\vscode project\AirdropX\aircraft\MQ9_Reaper\MQ9_Reaper.xml:83: <location name="POINTMASS" unit="IN">
+D:\vscode project\AirdropX\aircraft\MQ9_Reaper\MQ9_Reaper.xml:88: </pointmass>
+D:\vscode project\AirdropX\aircraft\MQ9_Reaper\MQ9_Reaper.xml:90: <pointmass name="CARGO_3">
+D:\vscode project\AirdropX\aircraft\MQ9_Reaper\MQ9_Reaper.xml:92: <location name="POINTMASS" unit="IN">
+D:\vscode project\AirdropX\aircraft\MQ9_Reaper\MQ9_Reaper.xml:97: </pointmass>
+D:\vscode project\AirdropX\aircraft\MQ9_Reaper\MQ9_Reaper.xml:99: <pointmass name="CARGO_4">
+D:\vscode project\AirdropX\aircraft\MQ9_Reaper\MQ9_Reaper.xml:101: <location name="POINTMASS" unit="IN">
+D:\vscode project\AirdropX\aircraft\MQ9_Reaper\MQ9_Reaper.xml:106: </pointmass>
+D:\vscode project\AirdropX\matlab\airdropx_carp_cep_block.m:6: wind_n_mps, wind_e_mps, drop_count, target_n_m, target_e_m, ...
+D:\vscode project\AirdropX\matlab\airdropx_carp_cep_block.m:73: persistent latched next_drop_t command_count prev_drop_count prev_t_to_release ...
+D:\vscode project\AirdropX\matlab\airdropx_carp_cep_block.m:81: prev_drop_count = double(drop_count);
+D:\vscode project\AirdropX\matlab\airdropx_carp_cep_block.m:188: if double(drop_count) < prev_drop_count
+D:\vscode project\AirdropX\matlab\airdropx_carp_cep_block.m:196: prev_drop_count = double(drop_count);
+D:\vscode project\AirdropX\matlab\airdropx_carp_monte_carlo.m:87: [tDrop, dropCount] = local_signal(logs, "drop_count");
+D:\vscode project\AirdropX\matlab\airdropx_carp_monte_carlo.m:104: error("Could not find drop_count in logs.");
+D:\vscode project\AirdropX\matlab\airdropx_carp_monte_carlo.m:112: error("No drop_count rising edges found.");
+D:\vscode project\AirdropX\matlab\airdropx_carp_monte_carlo.m:185: mc.drop_count = nDrops;
+D:\vscode project\AirdropX\matlab\airdropx_drop_table.m:13: [tDrop, dropCount] = local_signal(logs, "drop_count");
+D:\vscode project\AirdropX\matlab\airdropx_drop_table.m:15: error("Could not find drop_count in logs.");
+D:\vscode project\AirdropX\matlab\airdropx_drop_table.m:32: "mass_kg"
+D:\vscode project\AirdropX\matlab\airdropx_drop_table.m:33: "cg_x_m"
+D:\vscode project\AirdropX\matlab\airdropx_gui.m:230: stairs(axDrop, T.time_s, T.drop_count, "LineWidth", 1.5);
+D:\vscode project\AirdropX\matlab\airdropx_gui.m:239: "Drops: " + string(r.drop_count_final)
+D:\vscode project\AirdropX\matlab\airdropx_mass_cg_update.m:1: function [total_mass_kg, cg_x_m, cargo_onboard] = airdropx_mass_cg_update(drop_index, drop_trigger, cargo_onboard)
+D:\vscode project\AirdropX\matlab\airdropx_mass_cg_update.m:7: empty_mass_kg = cfg.mass.empty_mass_kg;
+D:\vscode project\AirdropX\matlab\airdropx_mass_cg_update.m:8: x_cg_empty_m = cfg.mass.empty_cg_x_m;
+D:\vscode project\AirdropX\matlab\airdropx_mass_cg_update.m:9: cargo_mass_kg = cfg.mass.cargo_mass_kg;
+D:\vscode project\AirdropX\matlab\airdropx_mass_cg_update.m:23: total_mass_kg = empty_mass_kg;
+D:\vscode project\AirdropX\matlab\airdropx_mass_cg_update.m:24: total_moment = empty_mass_kg * x_cg_empty_m;
+D:\vscode project\AirdropX\matlab\airdropx_mass_cg_update.m:28: total_mass_kg = total_mass_kg + cargo_mass_kg(i);
+D:\vscode project\AirdropX\matlab\airdropx_mass_cg_update.m:29: total_moment = total_moment + cargo_mass_kg(i) * cargo_x_m(i);
+D:\vscode project\AirdropX\matlab\airdropx_mass_cg_update.m:33: cg_x_m = total_moment / total_mass_kg;
+D:\vscode project\AirdropX\matlab\airdropx_nw20_metrics_update.m:1: function metrics = airdropx_nw20_metrics_update(t, altitude_m, vz_up_mps, elevator_delta, drop_count, reset, h_ref, dt_s, altitude_band_m, vz_band_mps, elevator_sat_abs)
+D:\vscode project\AirdropX\matlab\airdropx_nw20_metrics_update.m:7: persistent n sum_err sum_err2 max_abs_err min_alt sat_steps drop_seen post_drop_time settling_time prev_drop_count
+D:\vscode project\AirdropX\matlab\airdropx_nw20_metrics_update.m:38: prev_drop_count = double(drop_count);
+D:\vscode project\AirdropX\matlab\airdropx_nw20_metrics_update.m:52: if double(drop_count) > prev_drop_count
+D:\vscode project\AirdropX\matlab\airdropx_nw20_metrics_update.m:56: prev_drop_count = double(drop_count);
+D:\vscode project\AirdropX\matlab\airdropx_nw20_metrics_update.m:71: metrics.drop_count = double(drop_count);
+D:\vscode project\AirdropX\matlab\airdropx_pd_nw20_block.m:1: function [elevator_delta, throttle_cmd, delta_m_signal, h_err, u_pd, drop_trim_bias, u_total, u_out, saturated] = airdropx_pd_nw20_block(altitude_m, vz_up_mps, airspeed_mps, pitch_deg, mass_kg, drop_count, h_ref, Kp, Kd, u_limit, u_rate_limit, K_mass, bias_rate_limit, throttle_kp, throttle_fixed, throttle_alt_kp, throttle_vz_kd, v_ref_mps, drop_mass_signal_kg, initial_elevator_delta, pitch_ref_deg, pitch_kp, pitch_limit, pitch_rate_kd, pitch_rate_limit, dt_s)
+D:\vscode project\AirdropX\matlab\airdropx_pd_nw20_block.m:7: persistent state prev_drop_count
+D:\vscode project\AirdropX\matlab\airdropx_pd_nw20_block.m:89: if isempty(prev_drop_count)
+D:\vscode project\AirdropX\matlab\airdropx_pd_nw20_block.m:90: prev_drop_count = 0.0;
+D:\vscode project\AirdropX\matlab\airdropx_pd_nw20_block.m:93: dc = max(0.0, double(drop_count) - prev_drop_count);
+D:\vscode project\AirdropX\matlab\airdropx_pd_nw20_block.m:95: prev_drop_count = double(drop_count);
+D:\vscode project\AirdropX\matlab\airdropx_pd_nw20_block.m:99: delta_m_signal, double(mass_kg), state, gains, double(pitch_deg));
+D:\vscode project\AirdropX\matlab\airdropx_plot.m:41: [~, hMass] = local_plot_signal(logs, "mass_kg", "Mass", "kg", true);
+D:\vscode project\AirdropX\matlab\airdropx_plot.m:44: [~, hCg] = local_plot_signal(logs, "cg_x_m", "CG X", "m", false);
+D:\vscode project\AirdropX\matlab\airdropx_plot.m:45: ylabel("cg_x_m (m)");
+D:\vscode project\AirdropX\matlab\airdropx_plot.m:49: local_plot_signal(logs, "drop_count", "Drop Count", "count", true);
+D:\vscode project\AirdropX\matlab\airdropx_release_check.m:50: if smoke.report.drop_count_final == 4
+D:\vscode project\AirdropX\matlab\airdropx_release_check.m:54: checks(end + 1) = "FAIL: smoke simulation drop_count_final = " + string(smoke.report.drop_count_final);
+D:\vscode project\AirdropX\matlab\airdropx_render_eval_video.m:17: required = ["time_s", "altitude_m", "airspeed_mps", "roll_deg", "heading_deg", "elevator_cmd_norm", "u_out", "drop_count"];
+D:\vscode project\AirdropX\matlab\airdropx_render_eval_video.m:37: dropCount = T.drop_count(:);
+D:\vscode project\AirdropX\matlab\airdropx_render_video.m:10: %   airspeed_mps, wind_n_mps, wind_e_mps, drop_count
+D:\vscode project\AirdropX\matlab\airdropx_render_video.m:32: [~, dropCount] = local_signal(logs, "drop_count");
+D:\vscode project\AirdropX\matlab\airdropx_render_video.m:37: "Missing one or more required logs. Log altitude_m, pos_n_m, pos_e_m, pitch_deg, roll_deg, heading_deg, airspeed_mps, wind_n_mps, wind_e_mps, drop_count.");
+D:\vscode project\AirdropX\matlab\airdropx_report.m:33: [~, dropCount] = local_signal(logs, "drop_count");
+D:\vscode project\AirdropX\matlab\airdropx_report.m:56: report.drop_count_final = dropCount(end);
+D:\vscode project\AirdropX\matlab\airdropx_report.m:62: fprintf("drop_count_final : %.0f\n", report.drop_count_final);
+D:\vscode project\AirdropX\matlab\airdropx_report.m:74: [~, dropCount] = local_signal(logs, "drop_count");
+D:\vscode project\AirdropX\matlab\airdropx_report.m:82: error("Could not find drop_count in logs.");
+D:\vscode project\AirdropX\matlab\airdropx_report.m:95: report.drop_count_final = dropCount(end);
+D:\vscode project\AirdropX\matlab\airdropx_report.m:105: fprintf("drop_count_final    : %.0f\n", report.drop_count_final);
+D:\vscode project\AirdropX\matlab\airdropx_run_and_export.m:394: "mass_kg"
+D:\vscode project\AirdropX\matlab\airdropx_run_and_export.m:395: "cg_x_m"
+D:\vscode project\AirdropX\matlab\airdropx_run_and_export.m:400: "drop_count"
+D:\vscode project\AirdropX\matlab\airdropx_run_and_export.m:446: report.drop_count_final, ...
+D:\vscode project\AirdropX\matlab\airdropx_run_and_export.m:456: 'drop_count_final', ...
+D:\vscode project\AirdropX\matlab\airdropx_sim_params.m:90: cfg.mass.empty_mass_kg = 2223.0;
+D:\vscode project\AirdropX\matlab\airdropx_sim_params.m:91: cfg.mass.empty_cg_x_m = 5.279;
+D:\vscode project\AirdropX\matlab\airdropx_sim_params.m:92: cfg.mass.cargo_mass_kg = [300.0, 300.0, 300.0, 300.0];
+D:\vscode project\AirdropX\matlab\airdropx_vr_cargo_pose.m:3: airdropx_vr_cargo_pose(t, pos_n_m, pos_e_m, altitude_m, airspeed_mps, heading_deg, wind_n_mps, wind_e_mps, drop_count, gravity_mps2, k_drag)
+D:\vscode project\AirdropX\matlab\airdropx_vr_cargo_pose.m:4: %AIRDROPX_VR_CARGO_POSE Four cargo VRML poses driven by drop_count edges.
+D:\vscode project\AirdropX\matlab\airdropx_vr_cargo_pose.m:7: % drop_count increases. Before release it is hidden under the ground and
+D:\vscode project\AirdropX\matlab\airdropx_vr_cargo_pose.m:21: persistent prev_drop_count release_t release_n release_e release_h release_v release_heading release_wind_n release_wind_e active
+D:\vscode project\AirdropX\matlab\airdropx_vr_cargo_pose.m:23: if isempty(prev_drop_count)
+D:\vscode project\AirdropX\matlab\airdropx_vr_cargo_pose.m:24: prev_drop_count = 0.0;
+D:\vscode project\AirdropX\matlab\airdropx_vr_cargo_pose.m:36: dc = floor(double(drop_count) + 1.0e-9);
+D:\vscode project\AirdropX\matlab\airdropx_vr_cargo_pose.m:37: prev_dc = floor(double(prev_drop_count) + 1.0e-9);
+D:\vscode project\AirdropX\matlab\airdropx_vr_cargo_pose.m:60: prev_drop_count = double(drop_count);
+D:\vscode project\AirdropX\matlab\update_airdropx_model_architecture.m:55: "function [elevator_delta, throttle_cmd, delta_m_signal, h_err, u_pd, drop_trim_bias, u_total, u_out, saturated] = PD_NW20(altitude_m, vz_up_mps, airspeed_mps, mass_kg, drop_count, pitch_deg)"
+D:\vscode project\AirdropX\matlab\update_airdropx_model_architecture.m:59: "    airdropx_pd_nw20_block(altitude_m, vz_up_mps, airspeed_mps, pitch_deg, mass_kg, drop_count, ..."
+D:\vscode project\AirdropX\matlab\update_airdropx_model_architecture.m:96: "function [drop_cmd, release_latched, in_window, low_alt_safe, t_to_release_s, release_n_m, release_e_m, predicted_impact_n_m, predicted_impact_e_m, miss_distance_m, cep50_to_target_m, actual_release_n_m, actual_release_e_m, actual_release_alt_m, release_airspeed_mps, release_heading_deg, release_wind_n_mps, release_wind_e_mps, schedule_done] = CARP_CEP(t, pos_n_m, pos_e_m, altitude_m, airspeed_mps, heading_deg, wind_n_mps, wind_e_mps, drop_count)"
+D:\vscode project\AirdropX\matlab\update_airdropx_model_architecture.m:101: "        wind_n_mps, wind_e_mps, drop_count, ..."
+D:\vscode project\AirdropX\matlab\update_airdropx_model_architecture.m:121: "function [cargo1_translation, cargo2_translation, cargo3_translation, cargo4_translation, cargo1_scale, cargo2_scale, cargo3_scale, cargo4_scale] = CargoVR(t, pos_n_m, pos_e_m, altitude_m, airspeed_mps, heading_deg, wind_n_mps, wind_e_mps, drop_count)"
+D:\vscode project\AirdropX\matlab\update_airdropx_model_architecture.m:126: "        wind_n_mps, wind_e_mps, drop_count, ..."
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_assess_identification.m:32: dropCount = local_drop_count(T, X(:, 6), cfg);
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_assess_identification.m:38: for k = 0:double(cfg.mass.drop_count_max)
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_assess_identification.m:58: 'VariableNames', {'drop_count', 'samples', ...
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_assess_identification.m:71: if double(opts.DropTransitionPadS) > 0.0 && ismember("drop_count", string(T.Properties.VariableNames))
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_assess_identification.m:72: dc = round(double(T.drop_count(:)));
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_assess_identification.m:110: 'VariableNames', {'drop_count', 'samples', ...
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_assess_identification.m:176: function dropCount = local_drop_count(T, massErr, cfg)
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_assess_identification.m:177: if ismember("drop_count", string(T.Properties.VariableNames))
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_assess_identification.m:178: dropCount = round(double(T.drop_count(:)));
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_assess_identification.m:180: cargoMass = mean(double(cfg.mass.cargo_mass_kg(:)), "omitnan");
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_assess_identification.m:186: dropCount = min(max(dropCount, 0), double(cfg.mass.drop_count_max));
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_config.m:35: cfg.reference.mass_kg = double(opts.ReferenceMassKg);
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_config.m:36: cfg.reference.cg_x_m = double(opts.ReferenceCgXM);
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_config.m:43: cfg.trim.mass_kg = cfg.reference.mass_kg;
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_config.m:44: cfg.trim.cg_x_m = cfg.reference.cg_x_m;
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_config.m:47: cfg.mass.empty_mass_kg = double(opts.EmptyMassKg);
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_config.m:48: cfg.mass.empty_cg_x_m = double(opts.EmptyCgXM);
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_config.m:51: cfg.mass.cargo_mass_kg = double(opts.CargoMassKg(:));
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_config.m:54: cfg.mass.drop_count_max = 4;
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_controller.m:20: dropCount = local_drop_count_from_state(x, cfg);
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_controller.m:85: state.drop_count = dropCount;
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_controller.m:89: diag.drop_count = dropCount;
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_controller.m:106: info = struct("changed", false, "previous_drop_count", NaN, "reset_factor", 1.0);
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_controller.m:110: if ~isfield(state, "drop_count") || isempty(state.drop_count)
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_controller.m:113: previousDropCount = double(state.drop_count);
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_controller.m:126: info.previous_drop_count = previousDropCount;
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_controller.m:130: function dropCount = local_drop_count_from_state(x, cfg)
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_controller.m:135: cargoMass = mean(double(cfg.mass.cargo_mass_kg(:)), "omitnan");
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_controller.m:141: dropCount = min(max(dropCount, 0), double(cfg.mass.drop_count_max));
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_evaluate_csv.m:93: if ismember("drop_count", vars)
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_evaluate_csv.m:94: dc = double(T.drop_count(:));
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_greybox_model.m:19: dropMax = double(cfg.mass.drop_count_max);
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_greybox_model.m:26: model.drop_count = dropCount;
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_identify_from_csv.m:19: dropCount = local_drop_count_from_table(T, cfg);
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_identify_from_csv.m:23: models = repmat(struct("drop_count", 0, "force_parameters", []), 5, 1);
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_identify_from_csv.m:39: models(k + 1).drop_count = k;
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_identify_from_csv.m:52: if double(opts.DropTransitionPadS) > 0.0 && ismember("drop_count", string(T.Properties.VariableNames))
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_identify_from_csv.m:53: dc = round(double(T.drop_count(:)));
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_identify_from_csv.m:155: 'VariableNames', {'drop_count', 'group', 'parameter', 'raw_value', 'projected_value', 'reason'})]; %#ok<AGROW>
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_identify_from_csv.m:163: idx = records.drop_count == models(k).drop_count;
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_identify_from_csv.m:297: function dropCount = local_drop_count_from_table(T, cfg)
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_identify_from_csv.m:298: if ismember("drop_count", string(T.Properties.VariableNames))
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_identify_from_csv.m:299: dropCount = round(double(T.drop_count(:)));
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_identify_from_csv.m:301: massKg = local_column(T, "mass_kg", cfg.reference.mass_kg);
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_identify_from_csv.m:302: cargoMass = mean(double(cfg.mass.cargo_mass_kg(:)), "omitnan");
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_identify_from_csv.m:337: 'drop_count', 'samples', 'cov_trace', ...
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_run_closed_loop.m:157: "mass_kg"
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_run_closed_loop.m:158: "cg_x_m"
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_run_closed_loop.m:163: "drop_count"
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_run_closed_loop.m:234: case "mass_kg"
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_run_closed_loop.m:236: case "cg_x_m"
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_run_id_experiment.m:96: "mass_kg"
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_run_id_experiment.m:97: "cg_x_m"
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_run_id_experiment.m:101: "drop_count"
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_setup_id_workspace.m:22: assignin("base", "airdropx_mpc_reference_mass_kg", double(opts.ReferenceMassKg));
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_setup_id_workspace.m:23: assignin("base", "airdropx_mpc_reference_cg_x_m", double(opts.ReferenceCgXM));
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_state_from_table.m:26: massKg = local_column(T, "mass_kg", cfg.reference.mass_kg);
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_state_from_table.m:27: cgXM = local_column(T, "cg_x_m", cfg.reference.cg_x_m);
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_state_from_table.m:28: dropCount = local_drop_count(T, massKg, cfg);
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_state_from_table.m:75: function dropCount = local_drop_count(T, massKg, cfg)
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_state_from_table.m:76: if ismember("drop_count", string(T.Properties.VariableNames))
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_state_from_table.m:77: dropCount = round(double(T.drop_count(:)));
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_state_from_table.m:79: cargoMass = mean(double(cfg.mass.cargo_mass_kg(:)), "omitnan");
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_state_from_table.m:85: dropCount = min(max(dropCount, 0), double(cfg.mass.drop_count_max));
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_trim_bank.m:2: %AIRDROPX_MPC_TRIM_BANK Build per-drop trim, mass, CG, and pitch inertia data.
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_trim_bank.m:5: cargoMass = double(cfg.mass.cargo_mass_kg(:));
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_trim_bank.m:11: "drop_count", 0, ...
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_trim_bank.m:30: mParts = [double(cfg.mass.empty_mass_kg); cargoMass(remaining)];
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_trim_bank.m:31: xParts = [double(cfg.mass.empty_cg_x_m); cargoX(remaining)];
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_trim_bank.m:36: Iy = double(cfg.mass.empty_Iy_kgm2) + double(cfg.mass.empty_mass_kg) * ...
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_trim_bank.m:37: ((double(cfg.mass.empty_cg_x_m) - xCG) ^ 2 + (double(cfg.mass.empty_cg_z_m) - zCG) ^ 2);
+D:\vscode project\AirdropX\matlab\mpc\airdropx_mpc_trim_bank.m:43: bank(dropCount + 1).drop_count = dropCount;
+D:\vscode project\AirdropX\matlab\mpc\sfun_airdropx_mpc_controller.m:5: %   [altitude_m; vz_up_mps; airspeed_mps; pitch_deg; mass_kg; cg_x_m]
+D:\vscode project\AirdropX\matlab\mpc\sfun_airdropx_mpc_controller.m:94: dropCount = local_drop_count_from_mass(massKg, cfg);
+D:\vscode project\AirdropX\matlab\mpc\sfun_airdropx_mpc_controller.m:134: function dropCount = local_drop_count_from_mass(massKg, cfg)
+D:\vscode project\AirdropX\matlab\mpc\sfun_airdropx_mpc_controller.m:135: cargoMass = mean(double(cfg.mass.cargo_mass_kg(:)), "omitnan");
+D:\vscode project\AirdropX\matlab\mpc\sfun_airdropx_mpc_controller.m:140: dropCount = min(max(dropCount, 0), double(cfg.mass.drop_count_max));
+D:\vscode project\AirdropX\matlab\mpc\sfun_airdropx_mpc_controller.m:147: refMass = local_base_scalar("airdropx_mpc_reference_mass_kg", 3423.0);
+D:\vscode project\AirdropX\matlab\mpc\sfun_airdropx_mpc_controller.m:148: refCg = local_base_scalar("airdropx_mpc_reference_cg_x_m", 5.28048992112182);
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_build_iddata.m:528: "mass_kg","cg_x_m","pos_n_m","pos_e_m","heading_deg","wind_n_mps","wind_e_mps"];
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_build_iddata.m:533: "drop_count","config_id"];
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_final_mission_validation.m:7: % It starts from cfg0 with all four payloads on board, performs all four
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_final_mission_validation.m:192: fprintf(fid, "final_drop_count=%.9g\n", summary.final_drop_count(1));
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_final_mission_validation.m:229: round(summary.final_drop_count(1)), opts.TotalDropCount, summary.mission_h_rms_m(1), ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_final_mission_validation.m:261: dropCount = local_col(T, "drop_count");
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_final_mission_validation.m:262: mass = local_col(T, "mass_kg");
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_final_mission_validation.m:263: cg = local_col(T, "cg_x_m");
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_final_mission_validation.m:337: 'VariableNames',{'mission_pass','hard_fail','completed_all_drops','final_drop_count', ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_final_mission_validation.m:343: 'max_bridge_elevator_error','max_bridge_throttle_error','median_mass_kg','median_cg_x_m'});
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_final_mission_validation.m:411: dropCount = local_col(T,"drop_count");
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_final_mission_validation.m:423: nexttile; yyaxis left; plot(t,local_col(T,"mass_kg")); ylabel('mass kg'); yyaxis right; plot(t,local_col(T,"cg_x_m")); ylabel('CG m'); grid on; local_drop_lines(D);
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_find_trim.m:271: % next payload configuration gets a better continuation seed.
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_find_trim.m:1002: % cfg1..cfg4 are reached by preparatory payload drops inside the ID model.
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_find_trim.m:1058: % preparation, not the payload-release impulse used only to reach cfg1..cfg4.
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_find_trim.m:1463: % Continue the verified trim sequence across payload configurations.
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_find_trim.m:1755: % may be a valid static equilibrium even when the payload-transition trajectory
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_find_trim.m:2355: % v20: cfg1+ trim search can prepare the real payload sequence using the
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_find_trim.m:2425: % than restarting each payload configuration from the previous point only.
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_generate_data.m:7: % long payload-transition phugoid.
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_generate_data.m:61: % v20: cfg1+ reaches the target through real payload drops.  The
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_learning_bank_report.m:61: "target_altitude_m","target_airspeed_mps","estimated_mass_kg","cargo_mass_kg", ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:9: %     altitude, airspeed, mass/payload and later mission changes.
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:25: % target airspeed and payload changes. For a new mission use a new OutputRoot
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:633: % mechanism for cfg0..cfg4 and for future altitude/airspeed/payload missions.
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:1364: if ismember("context_mass_kg",string(M.Properties.VariableNames))
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:1365: observedMass=double(M.context_mass_kg(1));
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:1367: if ismember("context_cg_x_m",string(M.Properties.VariableNames))
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:1368: observedCg=double(M.context_cg_x_m(1));
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:1381: 'formal_pass','infrastructure_fail','observed_mass_kg','observed_cg_x_m','source','metrics_file'});
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:1501: "observed_mass_kg","observed_cg_x_m"];
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:1926: cg=local_trim_field(master.trim_bank(cfgId+1),"cg_x_m",NaN);
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:1932: payloadRemaining=max(0,(double(opts.TotalDropCount)-double(cfgId))*double(opts.CargoMassKg));
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:1935: double(opts.TotalDropCount),double(payloadRemaining),double(cfgId)/max(1,double(opts.TotalDropCount)), ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:1936: 'VariableNames',{'config_id','target_altitude_m','target_airspeed_mps','reference_mass_kg', ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:1937: 'cargo_mass_kg','estimated_mass_kg','cg_x_m','cg_known','total_drop_count', ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:1938: 'payload_remaining_kg','drop_fraction'});
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:1950: local_table_num(T,"estimated_mass_kg")/500.0, ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:1951: local_table_num(T,"cargo_mass_kg")/300.0, ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:1952: local_table_num(T,"total_drop_count")/4.0, ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:1953: local_table_num(T,"payload_remaining_kg")/600.0, ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:1956: local_table_num(T,"cg_x_m")/0.20 .* double(cgKnown), ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:1997: double(context.estimated_mass_kg(1)),double(context.cargo_mass_kg(1)), ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:1998: double(context.cg_x_m(1)),logical(context.cg_known(1)),round(double(context.config_id(1))),char(arch));
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:2081: if ismember("context_mass_kg",string(M.Properties.VariableNames)) && isfinite(double(M.context_mass_kg(1)))
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:2082: ctx.estimated_mass_kg(1)=double(M.context_mass_kg(1));
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:2084: if ismember("context_cg_x_m",string(M.Properties.VariableNames)) && isfinite(double(M.context_cg_x_m(1)))
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:2085: ctx.cg_x_m(1)=double(M.context_cg_x_m(1));
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:2095: double(ctx.reference_mass_kg),double(ctx.cargo_mass_kg),double(ctx.estimated_mass_kg), ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:2096: double(ctx.cg_x_m),logical(ctx.cg_known),double(ctx.total_drop_count), ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:2097: double(ctx.payload_remaining_kg),double(ctx.drop_fraction), ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:2101: 'config_id','target_altitude_m','target_airspeed_mps','reference_mass_kg','cargo_mass_kg', ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:2102: 'estimated_mass_kg','cg_x_m','cg_known','total_drop_count','payload_remaining_kg','drop_fraction', ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:2115: massVec=repmat(double(context.estimated_mass_kg),n,1);
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:2116: cgVec=repmat(double(context.cg_x_m),n,1);
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:2118: if ismember("observed_mass_kg",string(H.Properties.VariableNames))
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:2119: m=double(H.observed_mass_kg); good=isfinite(m); massVec(good)=m(good);
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:2121: if ismember("observed_cg_x_m",string(H.Properties.VariableNames))
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:2122: g=double(H.observed_cg_x_m); good=isfinite(g); cgVec(good)=g(good); cgKnownVec(good)=true;
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:2126: repmat(double(context.target_airspeed_mps),n,1),repmat(double(context.reference_mass_kg),n,1), ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:2127: repmat(double(context.cargo_mass_kg),n,1),massVec, ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:2128: cgVec,cgKnownVec,repmat(double(context.total_drop_count),n,1), ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:2129: repmat(double(context.payload_remaining_kg),n,1),repmat(double(context.drop_fraction),n,1), ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:2135: 'config_id','target_altitude_m','target_airspeed_mps','reference_mass_kg','cargo_mass_kg', ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:2136: 'estimated_mass_kg','cg_x_m','cg_known','total_drop_count','payload_remaining_kg','drop_fraction', ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:2360: dropCount = local_col(T,"drop_count");
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:4329: dropCount = local_col(T,"drop_count");
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:4330: mass = local_col(T,"mass_kg");
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:4331: cg = local_col(T,"cg_x_m");
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:4409: 'reached_config','hard_fail','formal_pass','rank_score','context_mass_kg','context_cg_x_m'});
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:5356: req=["target_altitude_m","target_airspeed_mps","reference_mass_kg","cargo_mass_kg", ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:5357: "total_drop_count","move_transfer_scale","integral_transfer_scale","mission_pass"];
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:5362: dM=(double(T.reference_mass_kg)-double(opts.ReferenceMassKg))/max(300.0,abs(double(opts.ReferenceMassKg))*0.25);
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:5363: dC=(double(T.cargo_mass_kg)-double(opts.CargoMassKg))/max(100.0,abs(double(opts.CargoMassKg)));
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:5364: dN=(double(T.total_drop_count)-double(opts.TotalDropCount))/max(1.0,double(opts.TotalDropCount));
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:5382: 'VariableNames',{'updated_at','target_altitude_m','target_airspeed_mps','reference_mass_kg','cargo_mass_kg', ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:5383: 'total_drop_count','move_transfer_scale','integral_transfer_scale','gate_ratio','mission_pass','output_root'});
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:5396: string(round(double(T.reference_mass_kg)*1e3)/1e3)+"|"+ ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:5397: string(round(double(T.cargo_mass_kg)*1e3)/1e3)+"|"+ ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:5398: string(double(T.total_drop_count))+"|"+ ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:5712: % are identical for every altitude, airspeed, payload context and cfg.
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_200m_all_configs.m:5840: % v20 permits the unavoidable short payload-release transient in the
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_mpc_unified_learning.m:6: % later target-altitude, target-airspeed and payload-mass missions.
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_plant_context_bank.m:44: 'reference_mass_kg','cargo_mass_kg','total_drop_count','output_root', ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_plant_context_bank.m:52: abs(double(T.reference_mass_kg)-double(opts.ReferenceMassKg)) < 1e-8 & ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_plant_context_bank.m:53: abs(double(T.cargo_mass_kg)-double(opts.CargoMassKg)) < 1e-8 & ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_plant_context_bank.m:54: round(double(T.total_drop_count)) == round(double(opts.TotalDropCount)) & ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_plant_context_bank.m:91: dM = abs(double(T.reference_mass_kg)-double(opts.ReferenceMassKg)) / max(double(opts.MassScaleKg),eps);
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_plant_context_bank.m:92: dC = abs(double(T.cargo_mass_kg)-double(opts.CargoMassKg)) / max(double(opts.CargoScaleKg),eps);
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_plant_context_bank.m:93: dN = abs(double(T.total_drop_count)-double(opts.TotalDropCount));
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_plant_context_bank.m:138: required = {'timestamp','target_altitude_m','target_airspeed_mps','reference_mass_kg', ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_plant_context_bank.m:139: 'cargo_mass_kg','total_drop_count','output_root','master_mat','all_verified', ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_plant_context_bank.m:165: % not a Plant identity. Airspeed/mass/payload dominate Plant reuse.
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_reference.m:1: function ref = airdropx_auto_reference(drop_count, trim_bank, varargin)
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_reference.m:7: idx = min(max(round(double(drop_count)) + 1, 1), numel(trim_bank));
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_run_best_closed_loop.m:72: T.pitch_deg(end), max(T.drop_count), ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_run_best_closed_loop.m:73: 'VariableNames', {'min_h','min_h_first10','max_h','last_h','pitch_std_after10','pitch_range_after10','pitch_mean_after10','pitch_std_after12','pitch_range_after12','pitch_mean_after12','last_pitch','max_drop_count'});
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_run_closed_loop.m:144: assignin("base", "airdropx_mpc_reference_mass_kg", double(opts.ReferenceMassKg));
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_run_closed_loop.m:145: assignin("base", "airdropx_auto_cargo_mass_kg", double(opts.CargoMassKg));
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_run_closed_loop.m:146: assignin("base", "airdropx_cargo_mass_kg", double(opts.CargoMassKg));
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_run_closed_loop.m:359: 10, "mass_kg"; ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_run_closed_loop.m:360: 11, "cg_x_m"; ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_run_closed_loop.m:367: 18, "drop_count" ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_run_closed_loop.m:419: "mass_kg"
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_run_closed_loop.m:420: "cg_x_m"
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_run_closed_loop.m:427: "drop_count"
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_run_closed_loop.m:535: case "mass_kg"
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_run_closed_loop.m:537: case "cg_x_m"
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_run_id_experiment.m:52: assignin("base", "airdropx_mpc_reference_mass_kg", double(opts.ReferenceMassKg));
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_run_id_experiment.m:53: assignin("base", "airdropx_auto_cargo_mass_kg", double(opts.CargoMassKg));
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_run_id_experiment.m:54: assignin("base", "airdropx_cargo_mass_kg", double(opts.CargoMassKg));
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_run_id_experiment.m:59: % command before the preparatory payload drops.  The old direct-ID path
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_run_id_experiment.m:88: % and settling; otherwise payload-drop motion and ID excitation become
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_run_id_experiment.m:150: mask = T.time_s >= exportStartS & round(T.drop_count) == double(opts.ConfigId);
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_run_id_experiment.m:316: "drop_count"; "mass_kg"; "cg_x_m"; "pos_n_m"; "pos_e_m"; "heading_deg"; "wind_n_mps"; "wind_e_mps"];
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_run_id_experiment.m:478: % coordinate while the old MEX reaches cfgN through real payload drops.
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_run_id_experiment.m:516: % zero-order-hold switch at each payload-drop time.
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_smoke_single_config.m:216: if ismember("drop_count", vars)
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_auto_smoke_single_config.m:217: mask = mask & round(double(T.drop_count)) == cfg;
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_v31_context.m:6: % mass, CG and payload state.  Target altitude remains part of the mission
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_v31_context.m:22: payloadRemaining = max(0,(double(opts.TotalDropCount)-cfgId)*double(opts.CargoMassKg));
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_v31_context.m:29: C.reference_mass_kg = double(opts.ReferenceMassKg);
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_v31_context.m:30: C.cargo_mass_kg = double(opts.CargoMassKg);
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_v31_context.m:31: C.total_drop_count = round(double(opts.TotalDropCount));
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_v31_context.m:33: C.estimated_mass_kg = mass;
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_v31_context.m:34: C.cg_x_m = cg;
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_v31_context.m:36: C.payload_remaining_kg = payloadRemaining;
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_v31_context.m:44: C.target_altitude_m,C.target_airspeed_mps,C.reference_mass_kg, ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_v31_context.m:45: C.cargo_mass_kg,C.total_drop_count));
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_v31_context.m:50: C.target_airspeed_mps,C.reference_mass_kg,C.cargo_mass_kg,C.total_drop_count));
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_v31_context.m:56: C.target_airspeed_mps,C.estimated_mass_kg,C.cargo_mass_kg,C.cg_x_m, ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_v31_context.m:63: C.reference_mass_kg/500.0, ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_v31_context.m:64: C.cargo_mass_kg/300.0, ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_v31_context.m:65: C.total_drop_count/4.0];
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_v31_context.m:68: C.estimated_mass_kg/500.0, ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_v31_context.m:69: C.cargo_mass_kg/300.0, ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_v31_context.m:70: C.payload_remaining_kg/600.0, ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_v31_context.m:73: C.cg_x_m/0.20*double(C.cg_known), ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_v31_import_legacy.m:42: refM=local_num_at(T,'reference_mass_kg',i,3423);
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_v31_import_legacy.m:43: cargo=local_num_at(T,'cargo_mass_kg',i,300);
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_v31_import_legacy.m:44: nDrop=round(local_num_at(T,'total_drop_count',i,4));
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_v31_import_legacy.m:72: refM=local_num_at(T,'reference_mass_kg',i,3423); cargo=local_num_at(T,'cargo_mass_kg',i,300);
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_v31_import_legacy.m:73: nDrop=round(local_num_at(T,'total_drop_count',i,4)); cfg=round(local_num_at(T,'config_id',i,0));
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_v31_import_legacy.m:74: mass=local_num_at(T,'estimated_mass_kg',i,refM-cfg*cargo);
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_v31_import_legacy.m:75: cg=local_num_at(T,'cg_x_m',i,NaN); cgKnown=local_bool_at(T,'cg_known',i,isfinite(cg));
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_v31_import_legacy.m:93: double(cfg),H,V,refM,cargo,mass,double(C.cg_x_m),logical(C.cg_known), ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_v31_import_legacy.m:94: double(C.payload_remaining_kg),double(C.drop_fraction), ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_v31_import_legacy.m:159: 'reference_mass_kg','cargo_mass_kg','total_drop_count','source_altitude_m','output_root','master_mat', ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_v31_import_legacy.m:164: 'legacy_context_signature','config_id','target_altitude_m','target_airspeed_mps','reference_mass_kg', ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_v31_import_legacy.m:165: 'cargo_mass_kg','estimated_mass_kg','cg_x_m','cg_known','payload_remaining_kg','drop_fraction', ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_v31_import_legacy.m:171: 'target_altitude_m','target_airspeed_mps','reference_mass_kg','cargo_mass_kg','total_drop_count', ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_v31_import_legacy.m:189: refM=local_num_at(T,'reference_mass_kg',i,3423); cargo=local_num_at(T,'cargo_mass_kg',i,300);
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_v31_import_legacy.m:190: mass=local_num_at(T,'estimated_mass_kg',i,refM-cfg*cargo);
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_v31_import_legacy.m:191: cg=local_num_at(T,'cg_x_m',i,NaN); cgKnown=local_bool_at(T,'cg_known',i,isfinite(cg));
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_v31_knowledge_bank.m:135: S.physics_signature=""; S.target_airspeed_mps=NaN; S.reference_mass_kg=NaN;
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_v31_knowledge_bank.m:136: S.cargo_mass_kg=NaN; S.total_drop_count=NaN; S.source_altitude_m=NaN;
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_v31_knowledge_bank.m:146: S.reference_mass_kg=NaN; S.cargo_mass_kg=NaN; S.estimated_mass_kg=NaN;
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_v31_knowledge_bank.m:147: S.cg_x_m=NaN; S.cg_known=false; S.payload_remaining_kg=NaN; S.drop_fraction=NaN;
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_v31_knowledge_bank.m:158: S.target_airspeed_mps=NaN; S.reference_mass_kg=NaN; S.cargo_mass_kg=NaN;
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_v31_knowledge_bank.m:159: S.total_drop_count=NaN; S.output_root=""; S.mission_gate_ratio=Inf;
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_v31_qualify_height.m:65: C.target_altitude_m,C.target_airspeed_mps,C.reference_mass_kg,C.cargo_mass_kg,double(C.total_drop_count), ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_v31_qualify_height.m:72: 'target_altitude_m','target_airspeed_mps','reference_mass_kg','cargo_mass_kg','total_drop_count', ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_v31_run_context.m:605: 'target_airspeed_mps','reference_mass_kg','cargo_mass_kg','total_drop_count','output_root','mission_gate_ratio','mission_pass','hard_fail', ...
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_v31_train_envelope.m:5: % Training occurs only at ReferenceAltitudeM while speed/mass/CG/payload vary.
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_v32_dynamic_mission_validation.m:2: %AIRDROPX_V32_DYNAMIC_MISSION_VALIDATION Dynamic H/V + 4 payload drops.
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_v32_dynamic_mission_validation.m:35: drops=0;if ismember('drop_count',string(T.Properties.VariableNames)),drops=max(double(T.drop_count),[],'omitnan');end
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_v32_dynamic_mission_validation.m:40: 'VariableNames',{'pass','gate_ratio','drop_count','max_tail_H_rms_m','max_tail_V_rms_mps','max_tail_H_error_m','max_tail_V_error_mps','max_H_settle_s','max_V_settle_s','max_abs_vz_mps','max_abs_q_dps','max_pitch_dev_deg','min_altitude_m','status'});
+D:\vscode project\AirdropX\matlab\mpc_auto\airdropx_v32_dynamic_mission_validation.m:42: function S=local_fail(g,msg),S=table(false,g,0,Inf,Inf,Inf,Inf,Inf,Inf,Inf,Inf,Inf,-Inf,string(msg),'VariableNames',{'pass','gate_ratio','drop_count','max_tail_H_rms_m','max_tail_V_rms_mps','max_tail_H_error_m','max_tail_V_error_mps','max_H_settle_s','max_V_settle_s','max_abs_vz_mps','max_abs_q_dps','max_pitch_dev_deg','min_altitude_m','status'});end
+D:\vscode project\AirdropX\matlab\mpc_auto\sfun_airdropx_auto_mpc_controller.m:5: %   [altitude_m; vz_up_mps; airspeed_mps; pitch_deg; mass_kg; cg_x_m]
+D:\vscode project\AirdropX\matlab\mpc_auto\sfun_airdropx_auto_mpc_controller.m:294: % behavior which could retain excess bias after a payload transient.
+D:\vscode project\AirdropX\matlab\mpc_auto\sfun_airdropx_auto_mpc_controller.m:307: % Slew-limit the reference itself. Payload release is a discontinuous
+D:\vscode project\AirdropX\matlab\mpc_auto\sfun_airdropx_auto_mpc_controller.m:676: % rather than resetting it merely because a payload configuration changed.
+D:\vscode project\AirdropX\matlab\mpc_auto\sfun_airdropx_auto_mpc_controller.m:907: refMass = local_base_scalar("airdropx_mpc_reference_mass_kg", 3423.0);
+D:\vscode project\AirdropX\matlab\mpc_auto\sfun_airdropx_auto_mpc_controller.m:908: cargoMass = local_base_scalar("airdropx_auto_cargo_mass_kg", 300.0);
+D:\vscode project\AirdropX\matlab\mpc_auto\sfun_airdropx_v32_mpc_controller.m:13: %   [altitude_m; vz_up_mps; airspeed_mps; pitch_deg; mass_kg; cg_x_m]
+D:\vscode project\AirdropX\matlab\mpc_auto\sfun_airdropx_v32_mpc_controller.m:202: % Height governor states intentionally survive payload/config changes.
+D:\vscode project\AirdropX\matlab\mpc_auto\sfun_airdropx_v32_mpc_controller.m:301: ref=local_base_scalar('airdropx_mpc_reference_mass_kg',3423); cargo=local_base_scalar('airdropx_auto_cargo_mass_kg',300);
+D:\vscode project\AirdropX\matlab\mpc_outer_pd\airdropx_mpc_outer_pd_nominal_model.m:52: model.mass_trim_kg = cfg.trim.mass_kg;
+D:\vscode project\AirdropX\matlab\mpc_outer_pd\airdropx_mpc_outer_pd_nominal_model.m:53: model.cg_x_trim_m = cfg.trim.cg_x_m;
+D:\vscode project\AirdropX\matlab\mpc_outer_pd\airdropx_mpc_outer_pd_run_closed_loop.m:445: "mass_kg"
+D:\vscode project\AirdropX\matlab\mpc_outer_pd\airdropx_mpc_outer_pd_run_closed_loop.m:446: "cg_x_m"
+D:\vscode project\AirdropX\matlab\mpc_outer_pd\airdropx_mpc_outer_pd_run_closed_loop.m:451: "drop_count"
+D:\vscode project\AirdropX\matlab\mpc_outer_pd\airdropx_mpc_outer_pd_run_closed_loop.m:518: case "mass_kg"
+D:\vscode project\AirdropX\matlab\mpc_outer_pd\airdropx_mpc_outer_pd_run_closed_loop.m:520: case "cg_x_m"
+D:\vscode project\AirdropX\matlab\mpc_outer_pd\airdropx_mpc_outer_pd_setup_workspace.m:75: assignin("base", "airdropx_mpc_reference_mass_kg", referenceMassKg);
+D:\vscode project\AirdropX\matlab\mpc_outer_pd\airdropx_mpc_outer_pd_setup_workspace.m:76: assignin("base", "airdropx_mpc_reference_cg_x_m", referenceCgXM);
+D:\vscode project\AirdropX\matlab\mpc_outer_pd\airdropx_mpc_outer_pd_setup_workspace.m:139: massKg = cfg.mass.empty_mass_kg + sum(cfg.mass.cargo_mass_kg);
+D:\vscode project\AirdropX\matlab\mpc_outer_pd\airdropx_mpc_outer_pd_setup_workspace.m:140: moment = cfg.mass.empty_mass_kg * cfg.mass.empty_cg_x_m + ...
+D:\vscode project\AirdropX\matlab\mpc_outer_pd\airdropx_mpc_outer_pd_setup_workspace.m:141: sum(cfg.mass.cargo_mass_kg .* cfg.mass.cargo_x_m);
+D:\vscode project\AirdropX\matlab\mpc_outer_pd\sfun_airdropx_mpc_outer_pd_controller.m:5: %   [altitude_m; vz_up_mps; airspeed_mps; pitch_deg; mass_kg; cg_x_m]
+D:\vscode project\AirdropX\matlab\mpc_outer_pd\sfun_airdropx_mpc_outer_pd_controller.m:93: massKg - cfg.reference.mass_kg
+D:\vscode project\AirdropX\matlab\mpc_outer_pd\sfun_airdropx_mpc_outer_pd_controller.m:94: cgXM - cfg.reference.cg_x_m
+D:\vscode project\AirdropX\matlab\mpc_outer_pd\sfun_airdropx_mpc_outer_pd_controller.m:144: refMass = local_base_scalar("airdropx_mpc_reference_mass_kg", 3423.0);
+D:\vscode project\AirdropX\matlab\mpc_outer_pd\sfun_airdropx_mpc_outer_pd_controller.m:145: refCg = local_base_scalar("airdropx_mpc_reference_cg_x_m", 5.28048992112182);
+D:\vscode project\AirdropX\matlab\sfunc_jsbsim\sfun_airdropx_jsbsim.cpp:369: const std::string prop = "inertia/pointmass-weight-lbs[" + std::to_string(dropCount_) + "]";

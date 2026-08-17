@@ -1,0 +1,10 @@
+CL-1.3 files to overwrite in AirdropX root:
+
+matlab/mpc_auto/sfun_airdropx_physics_mpc_controller.m
+matlab/mpc_auto/airdropx_v32_run_closed_loop.m
+matlab/mpc_auto/airdropx_physics_mpc_fixed_stability_scan.m
+matlab/mpc_auto/airdropx_physics_mpc_mpcmove_preflight.m
+run_physics_mpc_fixed_stability_D_temp.ps1
+check_physics_mpc_fixed_stability.ps1
+
+Other carried files are unchanged support files from CL-1.2.

@@ -1,0 +1,9 @@
+run_physics_mpc_fixed_stability_D_temp.ps1
+check_physics_mpc_fixed_stability.ps1
+matlab/mpc_auto/sfun_airdropx_physics_mpc_controller.m
+matlab/mpc_auto/airdropx_physics_mpc_mpcmove_preflight.m
+matlab/mpc_auto/airdropx_physics_mpc_fixed_stability_scan.m
+matlab/mpc_auto/airdropx_physics_mpc_run.m
+matlab/mpc_auto/airdropx_v32_run_closed_loop.m
+matlab/mpc_auto/airdropx_auto_run_closed_loop.m
+matlab/mpc_auto/airdropx_physics_mpc_make_ic.m

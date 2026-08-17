@@ -1,0 +1,8 @@
+CL-1.5 files:
+- matlab/mpc_auto/sfun_airdropx_physics_mpc_controller.m
+- matlab/mpc_auto/airdropx_physics_mpc_fixed_stability_scan.m
+- run_physics_mpc_fixed_stability_D_temp.ps1
+- check_physics_mpc_fixed_stability.ps1
+- PHYSICS_MPC_CL15_README.txt
+
+No MEX rebuild. No physics-bank rebuild. No MPC weight retuning.

@@ -21,6 +21,7 @@ namespace {
 
 constexpr int kInputWidth = 6;
 constexpr int kOutputWidth = 20;
+constexpr int kDiagOutputWidth = 12;
 constexpr double kTrimThrottle = 0.80;
 constexpr double kFallbackTrimElevator = 0.00110;
 constexpr double kElevatorCmdLimit = 1.0;
@@ -213,8 +214,9 @@ public:
         y[kRollDeg] = getOrDefault("attitude/phi-deg", 0.0);
         y[kHeadingDeg] = getOrDefault("attitude/psi-deg", 0.0);
         y[kQbarPa] = getOrDefault("aero/qbar-psf", 0.0) * 47.88025898;
-        y[kMassKg] = totalMassKg_;
-        y[kCgXM] = cgXM_;
+        // Physics truth from JSBSim mass balance: includes fuel and active point masses.
+        y[kMassKg] = getOrDefault("inertia/mass-slugs", 0.0) * 14.5939029372;
+        y[kCgXM] = getOrDefault("inertia/cg-x-in", 0.0) * 0.0254;
         y[kPosNM] = posNIntM_;
         y[kPosEM] = posEIntM_;
         y[kElevatorCmdNorm] = lastElevatorCmd_;
@@ -223,7 +225,23 @@ public:
         y[kWindEMps] = windEMps_;
         y[kDropCount] = static_cast<double>(dropCount_);
         y[kValid] = 1.0;
-        y[kReserved] = 0.0;
+        y[kReserved] = getOrDefault("velocities/q-rad_sec", 0.0) * 57.29577951308232;
+    }
+
+    void diagnosticOutputs(double* y) const
+    {
+        y[0] = getOrDefault("inertia/iyy-slugs_ft2", 0.0) * 1.3558179483314004;
+        y[1] = getOrDefault("aero/alpha-rad", 0.0);
+        y[2] = getOrDefault("flight-path/gamma-rad", 0.0);
+        y[3] = getOrDefault("velocities/u-aero-fps", 0.0) * 0.3048;
+        y[4] = getOrDefault("velocities/w-aero-fps", 0.0) * 0.3048;
+        y[5] = getOrDefault("velocities/q-rad_sec", 0.0);
+        y[6] = getOrDefault("accelerations/udot-ft_sec2", 0.0) * 0.3048;
+        y[7] = getOrDefault("accelerations/wdot-ft_sec2", 0.0) * 0.3048;
+        y[8] = getOrDefault("accelerations/qdot-rad_sec2", 0.0);
+        y[9] = getOrDefault("propulsion/engine[0]/n1", 0.0);
+        y[10] = getOrDefault("propulsion/engine[0]/n2", 0.0);
+        y[11] = getOrDefault("propulsion/engine[0]/thrust-lbs", 0.0) * 4.4482216152605;
     }
 
 private:
@@ -428,8 +446,9 @@ static void mdlInitializeSizes(SimStruct* S)
     ssSetInputPortDirectFeedThrough(S, 0, 1);
     ssSetInputPortRequiredContiguous(S, 0, 1);
 
-    if (!ssSetNumOutputPorts(S, 1)) return;
+    if (!ssSetNumOutputPorts(S, 2)) return;
     ssSetOutputPortWidth(S, 0, kOutputWidth);
+    ssSetOutputPortWidth(S, 1, kDiagOutputWidth);
 
     ssSetNumPWork(S, 1);
     ssSetNumSampleTimes(S, 1);
@@ -468,10 +487,12 @@ static void mdlOutputs(SimStruct* S, int_T)
 
     const double* u = static_cast<const double*>(ssGetInputPortSignal(S, 0));
     double* y = ssGetOutputPortRealSignal(S, 0);
+    double* yd = ssGetOutputPortRealSignal(S, 1);
 
     try {
         plant->step(u);
         plant->outputs(y);
+        plant->diagnosticOutputs(yd);
     } catch (const std::exception& e) {
         ssSetErrorStatus(S, e.what());
     }

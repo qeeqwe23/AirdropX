@@ -1,0 +1,11 @@
+CL-1.7 files:
+- matlab/mpc_auto/sfun_airdropx_physics_mpc_controller.m
+- matlab/mpc_auto/airdropx_v32_run_closed_loop.m
+- matlab/mpc_auto/airdropx_physics_mpc_fixed_stability_scan.m
+- matlab/mpc_auto/airdropx_physics_mpc_mpcmove_preflight.m
+- run_physics_mpc_fixed_stability_D_temp.ps1
+- check_physics_mpc_fixed_stability.ps1
+- PHYSICS_MPC_CL17_README.txt
+- PHYSICS_MPC_CL17_MANIFEST.txt
+
+No MEX source or physics-bank build file is modified.

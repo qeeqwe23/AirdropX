@@ -1,0 +1,26 @@
+AirdropX Physics MPC CL-1 patch
+Version: physics_mpc_cl1_fixed_hv_stability
+Requires: completed Physics MPC v1.6 bank (15/15)
+MEX rebuild: NO
+Auto-learning / BayesOpt / Q-R tuning: NO
+
+Modified:
+  matlab/mpc_auto/airdropx_auto_run_closed_loop.m
+    - accepts AircraftName and IcName so parallel closed-loop runs do not share reset_20m_runtime.xml
+  matlab/mpc_auto/airdropx_v32_run_closed_loop.m
+    - forwards AircraftName/IcName
+  matlab/mpc_auto/airdropx_physics_mpc_run.m
+    - accepts unique ModelName/AircraftName/IcName and AfterDropTime
+
+New:
+  matlab/mpc_auto/airdropx_physics_mpc_make_ic.m
+  matlab/mpc_auto/airdropx_physics_mpc_fixed_stability_scan.m
+  run_physics_mpc_fixed_stability_D_temp.ps1
+  check_physics_mpc_fixed_stability.ps1
+  PHYSICS_MPC_CL1_README.txt
+
+Test architecture:
+  V45, V50, V55 run on 3 process workers.
+  Each speed is fixed at Hcmd=200 m and Vcmd=speed.
+  Each flight performs four real drops cfg0->cfg4.
+  Each cfg is scored in a post-transition steady window.

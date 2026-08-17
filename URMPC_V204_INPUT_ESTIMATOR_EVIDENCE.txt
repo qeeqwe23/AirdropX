@@ -1,0 +1,30 @@
+Evidence from V50 v2.0.4 residual/estimator audit (uploaded 2026-08-17)
+
+This file documents why v2.0.5 is a zero-persistence estimator A/B test rather
+than an arbitrary retune.
+
+cfg2 5-second windows, persistent input-disturbance state norm (d1,d2):
+  105-110 s  p95 ~= 0.0103
+  110-115 s  p95 ~= 0.0146
+  115-120 s  p95 ~= 0.0225
+  120-125 s  p95 ~= 0.0352
+  125-130 s  p95 ~= 0.0571
+  130-135 s  p95 ~= 0.0973
+  135-140 s  p95 ~= 0.1835
+  140-145 s  p95 ~= 0.4484
+  145-150 s  p95 ~= 1.2180
+
+The MPC MV deviations are almost the opposite of the estimated load states:
+  120-125 s: median d1=+0.02194, elevator deviation=-0.02372
+             median d2=-0.01861, throttle deviation=+0.02100
+             correlations corr(dElev,-d1) ~= 1.0000,
+                          corr(dThrottle,-d2) ~= 1.0000
+  130-135 s: median d1=+0.06420, elevator deviation=-0.07119
+             median d2=-0.04111, throttle deviation=+0.05187
+  140-145 s: median d1=+0.25617, elevator deviation=-0.28552
+             median d2=-0.12856, throttle deviation=+0.15480
+
+The equivalent-load residual and estimator also become highly correlated after
+115 s.  This supports a causal test of whether persistent integration is a
+principal positive-feedback amplifier.  It does NOT by itself prove that the
+input-disturbance integrators are the original source of the model residual.

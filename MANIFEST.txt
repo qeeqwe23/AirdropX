@@ -1,0 +1,12 @@
+AirdropX Physics-Derived MPC v0.2
+- Exact JSBSim Ts-map oracle MEX source
+- Exact discrete fixed-point trim
+- Richardson discrete Jacobian
+- JSBSim live mass/CG/Iyy audit
+- Unified Bryson Q/R
+- Automatic LQR terminal K/P and Np
+- Backward-compatible S-function port-0 truth fix + second diagnostic port
+- Smoke gate + math-only test
+- Windows install helper
+- Serial continuation bank builder for H=200:-10:20, V=50, cfg0..4 (95 vertices)
+- PowerShell smoke/build launcher for D:\ MATLAB setup

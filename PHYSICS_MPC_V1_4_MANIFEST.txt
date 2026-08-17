@@ -1,0 +1,10 @@
+Physics MPC v1.4 Stability NO-MEX patch
+Changed/important files:
+- matlab/mpc_auto/airdropx_physics_trim_solve.m
+- matlab/mpc_auto/airdropx_physics_linearize_node.m
+- matlab/mpc_auto/airdropx_auto_run_id_experiment.m
+- matlab/mpc_auto/airdropx_physics_mpc_direct_cfg_smoke.m
+- matlab/mpc_auto/airdropx_physics_mpc_build.m
+- run_physics_mpc_preflight_D_temp.ps1
+- run_physics_mpc_build_D_temp.ps1
+- PHYSICS_MPC_V1_4_STABILITY_NOMEX_README.txt

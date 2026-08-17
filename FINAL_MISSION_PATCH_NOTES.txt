@@ -1,0 +1,43 @@
+AirdropX v29 final-mission validation patch
+===========================================
+
+Based on the user's verified mpc_auto(7).rar.
+
+Changed:
+1. mpc_auto/airdropx_auto_mpc_200m_all_configs.m
+   - Keeps the user's char-based TEMP drive check.
+   - After cfg0..cfg4 are all VERIFIED, automatically runs a no-learning
+     cfg0->cfg4 complete four-drop mission validation.
+   - Stores final_mission_attempted / final_mission_pass in checkpoint/result.
+   - Mission signature changes invalidate the old final-mission result.
+   - Can disable automatic final validation with RunFinalMissionValidation=false.
+
+2. Added mpc_auto/airdropx_auto_final_mission_validation.m
+   - Standalone final validation; does NOT rerun bayesopt or LearningBank training.
+   - Starts cfg0 fully loaded, performs four drops at the configured schedule,
+     uses all five VERIFIED controller objects, disables artificial test pulses,
+     then continues after the final drop.
+   - Writes final mission summary, gate report, per-drop transition table,
+     full timeseries, final plot, MAT result, and PASS/FAIL marker.
+
+3. mpc_auto/README.md
+   - Added standalone invocation and output paths.
+
+Recommended immediate command after overlaying this patch onto the already
+verified project:
+
+r = airdropx_auto_final_mission_validation( ...
+    "ProjectRoot", pwd, ...
+    "OutputRoot", "matlab/results/mpc_auto_200m_all_cfg_v16");
+
+Default final-mission transition gates:
+- whole-mission altitude RMS <= 2.0 m
+- whole-mission max |altitude error| <= 4.0 m
+- whole-mission altitude drift <= 2.5 m
+- whole-mission airspeed RMS <= 1.5 m/s
+- whole-mission vertical-speed RMS <= 1.0 m/s
+- whole-mission q RMS <= 1.0 deg/s
+- final tail |altitude error| <= 1.0 m
+- final tail |vertical speed| <= 0.35 m/s
+- final tail |q| <= 1.0 deg/s
+- all four drops must complete and bridge/hard-safety checks must pass.

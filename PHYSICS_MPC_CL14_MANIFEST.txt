@@ -1,0 +1,8 @@
+CL-1.4 changed files:
+- matlab/mpc_auto/sfun_airdropx_physics_mpc_controller.m
+- matlab/mpc_auto/airdropx_physics_mpc_fixed_stability_scan.m
+- matlab/mpc_auto/airdropx_physics_mpc_mpcmove_preflight.m
+- run_physics_mpc_fixed_stability_D_temp.ps1
+- check_physics_mpc_fixed_stability.ps1
+
+Supporting carried files from CL-1.x are included for safe overwrite.

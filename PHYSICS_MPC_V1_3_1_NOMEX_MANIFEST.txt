@@ -1,0 +1,9 @@
+Files to overlay on AirdropX:
+run_physics_mpc_build_D_temp.ps1
+matlab/mpc_auto/airdropx_auto_run_id_experiment.m
+matlab/mpc_auto/airdropx_physics_linearize_node.m
+matlab/mpc_auto/airdropx_physics_trim_solve.m
+matlab/mpc_auto/airdropx_physics_mpc_direct_cfg_smoke.m
+matlab/mpc_auto/airdropx_physics_mpc_build.m
+matlab/mpc_auto/airdropx_physics_mpc_preflight.m
+No MEX/C++ files are included.

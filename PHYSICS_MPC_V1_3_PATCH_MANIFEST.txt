@@ -1,0 +1,18 @@
+AirdropX Physics MPC v1.3 patch manifest
+
+Modified:
+  matlab/sfunc_jsbsim/sfun_airdropx_jsbsim.cpp
+  matlab/mpc_auto/airdropx_auto_run_id_experiment.m
+  matlab/mpc_auto/airdropx_physics_trim_solve.m
+  matlab/mpc_auto/airdropx_physics_linearize_node.m
+  matlab/mpc_auto/airdropx_physics_mpc_build.m
+  matlab/mpc_auto/airdropx_physics_mpc_preflight.m
+  run_physics_mpc_build_D_temp.ps1
+
+Added:
+  matlab/mpc_auto/airdropx_physics_mpc_direct_cfg_smoke.m
+  PHYSICS_MPC_V1_3_README.txt
+  PHYSICS_MPC_V1_3_PATCH_MANIFEST.txt
+
+Retained unchanged from v1.2:
+  runtime scheduled MPC controller / setup / reference interface / validation

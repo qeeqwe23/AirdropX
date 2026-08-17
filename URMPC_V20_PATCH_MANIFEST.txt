@@ -1,0 +1,54 @@
+AirdropX UR-MPC v2.0 patch files
+================================
+matlab/mpc_auto/airdropx_urmpc_build.m
+matlab/mpc_auto/sfun_airdropx_urmpc_controller.m
+matlab/mpc_auto/airdropx_urmpc_setup_model.m
+matlab/mpc_auto/airdropx_urmpc_run_closed_loop.m
+matlab/mpc_auto/airdropx_urmpc_run.m
+matlab/mpc_auto/airdropx_urmpc_fixed_stability_scan.m
+matlab/mpc_auto/airdropx_urmpc_preflight.m
+matlab/mpc_auto/airdropx_urmpc_set_reference.m
+run_urmpc_v20_D_temp.ps1
+check_urmpc_v20.ps1
+URMPC_V20_README.txt
+URMPC_V20_PATCH_MANIFEST.txt
+
+No C++/MEX files. No trim/ID files. No CL-1.x recovery controller.
+
+State/nominal consistency fix, 2026-08-17:
+- airdropx_urmpc_build.m: initialize absolute mpcstate.Plant per moving nominal; fix transition state semantics; write audit CSVs before certification.
+- sfun_airdropx_urmpc_controller.m: synchronize initial absolute estimator state; no recovery/tuning changes.
+- airdropx_urmpc_preflight.m: API smoke test now starts at the tested nominal and asserts near-zero nominal move.
+
+Runtime bank integration fix:
+- airdropx_auto_run_closed_loop.m: accepts UR-MPC v2 ur_models+ur_meta bank layout while preserving legacy trim_bank support.
+- airdropx_urmpc_run_closed_loop.m: initial conditions now come directly from ur_models, not v32_nodes.trim_bank/mpc_meta.
+- airdropx_urmpc_run.m: hidden-offset lookup no longer requires v32_nodes.
+- No MPC weights, horizons, constraints, signs, recovery layers, or tuning parameters changed.
+
+v2.0.1 authority separation:
+- trim-derived MV envelope is diagnostic/scaling only, not a hard actuator cap
+- MPC/runtime/preflight/transition hard MV policy = physical reachable limits
+- rebuild required (SkipBuild=False)
+
+v2.0.2 rate-trust delta:
+- matlab/mpc_auto/airdropx_urmpc_build.m
+- URMPC_V20_2_RATE_TRUST_README.txt
+
+UR-MPC v2.0.3 residual audit:
+- sfun_airdropx_urmpc_controller.m: read-only estimator telemetry only; controller behavior unchanged.
+- airdropx_urmpc_run_closed_loop.m: exports extended trace and residual audit CSVs.
+- airdropx_urmpc_residual_audit.m: one-step LPV residual and B-subspace audit.
+
+UR-MPC v2.0.4 estimator-structure correction:
+- Explicitly keeps exactly two integrated input-load UD disturbance states.
+- Explicitly disables implicit measured-output disturbance integrators.
+- Build/preflight hard-gate the estimator structure and export urmpc_estimator_design.csv.
+- Trace adds disturbance tail norm/state count to verify no hidden disturbance states remain.
+- No weights, horizons, MV bounds, rate-trust, references, recovery laws, or cfg-specific tuning changed.
+
+v2.1A Stage-A additions (no controller change):
+- matlab/mpc_auto/airdropx_urmpc_v21_vertex_calibration.m
+- matlab/mpc_auto/airdropx_urmpc_v21_fit_residual_models.m
+- run_urmpc_v21_residual_learning_D_temp.ps1
+- URMPC_V21A_RESIDUAL_LEARNING_README.txt
