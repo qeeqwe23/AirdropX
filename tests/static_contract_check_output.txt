@@ -1,0 +1,24 @@
+PASS | mission exposes CloseOracleOnReturn
+PASS | scenario entry disables explicit Oracle close
+PASS | legacy in-process compare disabled
+PASS | runner uses Start-Process child PID
+PASS | runner never blanket-kills MATLAB
+PASS | runner stop targets recorded child PID
+PASS | runner has durable completion marker
+PASS | runner has shutdown grace after marker
+PASS | runner isolates cfg0->cfg4 probe
+PASS | runner isolates simultaneous mission
+PASS | runner retains 2 s schedule
+PASS | probe evaluates cfg4 twice
+PASS | probe verifies repeatability
+PASS | probe verifies cfg4 mass/cg/Iyy
+PASS | probe refuses bad algebraic closure
+PASS | mission peak gate unchanged
+PASS | mission final gate unchanged
+PASS | mission tail gate unchanged
+PASS | mission 4x simultaneous semantics unchanged
+PASS | finalizer never initializes Oracle
+PASS | no packaged MEX
+PASS | no packaged C++
+
+22/22 checks passed

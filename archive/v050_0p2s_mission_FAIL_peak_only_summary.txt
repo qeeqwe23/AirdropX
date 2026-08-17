@@ -1,0 +1,19 @@
+Physics-MPC v0.5.0 existing 0.2 s spacing reference (user-run, 2026-08-17)
+schedule = [10.0 10.2 10.4 10.6] s
+gate_pass = 0
+only failed gate = peak_primary
+peak_primary_normalized = 1.52253177
+peak_q_error = 3.04506354 deg/s at t=10.7 s
+peak_h_error = 1.40285844 m at t=12.5 s
+peak_Va_error = 0.276822061 m/s at t=11.8 s
+peak_gamma_error = 1.21558913 deg at t=11.0 s
+peak_theta_error = 2.40057188 deg at t=10.6 s
+recovery to normalized primary <=0.05 and remaining there = 6.4 s after final drop
+final_normalized_inf = 0.000377356328
+tail5s_normalized_rms = 0.000381017467
+QP success = 100%
+QP p95 = 2.91681 ms
+prediction error p95 = 0.000881199327
+prediction error max = 0.00806860908
+mass/cg/Iyy gates = PASS
+This file is reference only; v0.5.1 does not tune against it.

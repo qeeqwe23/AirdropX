@@ -1,0 +1,10 @@
+A shape=(7, 7) B shape=(7, 2) K shape=(2, 7) N=100
+uref=[-0.33817557  0.61673575]
+min_eig_H=30.1575683723
+du_lqr=[0.00166658 0.00134401]
+du_qp_unconstrained=[0.00166658 0.00134401]
+max_abs_first_move_error=2.81892564846e-17
+linear_preview_final_normalized_inf=2.84265360138e-05
+linear_preview_lyapunov_ratio=3.98621672994e-10
+linear_preview_input_min=[-0.35627716  0.61673981] input_max=[-0.25533223  0.69138597]
+ACTUAL BANK QP MATH CHECK PASS

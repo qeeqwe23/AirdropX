@@ -1,12 +1,32 @@
-AirdropX Physics-Derived MPC v0.2
-- Exact JSBSim Ts-map oracle MEX source
-- Exact discrete fixed-point trim
-- Richardson discrete Jacobian
-- JSBSim live mass/CG/Iyy audit
-- Unified Bryson Q/R
-- Automatic LQR terminal K/P and Np
-- Backward-compatible S-function port-0 truth fix + second diagnostic port
-- Smoke gate + math-only test
-- Windows install helper
-- Serial continuation bank builder for H=200:-10:20, V=50, cfg0..4 (95 vertices)
-- PowerShell smoke/build launcher for D:\ MATLAB setup
+./CHANGELOG_v0_5_0.md
+./CHANGELOG_v0_5_1.md
+./CHANGELOG_v0_5_2.md
+./MANIFEST.txt
+./PREDELIVERY_AUDIT.md
+./README.md
+./VERSION.txt
+./archive/v033_95pt_bank_PASS_summary.txt
+./archive/v040_closed_loop_smoke_PASS_summary.txt
+./archive/v050_0p2s_mission_FAIL_peak_only_summary.txt
+./install_drop_timing_v052.ps1
+./matlab/phys_mpc/airdropx_phys_cfg0_to_cfg4_jump_probe.m
+./matlab/phys_mpc/airdropx_phys_cfg0_to_cfg4_probe_entry.m
+./matlab/phys_mpc/airdropx_phys_closed_loop_smoke.m
+./matlab/phys_mpc/airdropx_phys_compare_drop_timing.m
+./matlab/phys_mpc/airdropx_phys_drop_scenario_entry.m
+./matlab/phys_mpc/airdropx_phys_finalize_drop_timing_compare_v052.m
+./matlab/phys_mpc/airdropx_phys_four_drop_closed_loop.m
+./matlab/phys_mpc/airdropx_phys_mpc_build_cfg_schedule.m
+./matlab/phys_mpc/airdropx_phys_mpc_condense.m
+./matlab/phys_mpc/airdropx_phys_mpc_get_vertex.m
+./matlab/phys_mpc/airdropx_phys_mpc_plot_closed_loop.m
+./matlab/phys_mpc/airdropx_phys_mpc_plot_four_drop.m
+./matlab/phys_mpc/airdropx_phys_mpc_qp_selftest.m
+./matlab/phys_mpc/airdropx_phys_mpc_rebase_warmstart.m
+./matlab/phys_mpc/airdropx_phys_mpc_shift_warmstart.m
+./matlab/phys_mpc/airdropx_phys_mpc_solve.m
+./matlab/phys_mpc/airdropx_phys_mpc_state_error.m
+./run_phys_mpc_drop_timing_compare_D.ps1
+./tests/drop_semantics_source_audit.txt
+./tests/static_contract_check.py
+./tests/static_contract_check_output.txt

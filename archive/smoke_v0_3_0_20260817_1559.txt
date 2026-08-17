@@ -1,0 +1,49 @@
+================================================================================
+Physics-MPC v0.3.0 Smoke — 首次运行 (2026-08-17, 完整编译 Oracle)
+结果: 配平 PASS, 但 Oracle 自检 A→B→A 路径独立性 FAIL → smoke 失败
+================================================================================
+
+--- MEX 编译 (事务式) ---
+MEX 已成功完成。
+Backed up current Oracle MEX: matlab\phys_mpc\airdropx_jsbsim_oracle_mex.mexw64.backup_20260817_155716
+Installed and load-verified Oracle MEX transactionally: matlab\phys_mpc\airdropx_jsbsim_oracle_mex.mexw64
+
+--- Smoke 主体 ---
+=== Physics-MPC v0.3.0 Smoke ===
+H=200.000 m  V=50.000 m/s  cfg=0  fuel=1.000  Ts=0.1000 s
+Math self-test: rho=0.989979371 Np=100 (PASS)
+
+JSBSim Flight Dynamics Model v1.3.1.dev1 Jun 12 2026 15:31:42
+Oracle: AirdropX JSBSim physics oracle v0.3.0
+
+Seed z0=[theta 0.095993, elev -0.340000, thr 0.800000, N1 86.0000, N2 92.0000]
+Trim method: JSBSim_FGTrim_seed__steady_engine__bounded_discrete_polish
+Seed source: JSBSim_FGTrim
+FGTrim seed success=1
+exitflag=2  iterations=9  funcCount=70  resnorm=0.000163283
+z=[theta 0.11025367 elev -0.33815047 throttle 0.61672329 N1 73.170630 N2 84.668932]
+x0=[200.000000 50.000000 0.000000000 0.110253667 0.000000000 73.170630 84.668932]
+x1=[200.000000 50.000000 -0.000000003 0.110254428 -0.000000744 73.170630 84.668932]
+rates=[dVa 7.98358e-07 m/s2, dgamma -3.0228e-08 rad/s, dtheta 7.60795e-06 rad/s, dq -7.44298e-06 rad/s2, dN1 0/s, dN2 0/s]
+scaledRates=[3.99179e-05 -0.00015114 0.0380397 -0.0372149 0 0], max=0.0380397
+hStep=1.5544606e-07 m  mass=3775.296417 kg  cgX=5.280428 m  Iyy=8845.496777 kg*m^2
+initialTargetError=[2.84e-14 1.95e-16 0]
+pass_solver=1 (diagnostic) pass_initial=1 pass_fixed_point=1 pass_height=1 pass_physics=1 pass=1
+
+--- 失败点: Oracle 自检 ---
+SMOKE FAIL [AirdropX:PhysMPC:OracleSelfTestFailed]
+Oracle self-test failed: deterministic=1 maxSpread=2.03e-18 pathIndependent=0 pathError=0.00023 physicalOk=1 fuelFrozen=1 semigroupPass=1 semigroupMaxScaled=0.00036
+at airdropx_phys_oracle_selftest line 77
+错误使用 airdropx_phys_oracle_selftest (第 77 行)
+Oracle self-test failed: deterministic=1 maxSpread=2.03e-18 pathIndependent=0 pathError=0.00023 physicalOk=1 fuelFrozen=1 semigroupPass=1 semigroupMaxScaled=0.00036
+
+出错 airdropx_phys_smoke (第 49 行)
+    selftest=airdropx_phys_oracle_selftest(trim.x,trim.u,p);
+
+================================================================================
+要点 (不做分析):
+- 配平真正成功: fixed_point PASS, 所有 7 状态残差接近 0, hStep=1.55e-7 m
+- 失败仅在 Oracle 自检 pathIndependent=0, pathError=0.00023
+- deterministic=1 (确定性通过), physicalOk=1, fuelFrozen=1, semigroupPass=1
+- 证据文件: matlab\results\physics_mpc_v030\physics_smoke_failure.mat
+================================================================================

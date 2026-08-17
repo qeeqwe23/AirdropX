@@ -1,0 +1,5 @@
+S-Function removes pointmass at dropCount: PASS
+S-Function increments dropCount: PASS
+Oracle cfg removes pointmass i<cfgId: PASS
+Oracle requires four cargo masses: PASS
+Conclusion: cfg0->cfg4 point-mass removal order matches S-Function triggerDrop semantics.

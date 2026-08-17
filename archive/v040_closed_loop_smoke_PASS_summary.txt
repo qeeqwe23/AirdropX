@@ -1,0 +1,63 @@
+================================================================================
+Physics-MPC v0.4.0 — 真实非线性闭环 Smoke 汇总 (2026-08-17)
+命令: .\run_phys_mpc_closed_loop_D.ps1 -Mode Smoke
+场景: H=200m V=50m/s cfg=0 Ts=0.1s Np=Nc=100 运行 30s (300 拍)
+扰动: 高度+2m, 空速-1m/s, gamma+1°, theta+1°
+结果: ✅ PASS (所有 6 个 gate 全过)
+================================================================================
+
+--- 生成文件 (matlab\results\physics_mpc_v040_closed_loop\) ---
+closed_loop_timeseries.csv        (156 KB)
+closed_loop_smoke.mat             (369 KB, 完整 report)
+closed_loop_summary.txt
+tracking_errors.png
+control_commands.png
+prediction_and_qp.png
+closed_loop_terminal_20260817_170119.txt
+
+--- QP 自检 (第一拍 vs LQR) ---
+pass=1  qp_exitflag=1
+du_lqr = [0.0016665811; 0.001344006]
+du_qp  = [0.0016665811; 0.001344006]    ← 完全一致
+max_abs_error = 1.65e-16               ← 机器精度
+QP Hessian 已由 bank 验证正定
+
+--- 扰动后 Oracle 自检 (非配平点) ---
+deterministic    = 1  spread = 0
+path_independent = 1  path_error = 0
+semigroup(2Ts vs Ts+Ts) = PASS
+physical_ok = 1  fuel_frozen = 1  control_ok = 1
+algebraic_ok = 1  iterations = 7  error = 7.45e-12
+
+--- 闭环指标 ---
+qp_success_fraction        = 1      (300/300 拍全可行)
+qp_time_mean_ms            = 1.61
+qp_time_p95_ms             = 2.19   (<< Ts=100ms, 实时裕量 45x)
+qp_time_max_ms             = 35.8
+elevator_saturation_fraction = 0
+throttle_saturation_fraction = 0
+input range                = elev[-0.356,+0.617] thr[0.255,0.691]  (全在界内)
+pred_error_norm_p95        = 0.00430   (A/B 预测 vs 真实 JSBSim)
+pred_error_norm_max        = 0.0274
+final_state_error          = 0.00176
+final_normalized_inf       = 0.000440  (阈 0.10)     ✓
+lyapunov_initial           = 24.04
+lyapunov_final             = 5.25e-06
+lyapunov_ratio             = 2.18e-07  (阈 5%)       ✓
+rms_error                  = 0.773 (含初始扰动瞬态)
+tail5s_rms_error           = 0.00172    (末端 5s 稳态误差极小)
+algebraic_iter_max         = 7
+algebraic_error_max        = 8.06e-12
+
+--- gate 逐项 ---
+qp_all_feasible    = 1   (每拍 QP 可行)
+hard_input_bounds  = 1   (输入从未越界)
+finite             = 1   (所有状态有限)
+final_normalized   = 1   (最终归一化误差 0.00044 <= 0.10)
+lyapunov_recovery  = 1   (P-Lyapunov 能量 2.18e-7 <= 5%)
+realtime_p95       = 1   (QP p95 = 2.19ms <= 100ms)
+pass               = 1
+================================================================================
+里程碑: 200m / 50m/s / cfg0 下, 新 Physics-MPC 已在非线性 JSBSim 上完成
+       实际 receding-horizon QP 闭环恢复验证 (PASS)
+================================================================================

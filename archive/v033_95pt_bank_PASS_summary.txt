@@ -1,0 +1,39 @@
+================================================================================
+Physics-MPC v0.3.3 — 95 点 Build 汇总报告 (2026-08-17)
+命令: .\run_phys_mpc_D.ps1 -Mode Build -SkipBuild
+网格: H=20~200m(步长10) × V=50m/s × cfg=0..4 = 19×5 = 95 vertices
+结果: ✅ 95/95 全部 PASS
+================================================================================
+
+--- 生成文件 ---
+matlab\results\physics_mpc_v033\physics_bank.mat            (12.7 MB)
+matlab\results\physics_mpc_v033\physics_vertex_summary.csv  (9.3 KB)
+matlab\results\physics_mpc_v033\H###_V050.0_cfg#_fuel1.00\physics_vertex.mat  ×95
+
+--- 整体统计 ---
+total rows      = 95
+pass count      = 95 / 95   (100%)
+
+trim_inf:  min=0.0394593  max=0.0394604  mean=0.0394598   (极平, 无异常点)
+dA_rel:    min=1.57e-07   max=1.96e-06   mean=9.96e-07    (全部 < 2e-6, Richardson 收敛良好)
+dB_rel:    min=2.04e-12   max=6.51e-08   mean=1.97e-08
+rho_cl:    min=0.965527   max=0.971694   mean=0.969144    (全部 < 1, 闭环稳定)
+Np unique  = 100  (所有 95 点全部 Np=Nc=100)
+
+--- 最差 3 点 by rho_cl (全为 cfg0, 高度递减) ---
+H=200 cfg=0  rho_cl=0.971694  dA=8.95e-07  dB=1.49e-08
+H=190 cfg=0  rho_cl=0.971684  dA=4.60e-07  dB=2.40e-08
+H=180 cfg=0  rho_cl=0.971675  dA=1.20e-06  dB=2.06e-08
+
+--- 最差 3 点 by dA_rel (Richardson 相对误差) ---
+H=170 cfg=4  dA_rel=1.96e-06  rho_cl=0.965786
+H=150 cfg=3  dA_rel=1.94e-06  rho_cl=0.968033
+H=100 cfg=4  dA_rel=1.84e-06  rho_cl=0.965665
+(最差 dA_rel 仍 < 2e-6, 无突然恶化)
+
+--- 模式观察 (不做判断) ---
+- trim_inf 在 95 点几乎恒定 (0.0394593~0.0394604) → 配平质量高度一致
+- rho_cl 随 cfg 增大单调递减 (cfg0 最高 ~0.972, cfg4 最低 ~0.966), 高度影响很小
+- dA_rel 全部在 1e-7~2e-6 量级, 无 breakpoint/nonsmooth 尖刺
+- Np 全部 100 (撞上限) → 统一 LQR 衰减偏慢, 与 Smoke 一致
+================================================================================

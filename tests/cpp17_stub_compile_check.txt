@@ -1,0 +1,5 @@
+PASS - g++ C++17 syntax/interface stub compile
+Compiler: g++
+Flags: -std=c++17 -Wall -Wextra -fsyntax-only
+Source: matlab/phys_mpc/airdropx_jsbsim_oracle_mex.cpp
+Result: PASS

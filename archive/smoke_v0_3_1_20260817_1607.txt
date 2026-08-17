@@ -1,0 +1,50 @@
+================================================================================
+Physics-MPC v0.3.1 Smoke — 首次运行 (2026-08-17, 完整编译 Oracle)
+结果: 配平 solver 收敛到 7e-22, 但新增的 theta 残差检查暴露 dtheta 漂移
+      → pass_fixed_point=0 pass_physics=0 → smoke 失败
+      随后 smoke line 44 的 error 语句自身报 "格式化参数必须为标量"
+================================================================================
+
+--- MEX 编译 (事务式) ---
+MEX 已成功完成。
+Backed up current Oracle MEX: matlab\phys_mpc\airdropx_jsbsim_oracle_mex.mexw64.backup_20260817_160608
+Installed and load-verified Oracle MEX transactionally: matlab\phys_mpc\airdropx_jsbsim_oracle_mex.mexw64
+
+--- Smoke 主体 ---
+=== Physics-MPC v0.3.1 Smoke ===
+H=200.000 m  V=50.000 m/s  cfg=0  fuel=1.000  Ts=0.1000 s
+Math self-test: rho=0.989979371 Np=100 (PASS)
+
+Oracle: AirdropX JSBSim physics oracle v0.3.1
+Seed z0=[theta 0.095993, elev -0.340000, thr 0.800000, N1 86.0000, N2 92.0000]
+Trim method: JSBSim_FGTrim_seed__steady_engine__bounded_discrete_polish
+FGTrim seed success=1
+exitflag=3  iterations=6  funcCount=49  resnorm=7.07024e-22
+z=[theta 0.11092609 elev -0.36572706 throttle 0.63174298 N1 74.222009 N2 85.269719]
+x0=[200.000000 50.000000 0.000000000 0.110926092 0.000000000 74.222009 85.269719]
+x1=[200.000092 50.000000 0.000000000 0.110403465 -0.000000000 74.222009 85.269719]
+rates=[dVa 4.26326e-13 m/s2, dgamma 2.16573e-16 rad/s, dtheta -0.00522627 rad/s, dq -3.17155e-15 rad/s2, dN1 0/s, dN2 0/s]
+scaledRates=[2.13163e-11 1.08287e-12 -26.1314 -1.58577e-11 0 0], max=26.1314
+hStep=9.2200125e-05 m  mass=3775.296417 kg  cgX=5.280428 m  Iyy=8845.496777 kg*m^2
+initialTargetError=[-7.11e-15 2.17e-17 0]
+pass_solver=1 (diagnostic) pass_initial=1 pass_fixed_point=0 pass_height=1 pass_physics=0 pass=0
+
+--- 失败点 1: trim theta 残差 ---
+pass_fixed_point=0 (dtheta = -0.00522627 rad/s, scaled = -26.1314 远超阈值)
+
+--- 失败点 2: smoke line 44 error 自身报错 ---
+SMOKE FAIL [MATLAB:error:nonScalarInput] 格式化参数必须为标量。
+at airdropx_phys_smoke line 44
+error("AirdropX:PhysMPC:SmokeTrimFailed", ...)
+
+--- 关键数值对比 (v0.3.0 vs v0.3.1) ---
+v0.3.0: dtheta 7.61e-06 rad/s  PASS (当时未检查 theta 残差)
+v0.3.1: dtheta -0.00522627 rad/s  FAIL (新增 theta 残差检查后暴露)
+        其他: dVa 4.26e-13, dgamma 2.17e-16, dq -3.17e-15, dN1/dN2 0 全部≈0
+
+--- 事实观察 (不做分析) ---
+- x0 theta=0.110926092, x1 theta=0.110403465 → 0.1s 内 theta 变化 -0.000523 rad
+- 但 q≈0, gamma≈0 同时成立 → theta 漂移伴随非零 dtheta 但 q/gamma 为 0
+- 配平 solver 本身收敛极好 (resnorm=7.07e-22)
+- smoke 的 error 格式化参数非标量 → line 44 传入参数含非标量
+================================================================================
