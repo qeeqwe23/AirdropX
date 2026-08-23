@@ -1,0 +1,17 @@
+PASS bad_exist_guard_removed
+PASS ver_probe
+PASS license_probe
+PASS actual_load_probe
+PASS specific_install_error
+PASS specific_license_error
+PASS specific_load_error
+PASS preflight_status
+PASS private_ic_retained
+PASS calm_preflight_retained
+PASS error_summary_retained
+PASS v112_output_root
+PASS v112_point_output_root
+PASS no_truth_in_estimator
+PASS no_mex_cpp_payload
+PASS installer_no_rebuild
+TOTAL 16/16 PASS

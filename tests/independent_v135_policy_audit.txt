@@ -1,0 +1,4 @@
+PASS: calm rate-noise cannot activate disturbance path
+PASS: persistent amplitude evidence activates after 0.30 s
+PASS: qualified abrupt gust activates immediately
+3/3 PASS

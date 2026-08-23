@@ -1,0 +1,15 @@
+PASS  independent calibration error < 1e-6 m
+PASS  CdA in sane positive range
+PASS  200m independent plant impacts
+PASS  200m old predictor impacts
+PASS  structural mismatch is nontrivial
+PASS  structural mismatch is not catastrophic
+
+CdA_m2=0.488313744465
+calibration_range_m=150.764900000000
+calibration_error_m=-2.842170943040e-14
+old_predictor_200m_range_m=289.043778331
+independent_truth_200m_range_m=286.979765332
+structural_range_difference_m=-2.064013000
+old_predictor_200m_fall_time_s=6.386597378
+independent_truth_200m_fall_time_s=6.762772208

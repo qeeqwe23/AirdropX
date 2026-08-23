@@ -1,0 +1,16 @@
+Uploaded v0.6.1 altitude acceptance audit
+source: physics_mpc_v061_altitude_validation.rar
+rows=19
+result_found=19/19
+marker_found=19/19
+mission_pass=19/19
+all_gate_columns=PASS
+worst_peak_primary_normalized=0.643777489337637 at H=200 m
+worst_peak_q_err_dps=1.28755497867527 at H=200 m
+worst_peak_h_err_m=0.646616086835962 at H=200 m
+worst_peak_Va_err_mps=0.12836800836412 at H=200 m
+worst_final_normalized_inf=0.0003752413495448 at H=200 m
+worst_tail5s_normalized_rms=0.0003754039142365 at H=200 m
+worst_qp_p95_ms=10.42989 at H=180 m
+worst_prediction_error_norm_max=0.0085919663717496 at H=200 m
+PASS

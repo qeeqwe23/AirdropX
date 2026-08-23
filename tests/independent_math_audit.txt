@@ -1,0 +1,6 @@
+altitude_down_v45 max |Hdot| = 2.25 m/s
+altitude_down_v45 peak |gamma_ref| = 2.8659839826 deg
+old 3deg gamma-scale occupancy from legitimate descent = 0.9553279942
+kinematic residual max = 4.441e-16 m/s
+affine moving-reference defect identity max error = 4.441e-16
+PASS

@@ -1,0 +1,14 @@
+Physics-MPC v1.1.3 independent longitudinal-wind math audit
+geometry_sweep_max_error_mps=7.1054273576e-15
+synthetic_sensor_noise: sigma_Vg=0.15 sigma_Va=0.25 sigma_Vz=0.10 m/s
+estimator_Ts_s=0.1
+calm noiseless_rmse=0.000000 noisy_rmse_mean=0.158613 noisy_p95_mean=0.309226 bias_mean=0.015228 noise_reduction_min_seed=1.587746 settle90_worst=0.000
+tailwind_5 noiseless_rmse=0.000000 noisy_rmse_mean=0.159005 noisy_p95_mean=0.309937 bias_mean=0.015976 noise_reduction_min_seed=1.600256 settle90_worst=0.100
+headwind_5 noiseless_rmse=0.000000 noisy_rmse_mean=0.159005 noisy_p95_mean=0.309937 bias_mean=0.015976 noise_reduction_min_seed=1.600256 settle90_worst=0.100
+tailwind_12 noiseless_rmse=0.000000 noisy_rmse_mean=0.159005 noisy_p95_mean=0.309937 bias_mean=0.015976 noise_reduction_min_seed=1.600256 settle90_worst=0.000
+headwind_12 noiseless_rmse=0.000000 noisy_rmse_mean=0.159005 noisy_p95_mean=0.309937 bias_mean=0.015976 noise_reduction_min_seed=1.600256 settle90_worst=0.000
+step_bidirectional noiseless_rmse=0.000000 noisy_rmse_mean=0.159482 noisy_p95_mean=0.311489 bias_mean=0.014184 noise_reduction_min_seed=1.595746 settle90_worst=0.000
+ramp_minus10_plus10 noiseless_rmse=0.014719 noisy_rmse_mean=0.160864 noisy_p95_mean=0.314261 bias_mean=0.014395 noise_reduction_min_seed=1.578442 settle90_worst=0.000
+sine_longitudinal noiseless_rmse=0.083864 noisy_rmse_mean=0.177944 noisy_p95_mean=0.323549 bias_mean=0.010474 noise_reduction_min_seed=1.456770 settle90_worst=0.000
+NOTE: this independent audit uses synthetic kinematic truth only.
+Real JSBSim validation is intentionally executed on the user's Windows MATLAB/S-Function stack.

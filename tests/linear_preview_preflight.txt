@@ -1,0 +1,27 @@
+Physics-MPC v0.6.0 independent linear-bank preview preflight
+Basis: uploaded certified physics_bank.mat, H=200 m, V=50 m/s, cfg0..4, Ts=0.1 s, N=100.
+This is NOT a nonlinear JSBSim mission result; it only checks the new condensed preview mathematics on the certified A/B bank.
+
+Reactive switched-linear replay:
+  peak |q|          = 3.036735170 deg/s
+  peak |h error|    = 1.411225870 m
+  peak |Va error|   = 0.275387001 m/s
+
+Known-schedule preview replay (same Q/R, no q soft constraint):
+  peak |q|          = 1.276736862 deg/s
+  peak |h error|    = 0.646747369 m
+  peak |Va error|   = 0.128975549 m/s
+  elevator range    = [-0.339123313, -0.145451227]
+  throttle range    = [0.509121600, 0.619765930]
+  max preview-reactive pre-action in final 1 s before first drop:
+    elevator         = 0.038178501
+    throttle         = 0.003030185
+
+Linear-bank reduction:
+  q peak reduction   = 57.957 %
+  h peak reduction   = 54.171 %
+
+Interpretation:
+  The preview formulation reproduces the original ~3 deg/s reactive q transient in the switched linear bank,
+  then reduces it below the unchanged 2 deg/s scale without changing Q/R. Final acceptance still requires
+  the real nonlinear JSBSim v0.6.0 mission run on the user's Windows/MATLAB environment.

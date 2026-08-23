@@ -1,0 +1,46 @@
+PASS  formal realistic avionics default
+PASS  formal independent cargo default
+PASS  avionics layer initialized
+PASS  avionics layer stepped from sensor stimulus
+PASS  controller state is avionics estimate
+PASS  release position is estimated
+PASS  release fractional state is causal extrapolation
+PASS  base MPC receives xCtrl
+PASS  disturbance MPC receives xCtrl
+PASS  energy MPC receives xCtrl
+PASS  no MPC solver receives xTruth
+PASS  wind estimator uses measured Va/Vz/Vg
+PASS  no online wGuide from truth wind
+PASS  GNSS-style position sensor exists
+PASS  barometric altitude sensor exists
+PASS  pitot airspeed sensor exists
+PASS  AHRS pitch sensor exists
+PASS  gyro pitch-rate sensor exists
+PASS  engine telemetry exists
+PASS  gamma derived from nav velocity
+PASS  sensor bias random walk exists
+PASS  independent cargo plant default is used
+PASS  independent cargo plant has vector drag
+PASS  truth release state stored separately
+PASS  truth/estimate timeseries pairs exist
+PASS  truth isolation metrics emitted
+PASS  formal truth-isolation gates exist
+PASS  full runner forces realistic avionics
+PASS  full runner forces independent cargo scoring
+PASS  point runner ideal-state ablation is explicit
+PASS  point runner shared-cargo ablation is explicit
+PASS  hidden child windows preserved full runner
+PASS  hidden child windows preserved point runner
+PASS  base equivalence compares estimated state
+PASS  base equivalence uses realistic avionics
+PASS  base equivalence uses independent cargo scoring
+PASS  real-world audit documents offline A/B/Gw caveat
+PASS  flight-log Gw replacement exists
+PASS  README warns v140 errors not directly comparable
+PASS  no precompiled executable artifacts in package
+PASS  reject online xCtrl direct truth
+PASS  reject online posCtrl direct truth
+PASS  reject online release wind direct truth
+PASS  reject online Va direct truth
+
+static_truth_isolation_audit_v140: 44/44 PASS

@@ -1,0 +1,41 @@
+PASS: v130 physical Gw retained
+PASS: v121 ballistic predictor retained
+PASS: fractional release retained
+PASS: confidence helper retained
+PASS: strict carrier thresholds unchanged
+PASS: abrupt trigger requires confidence
+PASS: abrupt trigger requires measured wind jump
+PASS: no raw estimator step alone can latch
+PASS: no wind-rate confidence exit dependency
+PASS: state recovery quiet hold
+PASS: continuous wind assist capped
+PASS: continuous assist default <= quarter
+PASS: calm disturbance deadband
+PASS: energy recovery is abrupt-gust gated
+PASS: energy recovery requires throttle limit
+PASS: bounded altitude shift
+PASS: low airspeed lowers H reference
+PASS: energy reference does not change plant trim observer
+PASS: recovery bank is unified across cfg
+PASS: recovery terminal P still preserved
+PASS: hard actuator bounds are not widened
+PASS: input snap helper exists
+PASS: input snap only within explicit tolerance
+PASS: applied snapped input used in predictor
+PASS: input snap diagnostic exported
+PASS: abrupt trigger diagnostic
+PASS: energy shift diagnostic
+PASS: 0p5/1/3 gust residual diagnostics
+PASS: actuator diagnostics retained
+PASS: full runner defaults child windows hidden
+PASS: parallel missions use hidden helper
+PASS: stage0/finalizer capture uses hidden helper
+PASS: point runner defaults hidden
+PASS: debug window opt-in exists
+PASS: stdout stderr still captured
+PASS: entry calls v133 mission
+PASS: runner calls v133 entry/finalizer
+PASS: installer copies v133 runners
+PASS: no precompiled mex
+
+TOTAL 39/39 PASS

@@ -1,0 +1,28 @@
+from pathlib import Path
+import sys
+root=Path(__file__).resolve().parents[1]
+h=(root/'matlab/wind/airdropx_wind_simulink_harness_v111.m').read_text()
+r=(root/'run_wind_estimator_validation_v112_D.ps1').read_text()
+i=(root/'install_wind_estimator_v112.ps1').read_text().lower()
+checks=[]
+def ck(n,c): checks.append((n,bool(c)))
+ck('bad_exist_guard_removed', 'exist("sim","file")' not in h and "exist('sim','file')" not in h)
+ck('ver_probe', 'ver("simulink")' in h)
+ck('license_probe', 'license("test","Simulink")' in h)
+ck('actual_load_probe', 'load_system("simulink")' in h)
+ck('specific_install_error', 'MissingSimulinkInstallation' in h)
+ck('specific_license_error', 'MissingSimulinkLicense' in h)
+ck('specific_load_error', 'SimulinkLoadFailed' in h)
+ck('preflight_status', 'SIMULINK_PREFLIGHT_START' in h and 'SIMULINK_PREFLIGHT_OK' in h)
+ck('private_ic_retained', 'localWritePrivateIc' in h and 'wind_ic_v111_' in h)
+ck('calm_preflight_retained', 'SERIAL HARNESS PREFLIGHT' in r and 'harness_preflight_failure.txt' in r)
+ck('error_summary_retained', 'ErrorSummary' in r and 'STDERR:' in r and 'STDOUT:' in r)
+ck('v112_output_root', 'physics_mpc_v112_longitudinal_wind_validation' in r)
+ck('v112_point_output_root', 'physics_mpc_v112_wind_point' in (root/'run_wind_estimator_point_v112_D.ps1').read_text())
+ck('no_truth_in_estimator', all(x not in (root/'matlab/wind/airdropx_longitudinal_wind_estimator_step_v111.m').read_text() for x in ['windN','windE']))
+ck('no_mex_cpp_payload', not any(p.suffix.lower() in {'.cpp','.mexw64'} for p in root.rglob('*') if p.is_file()))
+ck('installer_no_rebuild', 'build_sfun' not in i and 'mex(' not in i)
+passed=sum(v for _,v in checks)
+for n,v in checks: print(('PASS' if v else 'FAIL'),n)
+print(f'TOTAL {passed}/{len(checks)} PASS')
+sys.exit(0 if passed==len(checks) else 1)

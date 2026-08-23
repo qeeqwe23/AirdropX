@@ -1,0 +1,12 @@
+Physics-MPC v0.6.0 constant-schedule condensed-QP equivalence preflight
+Basis: uploaded certified H=200 m / V=50 m/s / cfg0 vertex in physics_bank.mat.
+Independent Python/Numpy reconstruction of both formulas:
+
+  old fixed-cfg block condense vs new recursive preview condense with cfgSeq=cfg0 repeated 101 times
+
+relative ||H_preview-H_fixed||_inf / max(1,||H_fixed||_inf) = 1.0488175774e-15
+relative ||F_preview-F_fixed||_inf / max(1,||F_fixed||_inf) = 1.1886955493e-15
+max absolute H entry difference = 7.9580786405e-13
+max absolute F entry difference = 1.2732925825e-11
+
+Interpretation: the new preview formulation numerically collapses to the already validated fixed-cfg QP at machine precision when there is no scheduled cfg transition. Runtime MATLAB self-test repeats this check before the nonlinear mission.

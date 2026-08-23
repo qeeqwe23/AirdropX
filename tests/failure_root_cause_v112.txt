@@ -1,0 +1,14 @@
+AirdropX v1.1.2 uploaded-result audit
+
+Observed serial calm status:
+SIMULINK_PREFLIGHT_OK version=26.1 release=(R2026a)
+PRIVATE_IC_READY ...
+FAILED Simulink:SFunctions:SFcnParamCountErr
+
+Decoded MATLAB stderr:
+The S-Function 'sfun_airdropx_jsbsim' defines 4 parameters, but the dynamically created block dialog had 0 parameters. The two values must match.
+
+Root cause:
+v1.1.2 constructed the S-Function block with FunctionName active in add_block(), before assigning the 4-entry Parameters expression on the next line. Simulink validates the compiled S-Function immediately and aborts at the transient 4-vs-0 state.
+
+This is an infrastructure/harness construction failure. It is not wind-estimator performance evidence.

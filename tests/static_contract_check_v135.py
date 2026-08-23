@@ -1,0 +1,37 @@
+from pathlib import Path
+r=Path(__file__).resolve().parents[1]
+checks=[]
+def has(rel, token, label):
+    txt=(r/rel).read_text(errors='ignore')
+    checks.append((label, token in txt))
+mission='matlab/airdrop/airdropx_wind_airdrop_mission_v135.m'
+has(mission,'DisturbanceActivationWindConfidence','persistent wind-evidence threshold')
+has(mission,'disturbanceStrongCount=disturbanceStrongCount+1','multi-sample amplitude activation')
+has(mission,'DisturbanceRateExtendConfidence','rate may extend established event')
+has(mission,'if ~disturbanceEvidence, mpcWind=0; mpcRate=0; end','inactive control disturbance exactly zero')
+has(mission,'airdropx_phys_mpc_solve(baseCtrl,x,warm)','exact base solver fallback')
+has(mission,'DisturbanceEvidenceActive','disturbance evidence logged')
+has(mission,'forced_response_primary_rms','sine forced-response metric')
+has(mission,'carrier_forced_response','sine formal forced-response gate')
+has(mission,'SineMissionTooShort','sine reserves full zero-wind tail')
+has(mission,'airdropx_wind_profile_v135','v135 validation wind used by carrier')
+has(mission,'airdropx_airdrop_truth_impact_v135','v135 validation wind used by cargo truth')
+has(mission,"'N1','N2'",'all seven MPC states logged')
+has('matlab/wind/airdropx_wind_profile_v135.m','w(t>=t0+tr)=0','sine has zero-wind settling tail')
+has('matlab/airdrop/airdropx_phys_mpc_base_equivalence_audit_v135.m','max_abs_control_delta','control equivalence audited')
+has('matlab/airdrop/airdropx_phys_mpc_base_equivalence_audit_v135.m','max_abs_state_delta','state equivalence audited')
+has('matlab/airdrop/airdropx_phys_mpc_base_equivalence_audit_v135.m','first_divergence_reason','first divergence reported')
+has('matlab/phys_mpc/airdropx_jsbsim_wind_oracle_mex.cpp','refreshMassPropertiesZeroDt','zero-dt mass-property refresh')
+has('matlab/phys_mpc/airdropx_jsbsim_wind_oracle_mex.cpp','mass-refresh-v135','new Oracle version marker')
+has('matlab/phys_mpc/airdropx_phys_wind_oracle_selftest_v121.m','short_transition_Iyy_error_kgm2','1/120 s Iyy regression')
+has('run_wind_disturbance_airdrop_v135_D.ps1','base-equivalence audit failed','full suite blocks on equivalence')
+has('run_wind_disturbance_airdrop_v135_D.ps1','wind_equivalent_energy_recovery_validation_summary.txt','full runner reads v135 final summary')
+has('run_wind_disturbance_airdrop_v135_D.ps1',"WindowStyle='Hidden'",'full runner hides child windows')
+has('run_wind_disturbance_airdrop_point_v135_D.ps1',"WindowStyle='Hidden'",'point runner hides child windows')
+has('run_wind_disturbance_airdrop_point_v135_D.ps1','calm=101','point runner formal seed map')
+has('run_wind_disturbance_airdrop_point_v135_D.ps1','-not(Test-Path $oracleMarker)','point runner rebuilds unverified Oracle')
+has('install_wind_disturbance_airdrop_v135.ps1','Remove-Item $mex,$marker','installer forces Oracle rebuild')
+for label,ok in checks:
+    print(('PASS' if ok else 'FAIL')+': '+label)
+print(f'{sum(ok for _,ok in checks)}/{len(checks)} PASS')
+raise SystemExit(0 if all(ok for _,ok in checks) else 1)

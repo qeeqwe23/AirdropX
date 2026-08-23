@@ -1,24 +1,26 @@
-PASS | mission exposes CloseOracleOnReturn
-PASS | scenario entry disables explicit Oracle close
-PASS | legacy in-process compare disabled
-PASS | runner uses Start-Process child PID
-PASS | runner never blanket-kills MATLAB
-PASS | runner stop targets recorded child PID
-PASS | runner has durable completion marker
-PASS | runner has shutdown grace after marker
-PASS | runner isolates cfg0->cfg4 probe
-PASS | runner isolates simultaneous mission
-PASS | runner retains 2 s schedule
-PASS | probe evaluates cfg4 twice
-PASS | probe verifies repeatability
-PASS | probe verifies cfg4 mass/cg/Iyy
-PASS | probe refuses bad algebraic closure
-PASS | mission peak gate unchanged
-PASS | mission final gate unchanged
-PASS | mission tail gate unchanged
-PASS | mission 4x simultaneous semantics unchanged
-PASS | finalizer never initializes Oracle
-PASS | no packaged MEX
-PASS | no packaged C++
-
-22/22 checks passed
+PASS required_files
+PASS estimator_has_no_truth_channels
+PASS geometry_uses_ground_air_vertical
+PASS tailwind_positive_documented
+PASS kalman_two_state
+PASS innovation_step_detection
+PASS truth_only_in_harness_scoring
+PASS sfunction_output_width_20
+PASS estimator_rate_0p1
+PASS mc_50
+PASS strict_rmse_gate
+PASS strict_p95_gate
+PASS strict_step_gate
+PASS sign_gate
+PASS noise_reduction_gate
+PASS eight_scenarios
+PASS private_ic
+PASS no_shared_sim_params
+PASS status_markers
+PASS entry_passes_private_workdir
+PASS serial_calm_preflight
+PASS runner_error_summary
+PASS no_cpp_mex_in_package
+PASS installer_does_not_rebuild
+PASS readme_truth_separation
+TOTAL 25/25 PASS

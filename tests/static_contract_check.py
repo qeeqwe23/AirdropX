@@ -1,41 +1,49 @@
 from pathlib import Path
-import re, sys
-ROOT=Path(__file__).resolve().parents[1]
+import sys
+root=Path(__file__).resolve().parents[1]
+wind=root/'matlab'/'wind'
 checks=[]
-def ck(name, cond):
-    checks.append((name,bool(cond)))
-
-runner=(ROOT/'run_phys_mpc_drop_timing_compare_D.ps1').read_text()
-mission=(ROOT/'matlab/phys_mpc/airdropx_phys_four_drop_closed_loop.m').read_text()
-entry=(ROOT/'matlab/phys_mpc/airdropx_phys_drop_scenario_entry.m').read_text()
-probe=(ROOT/'matlab/phys_mpc/airdropx_phys_cfg0_to_cfg4_jump_probe.m').read_text()
-legacy=(ROOT/'matlab/phys_mpc/airdropx_phys_compare_drop_timing.m').read_text()
-finalizer=(ROOT/'matlab/phys_mpc/airdropx_phys_finalize_drop_timing_compare_v052.m').read_text()
-
-ck('mission exposes CloseOracleOnReturn', 'opts.CloseOracleOnReturn (1,1) logical = true' in mission)
-ck('scenario entry disables explicit Oracle close', 'CloseOracleOnReturn",false' in entry)
-ck('legacy in-process compare disabled', 'InProcessCompareDisabled' in legacy)
-ck('runner uses Start-Process child PID', 'Start-Process' in runner and '$pid0=$p.Id' in runner)
-ck('runner never blanket-kills MATLAB', 'Get-Process matlab' not in runner and 'Get-Process -Name MATLAB' not in runner)
-ck('runner stop targets recorded child PID', 'Stop-Process -Id $pid0' in runner)
-ck('runner has durable completion marker', 'scenario_complete.ok' in runner and 'probe_complete.ok' in runner)
-ck('runner has shutdown grace after marker', 'ShutdownGraceSeconds' in runner and 'forced_exit_after_result' in runner)
-ck('runner isolates cfg0->cfg4 probe', 'cfg0_to_cfg4_probe' in runner and 'airdropx_phys_cfg0_to_cfg4_probe_entry' in runner)
-ck('runner isolates simultaneous mission', "DropTimes_s=[10 10 10 10]" in runner and "ScenarioName=string('simultaneous_4x')" in runner)
-ck('runner retains 2 s schedule', 'DropTimes_s=[10 12 14 16]' in runner)
-ck('probe evaluates cfg4 twice', probe.count('airdropx_phys_step(x0,u,p4)')==2)
-ck('probe verifies repeatability', 'stateRepeat<=1e-12' in probe)
-ck('probe verifies cfg4 mass/cg/Iyy', 'massErr' in probe and 'cgErr' in probe and 'iyyErr' in probe)
-ck('probe refuses bad algebraic closure', 'algebraic_settle_converged' in probe)
-ck('mission peak gate unchanged', 'opts.MaxPeakPrimaryNormalized (1,1) double {mustBePositive} = 1.0' in mission)
-ck('mission final gate unchanged', 'opts.MaxFinalNormalizedInf (1,1) double {mustBePositive} = 0.10' in mission)
-ck('mission tail gate unchanged', 'opts.MaxTail5sNormalizedRms (1,1) double {mustBePositive} = 0.05' in mission)
-ck('mission 4x simultaneous semantics unchanged', 'cfgNow=sum(t(k)+1e-10>=opts.DropTimes_s)' in mission)
-ck('finalizer never initializes Oracle', 'airdropx_phys_oracle_init' not in finalizer and 'airdropx_jsbsim_oracle_mex' not in finalizer)
-ck('no packaged MEX', not any(ROOT.rglob('*.mexw64')))
-ck('no packaged C++', not any(ROOT.rglob('*.cpp')))
-
-bad=[n for n,p in checks if not p]
-for n,p in checks: print(('PASS' if p else 'FAIL')+' | '+n)
-print(f'\n{sum(p for _,p in checks)}/{len(checks)} checks passed')
-sys.exit(1 if bad else 0)
+def ck(n,c): checks.append((n,bool(c)))
+required=[
+'airdropx_longitudinal_wind_measurement_v111.m',
+'airdropx_longitudinal_wind_estimator_init_v111.m',
+'airdropx_longitudinal_wind_estimator_step_v111.m',
+'airdropx_longitudinal_wind_estimator_runtime_v111.m',
+'airdropx_wind_simulink_harness_v111.m',
+'airdropx_wind_estimation_entry_v111.m',
+'airdropx_wind_finalize_v111.m']
+ck('required_files',all((wind/x).is_file() for x in required))
+est=(wind/'airdropx_longitudinal_wind_estimator_step_v111.m').read_text()
+meas=(wind/'airdropx_longitudinal_wind_measurement_v111.m').read_text()
+harness=(wind/'airdropx_wind_simulink_harness_v111.m').read_text()
+entry=(wind/'airdropx_wind_estimation_entry_v111.m').read_text()
+runner=(root/'run_wind_estimator_validation_v111_D.ps1').read_text()
+inst=(root/'install_wind_estimator_v111.ps1').read_text().lower()
+ck('estimator_has_no_truth_channels','windN' not in est and 'windE' not in est and 'windN' not in meas and 'windE' not in meas)
+ck('geometry_uses_ground_air_vertical','Vg_mps-Vah' in meas and 'Va_mps^2-Vz_mps^2' in meas)
+ck('tailwind_positive_documented','Tailwind is positive' in meas)
+ck('kalman_two_state','s.x=[0;0]' in (wind/'airdropx_longitudinal_wind_estimator_init_v111.m').read_text())
+ck('innovation_step_detection','StepImmediateNisThreshold' in est and 'StepNisThreshold' in est)
+ck('truth_only_in_harness_scoring','windN=A(:,16)' in harness and 'windE=A(:,17)' in harness)
+ck('sfunction_output_width_20','size(A,2)~=20' in harness)
+ck('estimator_rate_0p1','EstimatorTs_s' in entry and '= 0.1' in entry)
+ck('mc_50','MonteCarloSeeds' in entry and '= 50' in entry)
+ck('strict_rmse_gate','MaxNoisyRmseMean_mps' in entry and '= 0.35' in entry)
+ck('strict_p95_gate','MaxNoisyP95Mean_mps' in entry and '= 0.75' in entry)
+ck('strict_step_gate','MaxStepSettling90_s' in entry and '= 0.50' in entry)
+ck('sign_gate','MinSignAccuracy' in entry and '= 0.99' in entry)
+ck('noise_reduction_gate','MinNoiseReductionRatio' in entry and '= 1.50' in entry)
+ck('eight_scenarios','step_bidirectional' in (wind/'airdropx_wind_profile_manifest_v111.m').read_text() and 'sine_longitudinal' in (wind/'airdropx_wind_profile_manifest_v111.m').read_text())
+ck('private_ic','wind_ic_v111_' in harness and 'localWritePrivateIc' in harness)
+ck('no_shared_sim_params','airdropx_sim_params' not in harness)
+ck('status_markers',all(x in harness for x in ['PRIVATE_IC_READY','MODEL_READY','CALIBRATION_SIM_START','CALIBRATION_SIM_DONE','MAIN_SIM_START','MAIN_SIM_DONE']))
+ck('entry_passes_private_workdir','WorkDir=opts.OutputRoot' in entry and 'StatusFile=status' in entry)
+ck('serial_calm_preflight','SERIAL HARNESS PREFLIGHT' in runner and 'harness_preflight_failure.txt' in runner)
+ck('runner_error_summary','ErrorSummary' in runner and 'STDERR:' in runner and 'STDOUT:' in runner)
+ck('no_cpp_mex_in_package',not any(p.suffix.lower() in {'.cpp','.mexw64'} for p in root.rglob('*') if p.is_file()))
+ck('installer_does_not_rebuild','build_sfun' not in inst and 'mex -' not in inst and 'mex(' not in inst and 'mex ' not in inst.replace('no mex',''))
+ck('readme_truth_separation','truth for scoring' in (root/'README.md').read_text())
+passed=sum(v for _,v in checks)
+for n,v in checks: print(('PASS' if v else 'FAIL'),n)
+print(f'TOTAL {passed}/{len(checks)} PASS')
+sys.exit(0 if passed==len(checks) else 1)

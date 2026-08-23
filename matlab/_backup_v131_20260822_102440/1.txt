@@ -1,0 +1,9 @@
+cd('D:/vs code project/新建文件夹/AirdropX')
+addpath('matlab')
+
+r = airdropx_run_and_export("RunName", "check_pitch");
+airdropx_plot(r.out.logsout, "dashboard");
+
+
+mc4 = airdropx_carp_monte_carlo(r.out.logsout, "Mode", "fourdrop", "Samples", 300);
+airdropx_plot(r.out.logsout, "carp", "MonteCarlo", mc4);

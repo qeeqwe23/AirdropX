@@ -1,0 +1,11 @@
+AirdropX v1.2.1 independent ballistic audit
+calibration_fall_time_s= 2.0196199771025523
+drag_per_m= 0.0006781926500232486
+reconstructed_range_m= 150.7648999999999
+calibration_error_m= -1.1368683772161603e-13
+constant_wind_-12_range_m=212.413112
+constant_wind_-5_range_m=257.119306
+constant_wind_+0_range_m=289.052302
+constant_wind_+5_range_m=320.985297
+constant_wind_+12_range_m=365.691491
+PASS= True

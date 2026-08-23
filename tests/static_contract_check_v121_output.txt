@@ -1,0 +1,24 @@
+PASS | separate wind oracle source
+PASS | continuous start command
+PASS | continuous step command
+PASS | wind oracle version
+PASS | wind diag groundspeed
+PASS | wind diag position
+PASS | cfg cannot reverse
+PASS | predictor no truth argument
+PASS | truth isolated scoring function
+PASS | four targets
+PASS | real cfg increment on release
+PASS | estimated wind guidance
+PASS | baseline does not use GPS wind implicitly
+PASS | truth only after release decision
+PASS | landing gate 20m default
+PASS | predicted impact gate 10m
+PASS | wind p95 gate 0.75
+PASS | fixed horizon 100
+PASS | paired aware baseline
+PASS | max parallel 3
+PASS | serial full-chain preflight
+PASS | original oracle not overwritten
+PASS | no bundled mex
+TOTAL 23/23 PASS

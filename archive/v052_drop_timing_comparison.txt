@@ -1,0 +1,9 @@
+Physics-MPC v0.5.2 isolated drop timing comparison
+Each new scenario ran in a separate MATLAB process; controller physics/Q/R/horizon/bounds unchanged.
+Scenario A: 2 s spacing [10 12 14 16] s
+Scenario B: simultaneous [10 10 10 10] s, cfg0->cfg4 in one sample
+Existing v0.5.0 baseline included=1
+
+[baseline_0p2s] pass=0 schedule=10 10.2 10.4 10.6 peakH=1.40286 m peakVa=0.276822 m/s peakGamma=1.21559 deg peakTheta=2.40057 deg peakQ=3.04506 deg/s peakNorm=1.52253 finalNorm=0.000377356 tail5=0.000381017 recovery=6.4 s QPp95=2.91681 ms predP95=0.000881199 predMax=0.00806861
+[interval_2s] pass=1 schedule=10 12 14 16 peakH=0.716171 m peakVa=0.12497 m/s peakGamma=0.305327 deg peakTheta=0.87243 deg peakQ=1.03146 deg/s peakNorm=0.515732 finalNorm=0.000382513 tail5=0.000398933 recovery=4.6 s QPp95=1.75904 ms predP95=0.000182696 predMax=0.00297926
+[simultaneous_4x] pass=0 schedule=10 10 10 10 peakH=1.46219 m peakVa=0.286706 m/s peakGamma=1.3477 deg peakTheta=3.31984 deg peakQ=3.88722 deg/s peakNorm=1.94361 finalNorm=0.000377218 tail5=0.000380624 recovery=6.7 s QPp95=2.76521 ms predP95=0.000640801 predMax=0.03958

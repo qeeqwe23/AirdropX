@@ -1,0 +1,11 @@
+v1.3.3 independent policy audit
+calm_false_abrupt_triggers=0
+step_trigger_5mps=PASS
+step_trigger_12mps=PASS
+bidirectional_step_trigger=PASS
+smooth_ramp_no_strong_latch=PASS
+smooth_sine_no_strong_latch=PASS
+continuous_assist_max=0.250000
+energy_low_va_shift_m=-2.500000
+energy_high_va_shift_m=2.500000
+PASS=1

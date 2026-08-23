@@ -1,0 +1,23 @@
+PASS: v130 mission exists
+PASS: real symmetric gust calibration
+PASS: three calibration probes
+PASS: wind map Va sign audit
+PASS: disturbance condensed into QP
+PASS: zero disturbance equivalence selftest
+PASS: delta wind not absolute wind comment
+PASS: wind rate cap 3
+PASS: residual observer
+PASS: subtract Gw observed wind before residual
+PASS: observer reset on drop
+PASS: truth not used by controller summary
+PASS: instantaneous peak retained
+PASS: causal post gust gate
+PASS: original final tail gates retained
+PASS: 24 mission runner
+PASS: 3-worker cap
+PASS: calibration stage in runner
+PASS: wind estimator frozen defaults
+PASS: no precompiled mex
+PASS: version correct
+
+TOTAL 21/21 PASS

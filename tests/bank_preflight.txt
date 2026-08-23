@@ -1,0 +1,13 @@
+Physics bank preflight using uploaded physics_bank.mat
+required H=20:10:200, V=50, cfg=0:4
+vertex_count=95
+missing_vertices=0
+max_Q_diff=0
+max_R_diff=0
+max_state_scale_diff=0
+max_input_scale_diff=0
+Np_values=100
+Nc_values=100
+rho_cl_min=0.965527315562846
+rho_cl_max=0.9716937124154869
+PASS

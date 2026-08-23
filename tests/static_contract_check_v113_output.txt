@@ -1,0 +1,21 @@
+PASS bad_exist_guard_removed
+PASS simulink_real_probe
+PASS private_ic_retained
+PASS sfunction_add_block_has_no_function_name
+PASS sfunction_parameters_set
+PASS sfunction_function_set
+PASS parameter_before_function_activation
+PASS sfunction_configuration_verified
+PASS model_update_preflight
+PASS calm_serial_preflight
+PASS stderr_stdout_capture
+PASS v113_output_root
+PASS v113_point_output_root
+PASS v113_report_label
+PASS truth_not_in_estimator_step
+PASS no_mex_cpp_payload
+PASS installer_no_rebuild
+PASS installer_v113_scripts
+PASS failure_root_cause_recorded
+PASS estimator_gate_values_unchanged
+TOTAL 20/20 PASS
