@@ -1,0 +1,33 @@
+PASS: real symmetric JSBSim gust calibration
+PASS: three wind calibration probes
+PASS: disturbance condensed into QP
+PASS: zero-disturbance solver equivalence
+PASS: delta-wind causal forecast
+PASS: residual observer retained
+PASS: identified gust removed before residual
+PASS: residual reset on payload transition
+PASS: instantaneous gust peak report-only
+PASS: post-gust recovery gates
+PASS: wind truth scoring-only
+PASS: fractional scheduler exists
+PASS: fractional release default enabled
+PASS: scheduler has no truth-wind input
+PASS: scheduler uses current measured state
+PASS: within-sample nonlinear split
+PASS: same held MPC command on both subsegments
+PASS: physical cfg transition at timer
+PASS: warmstart rebased after timed drop
+PASS: actual release state re-predicted
+PASS: scheduler residual logged separately
+PASS: mixed-cfg prediction error not falsely scored
+PASS: legacy sampled release ablation
+PASS: formal runner still has three controller modes
+PASS: formal 24 + calm ablation runner
+PASS: 3-worker cap
+PASS: v131 entry forwards release option
+PASS: finalizer reports calm ablation
+PASS: installer deploys v131 MATLAB tree and runners
+PASS: no precompiled mex
+PASS: version correct
+
+TOTAL 31/31 PASS

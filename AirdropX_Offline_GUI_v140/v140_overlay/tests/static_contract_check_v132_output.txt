@@ -1,0 +1,39 @@
+PASS: v130 physical Gw retained
+PASS: v121 ballistic predictor retained
+PASS: fractional physical release retained
+PASS: fractional tau aligned to oracle dt
+PASS: strict carrier gates retained
+PASS: confidence helper exists
+PASS: confidence has no truth input
+PASS: wind magnitude significance
+PASS: wind uncertainty significance
+PASS: rate significance
+PASS: release uses effective wind
+PASS: release velocity filtering
+PASS: residual deadband
+PASS: exact calm legacy fallback
+PASS: recovery bank helper exists
+PASS: same recovery levels all cfg
+PASS: same dimensionless max multipliers
+PASS: terminal P preserved
+PASS: hard bounds not rebuilt
+PASS: recovery requires causal gust latch
+PASS: payload transients alone do not trigger recovery
+PASS: recovery has decay/hysteresis
+PASS: recovery shared rather than cfg tuned
+PASS: fractional formal predictor is causal extrapolation
+PASS: truth not fed to controller summary
+PASS: 0p5 1 3 second metrics
+PASS: actuator saturation diagnostics
+PASS: finalizer carries new diagnostics
+PASS: installer skips self copy
+PASS: runner avoids pid automatic-variable collision
+PASS: runner PollCase is structured
+PASS: runner captures harmless stderr via Start-Process
+PASS: runner uses at most 3 workers
+PASS: entry forwards confidence and recovery
+PASS: point runner supports recovery/confidence ablation
+PASS: version correct
+PASS: no precompiled mex
+
+TOTAL 37/37 PASS

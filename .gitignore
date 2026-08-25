@@ -7,3 +7,5 @@ matlab/outputs/
 *.zip
 __pycache__/
 .venv/
+matlab/_backup*/
+*.bak

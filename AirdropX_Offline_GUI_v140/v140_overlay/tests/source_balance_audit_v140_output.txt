@@ -1,0 +1,13 @@
+PASS airdropx_wind_airdrop_mission_v140.m: ok
+PASS airdropx_wind_airdrop_entry_v140.m: ok
+PASS airdropx_phys_mpc_base_equivalence_audit_v140.m: ok
+PASS airdropx_wind_airdrop_finalize_v140.m: ok
+PASS airdropx_cargo_truth_params_v140.m: ok
+PASS airdropx_cargo_truth_plant_v140.m: ok
+PASS airdropx_avionics_init_v140.m: ok
+PASS airdropx_avionics_step_v140.m: ok
+PASS airdropx_phys_mpc_wind_disturbance_fit_flightlog_v140.m: ok
+PASS run_wind_disturbance_airdrop_v140_D.ps1: ok
+PASS run_wind_disturbance_airdrop_point_v140_D.ps1: ok
+PASS run_base_equivalence_audit_v140_D.ps1: ok
+PASS install_wind_disturbance_airdrop_v140.ps1: ok

@@ -1,0 +1,13 @@
+AirdropX v1.3.1 independent fractional-release audit
+drag_per_m=0.000678192650023
+calm_H200_Vg50_ballistic_range_m=289.043778331
+fall_time_s=6.386597378
+MPC_sample_s=0.100
+release_grid_spacing_at_50mps_m=5.000
+legacy_quantization_worst_abs_m=2.499932716
+legacy_quantization_rms_m=1.443375677
+fractional_worst_abs_m=2.27373675443e-13
+fractional_rms_m=1.60914056932e-13
+tau_min_s=0.000006345
+tau_max_s=0.099996346
+PASS=1

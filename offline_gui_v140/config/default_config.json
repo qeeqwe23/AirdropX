@@ -1,0 +1,25 @@
+{
+  "target_altitude_m": 200.0,
+  "target_speed_mps": 50.0,
+  "fuel_scale": 1.0,
+  "duration_s": 55.0,
+  "target_start_m": 1200.0,
+  "target_spacing_m": 80.0,
+  "sensor_noise_seed": 1,
+  "wind": {
+    "mode": "custom",
+    "kind": "calm",
+    "speed_mps": 0.0,
+    "direction_from_deg": 0.0,
+    "flight_heading_deg": 0.0,
+    "start_s": 5.0,
+    "ramp_s": 10.0,
+    "period_s": 20.0,
+    "forcing_end_s": 45.0,
+    "settle_ramp_s": 2.0
+  },
+  "project_root": "",
+  "matlab_exe": "",
+  "output_root": "",
+  "model_policy": "auto_cache"
+}

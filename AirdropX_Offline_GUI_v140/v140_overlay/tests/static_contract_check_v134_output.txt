@@ -1,0 +1,35 @@
+PASS mission function v134
+PASS entry calls v134 mission
+PASS runner calls v134 entry
+PASS point calls v134 entry
+PASS runner calls v134 finalizer
+PASS mission calls v134 recovery bank
+PASS continuous recovery assist defaults off
+PASS continuous assist is explicit opt-in
+PASS disturbance evidence thresholds present
+PASS residual clears without evidence
+PASS base solver calm fallback
+PASS abrupt gust requires confidence
+PASS abrupt gust requires delta
+PASS energy absolute cap 3m
+PASS energy relative cap
+PASS energy cap uses nominal altitude
+PASS Iyy cfg0 bias captured
+PASS Iyy ref bias applied to cfg schedule
+PASS Iyy remaining error still formal
+PASS Iyy bias logged
+PASS plot interpreter none
+PASS input snap tolerance retained
+PASS hard bounds retained
+PASS recovery bank Va emphasis
+PASS recovery bank elevator cheaper
+PASS same recovery bank all cfg
+PASS runner hidden windows
+PASS point hidden windows
+PASS show windows override retained
+PASS stable point output root
+PASS stable full output root
+PASS final stable summary name
+PASS installer installs v134 runners
+PASS no mex shipped
+RESULT 34/34 PASS

@@ -1,0 +1,2 @@
+AirdropX Physics-MPC v1.4.0
+sensor-realistic avionics + truth-isolated MPC/release + independent cargo scoring
