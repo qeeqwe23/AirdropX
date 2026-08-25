@@ -77,7 +77,7 @@ class ImpactScatter(QWidget):
         p.setPen(QColor('#40505a')); p.drawRect(r)
         p.setPen(QColor('#a9c2cb')); p.drawText(8,20,'落点 Monte Carlo XY 坐标 (m)')
         if not self.items:
-            p.setPen(QColor('#6f8790')); p.drawText(r.center().x()-28,r.center().y(),'等待投放')
+            p.setPen(QColor('#6f8790')); p.drawText(int(r.center().x()-28),int(r.center().y()),'等待投放')
             return
         pts=[]
         for item in self.items:
