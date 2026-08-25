@@ -71,58 +71,70 @@ class ImpactScatter(QWidget):
     def set_impacts(self,items): self.items=list(items or []); self.update()
     def paintEvent(self,_):
         p=QPainter(self); p.setRenderHint(QPainter.RenderHint.Antialiasing); p.fillRect(self.rect(),QColor('#0b0f11'))
-        plot=self.rect().adjusted(48,34,-18,-38)
+        plot=self.rect().adjusted(52,36,-18,-42)
         side=min(plot.width(),plot.height())
         r=QRectF(plot.left()+(plot.width()-side)/2,plot.top()+(plot.height()-side)/2,side,side)
         p.setPen(QColor('#40505a')); p.drawRect(r)
-        p.setPen(QColor('#a9c2cb')); p.drawText(8,20,'落点 Monte Carlo XY 坐标 (m)')
+        p.setPen(QColor('#a9c2cb')); p.drawText(8,20,'落点 Monte Carlo XY (m)')
+        p.setPen(QColor('#5dce6a')); p.drawText(self.width()-190,20,'目标')
+        p.setPen(QColor('#8aa0a8')); p.drawText(self.width()-145,20,'样本')
+        p.setPen(QColor('#00dfff')); p.drawText(self.width()-96,20,'预测')
+        p.setPen(QColor('#ff5964')); p.drawText(self.width()-48,20,'真实')
         if not self.items:
             p.setPen(QColor('#6f8790')); p.drawText(int(r.center().x()-28),int(r.center().y()),'等待投放')
             return
         pts=[]
         for item in self.items:
             tx=float(item.get('target_x_m',item.get('target_m',0.0))); ty=float(item.get('target_y_m',0.0))
-            for sample in item.get('samples_xy',[]):
+            samples=item.get('samples_xy',[])
+            step=max(1,len(samples)//36)
+            for sample in samples[::step]:
                 x=float(sample.get('x_m',float('nan')))-tx; y=float(sample.get('y_m',0.0))-ty
                 if isfinite(x) and isfinite(y): pts.append((x,y))
             for xk,yk in (('predicted_x_m','predicted_y_m'),('truth_x_m','truth_y_m')):
                 x=float(item.get(xk,item.get('predicted_impact_m',float('nan'))))-tx
                 y=float(item.get(yk,0.0))-ty
                 if isfinite(x) and isfinite(y): pts.append((x,y))
-        span=max(5.0,min(80.0,max(max(abs(x),abs(y)) for x,y in pts)*1.18 if pts else 5.0))
+        span=max(5.0,min(80.0,max(max(abs(x),abs(y)) for x,y in pts)*1.25 if pts else 5.0))
         def mp(x,y):
             return QPointF(r.center().x()+x/span*r.width()/2,r.center().y()-y/span*r.height()/2)
-        p.setPen(QPen(QColor('#23363d'),1))
-        for frac,label in ((-1.0,f'{-span:.0f}'),(-0.5,f'{-span/2:.0f}'),(0.5,f'{span/2:.0f}'),(1.0,f'{span:.0f}')):
+        p.setPen(QPen(QColor('#1d3037'),1))
+        for frac in (-1.0,-0.5,0.5,1.0):
             x=mp(frac*span,0).x(); y=mp(0,frac*span).y()
             p.drawLine(int(x),int(r.top()),int(x),int(r.bottom()))
             p.drawLine(int(r.left()),int(y),int(r.right()),int(y))
-        p.setPen(QPen(QColor('#6e8790'),1))
+        p.setPen(QPen(QColor('#607882'),1))
         p.drawLine(int(r.left()),int(r.center().y()),int(r.right()),int(r.center().y()))
         p.drawLine(int(r.center().x()),int(r.top()),int(r.center().x()),int(r.bottom()))
         p.setPen(QColor('#72858e'))
-        p.drawText(int(r.left()),int(r.bottom()+20),f'X-Target  {-span:.0f}        0        +{span:.0f}')
+        p.drawText(int(r.left()),int(r.bottom()+20),f'X-Target  {-span:.0f}     0     +{span:.0f}')
         p.drawText(8,int(r.top()+12),f'Y +{span:.0f}')
         p.drawText(8,int(r.bottom()),f'Y -{span:.0f}')
-        p.setBrush(QBrush(Qt.BrushStyle.NoBrush)); p.setPen(QPen(QColor('#5dce6a'),2)); p.drawEllipse(mp(0,0),5.0,5.0)
+        p.setBrush(QBrush(Qt.BrushStyle.NoBrush)); p.setPen(QPen(QColor('#5dce6a'),2.0)); p.drawEllipse(mp(0,0),5.0,5.0)
         colors=[QColor('#00dfff'),QColor('#ffcf5a'),QColor('#b88cff'),QColor('#5dce6a')]
+        latest=None
         for item in self.items:
             idx=max(1,min(4,int(item.get('index',1))))
-            c=colors[(idx-1)%len(colors)]
+            c=colors[(idx-1)%len(colors)]; latest=item
             tx=float(item.get('target_x_m',item.get('target_m',0.0))); ty=float(item.get('target_y_m',0.0))
-            p.setBrush(QBrush(Qt.BrushStyle.NoBrush)); p.setPen(QPen(QColor(c.red(),c.green(),c.blue(),145),1.1))
-            for sample in item.get('samples_xy',[]):
+            samples=item.get('samples_xy',[]); step=max(1,len(samples)//36)
+            p.setBrush(QBrush(Qt.BrushStyle.NoBrush)); p.setPen(QPen(QColor(c.red(),c.green(),c.blue(),95),0.9))
+            for sample in samples[::step]:
                 x=float(sample.get('x_m',float('nan')))-tx; y=float(sample.get('y_m',0.0))-ty
-                if isfinite(x) and isfinite(y): p.drawEllipse(mp(x,y),3.0,3.0)
+                if isfinite(x) and isfinite(y): p.drawEllipse(mp(x,y),2.4,2.4)
             pred_x=float(item.get('predicted_x_m',item.get('predicted_impact_m',float('nan'))))-tx
             pred_y=float(item.get('predicted_y_m',0.0))-ty
             truth_x=float(item.get('truth_x_m',item.get('truth_impact_m',float('nan'))))-tx
             truth_y=float(item.get('truth_y_m',0.0))-ty
             if isfinite(pred_x) and isfinite(pred_y):
-                p.setBrush(QBrush(Qt.BrushStyle.NoBrush)); p.setPen(QPen(QColor('#00dfff'),2.0)); p.drawEllipse(mp(pred_x,pred_y),6.0,6.0)
+                p.setPen(QPen(QColor('#00dfff'),1.8)); p.drawEllipse(mp(pred_x,pred_y),5.0,5.0)
             if isfinite(truth_x) and isfinite(truth_y):
-                q=mp(truth_x,truth_y); p.setBrush(QBrush(Qt.BrushStyle.NoBrush)); p.setPen(QPen(QColor('#ff5964'),2.2)); p.drawEllipse(q,7.0,7.0)
-                p.setPen(QColor('#d9faff')); p.drawText(int(q.x()+8),int(q.y()-6),f'T{idx} ({truth_x:+.1f},{truth_y:+.1f})')
-        p.setPen(QColor('#5dce6a')); p.drawText(int(r.left()+4),self.height()-10,'绿圈=目标')
-        p.setPen(QColor('#00dfff')); p.drawText(int(r.left()+82),self.height()-10,'青圈=预测')
-        p.setPen(QColor('#ff5964')); p.drawText(int(r.left()+164),self.height()-10,'红圈=真实')
+                q=mp(truth_x,truth_y); p.setPen(QPen(QColor('#ff5964'),2.0)); p.drawEllipse(q,6.0,6.0)
+                p.setPen(QColor('#ffb3b8')); p.drawText(int(q.x()+7),int(q.y()-5),f'T{idx}')
+        if latest:
+            tx=float(latest.get('target_x_m',latest.get('target_m',0.0))); ty=float(latest.get('target_y_m',0.0))
+            idx=int(latest.get('index',1))
+            ex=float(latest.get('truth_x_m',latest.get('truth_impact_m',float('nan'))))-tx
+            ey=float(latest.get('truth_y_m',0.0))-ty
+            p.setPen(QColor('#d9faff'))
+            p.drawText(int(r.left()+4),int(r.top()+16),f'T{idx} error ({ex:+.2f}, {ey:+.2f}) m')
