@@ -8,7 +8,7 @@ from .app_config import MissionConfig
 from .model_bank import ModelBank
 from .jsbsim_runtime import JSBSimPlant,calibrate_delta_wind_maps
 from .sensors import PaperSensor
-from .wind import WindProfile,WindEstimator
+from .wind import WindProfile,WindEstimator,wind_event_markers
 from .ballistics import predict,integrate,fractional_release,P as BALLISTIC_PARAMS
 from .paper_logic import PaperCarrierController
 from .result_store import make_output_root,save
@@ -58,9 +58,9 @@ class StandaloneSimulation:
         key=(round(float(cfg.target_altitude_m),6),round(float(cfg.target_speed_mps),6))
         if key in self._gw_cache:
             gw_maps,gw_rows=self._gw_cache[key]
-            log('[INIT] 复用当前软件进程内已验证的 H/V delta-wind Gw 缓存。')
+            log('[INIT] Reusing verified in-process H/V delta-wind Gw cache.')
         else:
-            log('[INIT] 用独立 JSBSim 对 5 个载荷配置标定论文 delta-wind Gw（不调用 MATLAB）。')
+            log('[INIT] Calibrating Paper delta-wind Gw with standalone JSBSim for 5 cargo cfgs (no MATLAB).')
             gw_maps,gw_rows=calibrate_delta_wind_maps(self.plant_assets,models,Ts=Ts)
             self._gw_cache[key]=(gw_maps,gw_rows)
         log('[INIT] Gw PASS: '+', '.join(f"cfg{r['cfg']} Va={r['Gw_Va']:+.4f}" for r in gw_rows))
@@ -73,19 +73,19 @@ class StandaloneSimulation:
         cfgid=0; target_idx=0; targets=[cfg.target_start_m+i*cfg.target_spacing_m for i in range(4)]
         series=[]; cargo=[]; cargo_visuals=[]; wall=time.perf_counter(); qp_ok=0; stopped=False
         log(f"[START] standalone JSBSim + Physics-MPC v1.3.6-Paper | H={cfg.target_altitude_m:g} m V={cfg.target_speed_mps:g} m/s | {cfg.envelope_label}")
+        for ev_t, ev_label in wind_event_markers(cfg.wind, cfg.duration_s):
+            log(f"[WIND] t={ev_t:.2f}s {ev_label}")
 
         for k in range(N):
             if self.stop_requested:
-                stopped=True; log('[STOP] 用户请求停止。'); break
+                stopped=True; log('[STOP] User requested stop.'); break
             t=k*Ts; cfg_sample=cfgid; wind=float(wind_prof.value(t))
 
-            # Plant truth is stimulus/scoring only. Paper sensor output is the controller path.
             obs=sensor.step(truth)
             eo=wind_est.step(obs['Va_mps'],obs['Vz_up_mps'],obs['Vg_long_mps'])
             wi=paper.observe(obs,eo)
 
-            # Release guidance happens before the carrier solve, matching v1.3.6-Paper.
-            scheduled=None; immediate_release=False; release_row=None
+            scheduled=None; release_row=None
             if target_idx<4:
                 rs=dict(
                     x_m=float(obs['pos_n_m']),
@@ -97,19 +97,17 @@ class StandaloneSimulation:
                 )
                 sr=fractional_release(rs,targets[target_idx],Ts)
                 if sr['release_now']:
-                    # Boundary release: configuration changes before this sample's MPC solve.
                     old_cfg=cfgid; release_t=t; tau=0.0; truth_release=truth
                     est_rel=self._release_state(rs,tau); pred_rel=predict(est_rel)
                     tr=integrate(float(truth_release['pos_n_m']),float(truth_release['h_m']),float(truth_release['Vg_long_mps']),float(truth_release['Vz_up_mps']),lambda age:float(wind_prof.value(release_t+age)))
                     release_row=dict(index=target_idx+1,target_m=targets[target_idx],release_t_s=release_t,release_phase_s=0.0,fractional_release=False,scheduler_mode=sr['mode'],scheduler_residual_m=sr['scheduler_residual_m'],release_x_est_m=est_rel['x_m'],release_h_est_m=est_rel['h_m'],predicted_impact_m=pred_rel['impact_x_m'],truth_impact_m=tr['impact_x_m'],landing_error_m=tr['impact_x_m']-targets[target_idx],fall_time_s=tr['fall_time_s'])
                     cargo.append(release_row); cargo_visuals.append((release_t,tr['path_timed']))
                     log(f"[DROP] #{target_idx+1} t={release_t:.3f}s phase=0 target={targets[target_idx]:.1f}m impact={tr['impact_x_m']:.2f}m error={release_row['landing_error_m']:+.2f}m")
-                    target_idx+=1; cfgid=min(4,cfgid+1); immediate_release=True
+                    target_idx+=1; cfgid=min(4,cfgid+1)
                     paper.reset_transition(old_cfg,cfgid)
                 elif sr['release_within_sample']:
                     scheduled=dict(sr=sr,rs=rs,index=target_idx,target=targets[target_idx],old_cfg=cfgid)
 
-            # Existing Paper transient-evidence/recovery logic; calm/settled constant wind falls back to base MPC.
             solve_cfg=cfgid
             sol,diag=paper.solve(solve_cfg,obs['x_est'],wi); qp_ok+=int(sol.feasible)
             if not sol.feasible: raise RuntimeError(f"MPC QP failed at t={t:.2f}s cfg={solve_cfg}")
@@ -128,7 +126,6 @@ class StandaloneSimulation:
                 truth_next=plant.step(sol.u,cfgid,float(wind_prof.value(release_t)),rem) if rem>1e-9 else truth_release
                 paper.after_step(old_cfg,sol,diag,wi,transitioned=True,new_cfg=cfgid)
             elif k<N-1:
-                # Boundary release, if any, is applied by passing the new cfg here.
                 truth_next=plant.step(sol.u,cfgid,wind,Ts)
                 paper.after_step(solve_cfg,sol,diag,wi)
 

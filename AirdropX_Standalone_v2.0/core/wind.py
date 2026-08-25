@@ -66,6 +66,51 @@ class WindProfile:
             return 0.0
         raise ValueError(f"Unknown formal wind: {name}")
 
+def wind_event_markers(cfg: WindConfig, duration_s: float) -> list[tuple[float, str]]:
+    """Human-visible time markers for discontinuous or finite wind events."""
+    dur=float(duration_s)
+    out: list[tuple[float, str]] = []
+    def add(t: float, label: str) -> None:
+        if 0.0 <= float(t) <= dur + 1e-9:
+            out.append((float(t), label))
+    if cfg.mode == "formal":
+        table={
+            "tailwind_5": 5.0,
+            "headwind_5": -5.0,
+            "tailwind_12": 12.0,
+            "headwind_12": -12.0,
+        }
+        if cfg.kind in table:
+            add(5.0, f"风出现 {table[cfg.kind]:+.0f} m/s")
+        elif cfg.kind == "step_bidirectional":
+            add(5.0, "风出现 +8 m/s")
+            add(15.0, "风切换 -8 m/s")
+            add(25.0, "风切换 +3 m/s")
+        elif cfg.kind == "sine_longitudinal":
+            add(5.0, "正弦风开始")
+            add(cfg.forcing_end_s, "正弦风开始消退")
+            add(cfg.forcing_end_s + cfg.settle_ramp_s, "风消失 0 m/s")
+        elif cfg.kind == "ramp_minus10_plus10":
+            add(5.0, "Ramp 风开始 -10 m/s")
+            add(25.0, "Ramp 风达到 +10 m/s")
+        return sorted(out)
+
+    a=cfg.along_track_mps()
+    if cfg.kind == "step":
+        add(cfg.start_s, f"风出现 {a:+.1f} m/s")
+    elif cfg.kind == "bidirectional_step":
+        add(cfg.start_s, f"风出现 {a:+.1f} m/s")
+        add(cfg.start_s + 10.0, f"风切换 {-a:+.1f} m/s")
+        add(cfg.start_s + 20.0, f"风切换 {0.375*a:+.1f} m/s")
+    elif cfg.kind == "ramp":
+        add(cfg.start_s, f"Ramp 风开始 {-a:+.1f} m/s")
+        add(cfg.start_s + cfg.ramp_s, f"Ramp 风达到 {a:+.1f} m/s")
+    elif cfg.kind == "sine":
+        add(cfg.start_s, "正弦风开始")
+    elif cfg.kind == "turbulence":
+        add(0.0, "复合阵风开始")
+    return sorted(out)
+
 class WindEstimator:
     """Direct port of v1.1.1 two-state adaptive Kalman longitudinal observer."""
     def __init__(self, Ts: float, sigma_ground=0.10, sigma_air=0.15, sigma_vz=0.07):

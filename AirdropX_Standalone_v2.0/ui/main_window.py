@@ -2,7 +2,7 @@ from __future__ import annotations
 from pathlib import Path
 import platform
 from PyQt6.QtCore import QThread,pyqtSignal
-from PyQt6.QtWidgets import QMainWindow,QWidget,QVBoxLayout,QHBoxLayout,QLabel,QProgressBar,QSplitter,QMessageBox
+from PyQt6.QtWidgets import QMainWindow,QWidget,QVBoxLayout,QHBoxLayout,QLabel,QProgressBar,QSplitter
 from core.backend import StandaloneBackend
 from core.app_config import APP_NAME,APP_VERSION,CONTROLLER_NAME
 from .config_panel import ConfigPanel
@@ -29,13 +29,17 @@ class MainWindow(QMainWindow):
     def _backend(self):
         if self.backend is None: self.backend=StandaloneBackend(self.root)
         return self.backend
+    def _notify_error(self,msg:str):
+        self.analysis.append_log('[ERROR] '+str(msg))
+        self.statusBar().showMessage(str(msg),12000)
     def start(self,cfg):
         e=cfg.validate()
-        if e: QMessageBox.warning(self,'参数超出已验证范围','\n'.join(e)); return
+        if e:
+            msg='\n'.join(e); self.state.setText('参数错误'); self._notify_error(msg); return
         try:
             backend=self._backend()
         except Exception as exc:
-            QMessageBox.critical(self,'AirdropX 独立运行时未就绪',str(exc)); return
+            self.state.setText('运行时未就绪'); self._notify_error(str(exc)); return
         self.cfg=cfg; self.monitor.configure(cfg); self.analysis.reset(); self.config.set_running(True); self.state.setText(f'运行中 · {cfg.envelope_label} · MATLAB: NO'); self.progress.setValue(0)
         self.worker=Worker(backend,cfg); self.worker.log.connect(self.analysis.append_log); self.worker.progress.connect(lambda x:self.progress.setValue(int(round(100*x)))); self.worker.frame.connect(self._frame); self.worker.done.connect(self._done); self.worker.failed.connect(self._failed); self.worker.start()
     def _frame(self,f): self.monitor.append_frame(f); self.analysis.live(f)
@@ -50,4 +54,5 @@ class MainWindow(QMainWindow):
         self.progress.setValue(100 if ok else self.progress.value())
         self.state.setText(('完成' if ok else '已停止')+' · 独立 JSBSim · MATLAB: NO')
         self.analysis.done(summary,root)
-    def _failed(self,msg): self.config.set_running(False); self.state.setText('运行失败'); self.analysis.append_log('[ERROR] '+msg); QMessageBox.critical(self,'AirdropX 独立后端错误',msg)
+    def _failed(self,msg):
+        self.config.set_running(False); self.state.setText('运行失败'); self._notify_error(msg)

@@ -1,5 +1,6 @@
 from __future__ import annotations
 from PyQt6.QtWidgets import QWidget,QVBoxLayout,QLabel,QTabWidget,QHBoxLayout
+from core.wind import wind_event_markers
 from .widgets import TrajectoryView,MiniChart
 
 class MonitorPanel(QWidget):
@@ -11,5 +12,7 @@ class MonitorPanel(QWidget):
     def configure(self,cfg):
         self.reset(); targets=[cfg.target_start_m+i*cfg.target_spacing_m for i in range(4)]
         self.trajectory.configure(cfg.target_altitude_m,targets,cfg.target_speed_mps*cfg.duration_s*1.05)
+        events=wind_event_markers(cfg.wind,cfg.duration_s)
+        for chart in (self.h,self.va,self.ctrl): chart.set_events(events)
     def append_frame(self,f): self.trajectory.append_frame(f); self.h.append(f.t,f.h_m); self.va.append(f.t,f.va_mps); self.ctrl.append(f.t,f.elevator)
-    def reset(self): self.trajectory.reset(); self.h.reset(); self.va.reset(); self.ctrl.reset()
+    def reset(self): self.trajectory.reset(); self.h.reset(); self.va.reset(); self.ctrl.reset(); self.h.set_events([]); self.va.set_events([]); self.ctrl.set_events([])

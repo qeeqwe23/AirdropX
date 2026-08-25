@@ -98,9 +98,23 @@ class DenseBoxMPC:
         t0=time.perf_counter()
         fun=lambda U: .5*float(U@self.H@U)+float(f@U)
         jac=lambda U: self.H@U+f
-        r=minimize(fun,x0,jac=jac,bounds=list(zip(self.lb,self.ub)),method='L-BFGS-B',options={'maxiter':80,'ftol':1e-11,'gtol':1e-8,'maxls':30})
+        bounds=list(zip(self.lb,self.ub))
+        opts={'maxiter':80,'ftol':1e-11,'gtol':1e-8,'maxls':30}
+        r=minimize(fun,x0,jac=jac,bounds=bounds,method='L-BFGS-B',options=opts)
+        if (not r.success) and np.isfinite(np.asarray(r.x,float)).all():
+            msg=str(getattr(r,'message','')).upper()
+            if 'ITERATIONS' in msg or 'LINE SEARCH' in msg or 'ABNORMAL' in msg:
+                x1=np.clip(np.asarray(r.x,float),self.lb,self.ub)
+                r2=minimize(fun,x1,jac=jac,bounds=bounds,method='L-BFGS-B',options={'maxiter':240,'ftol':1e-12,'gtol':5e-8,'maxls':60})
+                if r2.success or float(getattr(r2,'fun',np.inf)) <= float(getattr(r,'fun',np.inf)) + 1e-9:
+                    r=r2
         U=np.clip(np.asarray(r.x,float),self.lb,self.ub); elapsed=time.perf_counter()-t0
-        feasible=bool(r.success and np.isfinite(U).all() and np.max(self.lb-U)<=1e-7 and np.max(U-self.ub)<=1e-7)
+        grad=jac(U)
+        low=U<=self.lb+1e-8; high=U>=self.ub-1e-8; mid=~(low|high)
+        pg=np.zeros_like(grad); pg[mid]=grad[mid]; pg[low]=np.minimum(grad[low],0.0); pg[high]=np.maximum(grad[high],0.0)
+        pg_inf=float(np.max(np.abs(pg))) if pg.size else 0.0
+        bounds_ok=bool(np.isfinite(U).all() and np.max(self.lb-U)<=1e-7 and np.max(U-self.ub)<=1e-7)
+        feasible=bool(bounds_ok and (r.success or pg_inf<=1e-5))
         du=U[:2]; u=np.clip(self.ur+du,[-1.,0.],[1.,1.]); pred=(base+self.Gamma@U).reshape(self.N,7).T+xr[:,None]
         self.warm=self.shift_warm(U,self.m)
         return MPCSolution(u,du,U,feasible,elapsed,pred)
