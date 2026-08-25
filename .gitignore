@@ -9,3 +9,4 @@ __pycache__/
 .venv/
 matlab/_backup*/
 *.bak
+*.rar

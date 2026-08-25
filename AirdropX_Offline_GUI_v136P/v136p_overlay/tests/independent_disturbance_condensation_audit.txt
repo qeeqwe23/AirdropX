@@ -1,0 +1,8 @@
+Physics-MPC v1.3.0 independent disturbance-condensation audit
+random stable n=7, m=2, N=20
+recursive_vs_condensed_state_max_abs_error=3.3306690738754696e-16
+qp_linear_term_identity_max_abs_error=4.4408920985006262e-16
+PASS=1
+
+This verifies the generic additive-disturbance prediction matrix used by v1.3.0.
+It does not substitute for the Windows MATLAB/JSBSim Gw calibration or mission validation.

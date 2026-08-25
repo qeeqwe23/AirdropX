@@ -1,0 +1,4 @@
+v1.3.6 transient-evidence policy audit: PASS
+calm active fraction=0.000000
+constant absolute wind: release evidence remains ON while carrier transient evidence expires: PASS
+sine projected last transient time=50.30s; 60s mission leaves >5s base-controller tail: PASS

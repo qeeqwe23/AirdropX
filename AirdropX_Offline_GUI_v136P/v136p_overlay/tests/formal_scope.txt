@@ -1,0 +1,10 @@
+Physics-MPC v1.3.0 formal validation scope
+
+Carrier: persistent nonlinear JSBSim, H=200 m, Va=50 m/s, cfg0->cfg4 real mass/CG/Iyy transitions.
+Wind: longitudinal only; 8 profiles inherited from v1.1.3/v1.2.1.
+Wind sensing: frozen v1.1.3 estimator; JSBSim truth wind is prohibited from controller and release guidance.
+Carrier control under test: unified Physics-MPC with JSBSim-calibrated delta-wind measured-disturbance channel plus short-memory residual observer.
+Release guidance: frozen v1.2.1 wind-aware impact predictor.
+Payload after release: AirdropX calibrated longitudinal ballistic truth model driven by the actual future longitudinal wind; no independent payload JSBSim FDM is spawned.
+Validation: 8 profiles x 3 modes = 24 missions, separating wind-MPC effect from release-guidance effect.
+No claim is made yet for lateral/crosswind control or the full H/V envelope of the wind-disturbance model.

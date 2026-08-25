@@ -1,0 +1,24 @@
+PASS: persistent wind-evidence threshold
+PASS: multi-sample amplitude activation
+PASS: rate may extend established event
+PASS: inactive control disturbance exactly zero
+PASS: exact base solver fallback
+PASS: disturbance evidence logged
+PASS: sine forced-response metric
+PASS: sine formal forced-response gate
+PASS: v135 validation wind used by carrier
+PASS: v135 validation wind used by cargo truth
+PASS: all seven MPC states logged
+PASS: sine has zero-wind settling tail
+PASS: control equivalence audited
+PASS: state equivalence audited
+PASS: first divergence reported
+PASS: zero-dt mass-property refresh
+PASS: new Oracle version marker
+PASS: 1/120 s Iyy regression
+PASS: full suite blocks on equivalence
+PASS: full runner hides child windows
+PASS: point runner hides child windows
+PASS: point runner formal seed map
+PASS: installer forces Oracle rebuild
+23/23 PASS

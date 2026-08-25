@@ -1,0 +1,10 @@
+v1.3.2 independent confidence/recovery audit
+calm-like          windConf= 0.0024 rateConf= 0.0110 effectiveWind=  0.0005 effectiveRate=  0.0011
+small-real-wind    windConf= 0.9273 rateConf= 0.0110 effectiveWind=  0.9273 effectiveRate=  0.0011
+5mps               windConf= 0.9995 rateConf= 0.0098 effectiveWind=  4.9974 effectiveRate=  0.0010
+12mps              windConf= 1.0000 rateConf= 0.0098 effectiveWind= 11.9998 effectiveRate=  0.0010
+ramp-cross-zero    windConf= 0.0000 rateConf= 0.8452 effectiveWind=  0.0000 effectiveRate=  0.8452
+recovery_levels= [0, 0.25, 0.5, 0.75, 1]
+max_q_multiplier= [1.5, 4.0, 1.5, 2.0, 3.0, 1.0, 1.0]
+max_r_multiplier= [0.8, 0.35]
+PASS=1
