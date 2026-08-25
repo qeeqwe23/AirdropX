@@ -7,9 +7,8 @@ import math
 
 APP_NAME = "AirdropX 独立空投仿真软件"
 APP_VERSION = "2.0.0-rc1"
-CONTROLLER_NAME = "Physics-MPC v1.3.6-Paper · standalone port"
+CONTROLLER_NAME = "Physics-MPC v1.3.6-Paper standalone port"
 
-# Systematically validated continuous HxV interval (Physics-MPC v0.9.0).
 VALIDATED_ALTITUDE_MIN_M = 20.0
 VALIDATED_ALTITUDE_MAX_M = 200.0
 VALIDATED_SPEED_MIN_MPS = 45.0
@@ -63,7 +62,7 @@ class WindConfig:
     random_seed: int = 2401
 
     def along_track_mps(self) -> float:
-        # meteorological FROM direction -> along-track wind, tailwind positive
+        # Meteorological FROM direction -> along-track wind, tailwind positive.
         rel = math.radians(self.direction_from_deg - self.flight_heading_deg)
         return -float(self.speed_mps) * math.cos(rel)
 
@@ -74,23 +73,40 @@ class MissionConfig:
     duration_s: float = 55.0
     target_start_m: float = 1200.0
     target_spacing_m: float = 80.0
+    target_positions_m: list[float] | None = None
     sensor_noise_seed: int = 101
     wind: WindConfig = field(default_factory=WindConfig)
     realtime_factor: float = 1.0
     output_root: str = ""
 
+    def drop_targets(self) -> list[float]:
+        if self.target_positions_m is not None:
+            return [float(x) for x in self.target_positions_m]
+        return [float(self.target_start_m + i * self.target_spacing_m) for i in range(4)]
+
     def validate(self) -> list[str]:
         e: list[str] = []
         if not (VALIDATED_ALTITUDE_MIN_M <= self.target_altitude_m <= VALIDATED_ALTITUDE_MAX_M):
-            e.append(f"目标高度仅允许 {VALIDATED_ALTITUDE_MIN_M:g}~{VALIDATED_ALTITUDE_MAX_M:g} m（已验证连续包线）。")
+            e.append(f"目标高度仅允许 {VALIDATED_ALTITUDE_MIN_M:g}~{VALIDATED_ALTITUDE_MAX_M:g} m。")
         if not (VALIDATED_SPEED_MIN_MPS <= self.target_speed_mps <= VALIDATED_SPEED_MAX_MPS):
-            e.append(f"目标速度仅允许 {VALIDATED_SPEED_MIN_MPS:g}~{VALIDATED_SPEED_MAX_MPS:g} m/s（已验证连续包线）。")
+            e.append(f"目标速度仅允许 {VALIDATED_SPEED_MIN_MPS:g}~{VALIDATED_SPEED_MAX_MPS:g} m/s。")
         if self.duration_s < 30.0:
             e.append("任务时长不得少于 30 s。")
         if not (0.0 <= self.wind.speed_mps <= 20.0):
             e.append("自定义风速限制为 0~20 m/s。")
         if not (0.0 <= self.wind.direction_from_deg <= 360.0):
-            e.append("风向必须在 0~360°。")
+            e.append("风向必须在 0~360 度。")
+        targets = self.drop_targets()
+        if len(targets) != 4 or not all(math.isfinite(x) for x in targets):
+            e.append("必须给出 4 个有限的投放目标位置。")
+        else:
+            mission_reach = float(self.target_speed_mps) * float(self.duration_s) + 600.0
+            if any(x < 100.0 or x > 6500.0 for x in targets):
+                e.append("投放目标位置需在 100~6500 m 的合理范围内。")
+            if any(targets[i+1] - targets[i] < 20.0 for i in range(3)):
+                e.append("4 个投放目标必须递增，且相邻间距至少 20 m。")
+            if targets[-1] > mission_reach:
+                e.append(f"最后一个目标 {targets[-1]:.0f} m 超出当前速度/时长的可达范围，建议延长任务或减小目标距离。")
         if self.wind.mode == "formal" and self.wind.kind == "sine_longitudinal":
             need = self.wind.forcing_end_s + self.wind.settle_ramp_s + 5.0
             if self.duration_s < need:
@@ -105,10 +121,11 @@ class MissionConfig:
 
     @property
     def envelope_label(self) -> str:
-        return "论文基准点" if self.is_paper_baseline else "已验证 H×V 连续包线"
+        return "论文基准点" if self.is_paper_baseline else "已验证 HxV 连续包线"
 
     def to_dict(self) -> dict:
         d = asdict(self)
+        d["drop_targets_m"] = self.drop_targets()
         d["controller"] = CONTROLLER_NAME
         d["validated_envelope"] = {
             "altitude_m": [VALIDATED_ALTITUDE_MIN_M, VALIDATED_ALTITUDE_MAX_M],

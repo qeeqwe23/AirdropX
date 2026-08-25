@@ -11,3 +11,11 @@ class ConfigTests(unittest.TestCase):
         self.assertTrue(MissionConfig(target_altitude_m=200.001,target_speed_mps=50).validate())
         self.assertTrue(MissionConfig(target_altitude_m=100,target_speed_mps=44.999).validate())
         self.assertTrue(MissionConfig(target_altitude_m=100,target_speed_mps=65.001).validate())
+    def test_custom_drop_targets_are_used(self):
+        cfg=MissionConfig(target_positions_m=[900,980,1130,1210])
+        self.assertEqual(cfg.drop_targets(),[900.0,980.0,1130.0,1210.0])
+        self.assertEqual(cfg.validate(),[])
+    def test_custom_drop_targets_are_guarded(self):
+        self.assertTrue(MissionConfig(target_positions_m=[900,980,990,1210]).validate())
+        self.assertTrue(MissionConfig(target_positions_m=[90,980,1130,1210]).validate())
+        self.assertTrue(MissionConfig(duration_s=30,target_speed_mps=45,target_positions_m=[900,980,1130,2600]).validate())

@@ -10,7 +10,7 @@ class MonitorPanel(QWidget):
         self.trajectory=TrajectoryView(); lay.addWidget(self.trajectory,5)
         self.tabs=QTabWidget(); page=QWidget(); row=QHBoxLayout(page); self.h=MiniChart('高度 H (m)'); self.va=MiniChart('空速 Va (m/s)'); self.ctrl=MiniChart('升降舵 command'); row.addWidget(self.h); row.addWidget(self.va); row.addWidget(self.ctrl); self.tabs.addTab(page,'辅助实时曲线'); lay.addWidget(self.tabs,2)
     def configure(self,cfg):
-        self.reset(); targets=[cfg.target_start_m+i*cfg.target_spacing_m for i in range(4)]
+        self.reset(); targets=cfg.drop_targets()
         self.trajectory.configure(cfg.target_altitude_m,targets,cfg.target_speed_mps*cfg.duration_s*1.05)
         events=wind_event_markers(cfg.wind,cfg.duration_s)
         for chart in (self.h,self.va,self.ctrl): chart.set_events(events)

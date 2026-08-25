@@ -11,13 +11,22 @@ class ConfigPanel(QWidget):
         box=QGroupBox('已验证飞行包线'); g=QGridLayout(box)
         self.alt=self._spin(VALIDATED_ALTITUDE_MIN_M,VALIDATED_ALTITUDE_MAX_M,200,1,' m'); self.speed=self._spin(VALIDATED_SPEED_MIN_MPS,VALIDATED_SPEED_MAX_MPS,50,.5,' m/s')
         g.addWidget(QLabel('目标高度'),0,0); g.addWidget(self.alt,0,1); g.addWidget(QLabel('目标速度'),1,0); g.addWidget(self.speed,1,1)
-        self.envelope=QLabel('允许范围：H 20–200 m · V 45–65 m/s\n超出范围不可启动，运行时不生成未知模型。'); self.envelope.setWordWrap(True); self.envelope.setObjectName('Good'); g.addWidget(self.envelope,2,0,1,2); root.addWidget(box)
+        self.envelope=QLabel('允许范围：H 20-200 m · V 45-65 m/s\n超出范围不可启动，运行时不生成未知模型。'); self.envelope.setWordWrap(True); self.envelope.setObjectName('Good'); g.addWidget(self.envelope,2,0,1,2); root.addWidget(box)
+
         wb=QGroupBox('风场'); wg=QGridLayout(wb); self.mode=QComboBox(); self.mode.addItems(['自定义风场','论文验证预设']); self.kind=QComboBox(); self.kind.addItems(CUSTOM_WIND_TYPES.keys()); self.formal=QComboBox(); self.formal.addItems(FORMAL_SCENARIOS.keys()); self.formal.hide()
-        self.ws=self._spin(0,20,0,.5,' m/s'); self.wdir=self._spin(0,360,0,5,'° 来向'); self.projected=QLabel('沿航迹: +0.00 m/s'); self.projected.setObjectName('Good')
+        self.ws=self._spin(0,20,0,.5,' m/s'); self.wdir=self._spin(0,360,0,5,' deg 来向'); self.projected=QLabel('沿航迹: +0.00 m/s'); self.projected.setObjectName('Good')
         self.wind_note=QLabel('纵向 Physics-MPC：风向按航迹方向投影；横风分量不冒充为纵向控制输入。'); self.wind_note.setWordWrap(True)
         for row,(name,w) in enumerate([('模式',self.mode),('风型',self.kind),('论文预设',self.formal),('风速',self.ws),('风向',self.wdir),('',self.projected)]): wg.addWidget(QLabel(name),row,0); wg.addWidget(w,row,1)
         wg.addWidget(self.wind_note,6,0,1,2); root.addWidget(wb)
+
         mb=QGroupBox('任务'); mf=QFormLayout(mb); self.duration=self._spin(30,120,55,5,' s'); self.factor=QComboBox(); self.factor.addItems(['1x 实时','2x','5x']); mf.addRow('任务时长',self.duration); mf.addRow('显示倍率',self.factor); root.addWidget(mb)
+
+        tb=QGroupBox('投放目标'); tg=QGridLayout(tb); defaults=[1200,1280,1360,1440]; self.targets=[]
+        for i,val in enumerate(defaults):
+            spin=self._spin(100,6500,val,10,' m'); self.targets.append(spin)
+            tg.addWidget(QLabel(f'T{i+1}'),i//2,(i%2)*2); tg.addWidget(spin,i//2,(i%2)*2+1)
+        note=QLabel('4 个目标需递增，相邻至少 20 m；最后目标需在当前速度/时长可达范围内。'); note.setWordWrap(True); tg.addWidget(note,2,0,1,4); root.addWidget(tb)
+
         info=QGroupBox('独立运行时'); il=QVBoxLayout(info); lab=QLabel('Physics-MPC v1.3.6-Paper 数值移植\nJSBSim Python/native runtime\n运行时不调用 MATLAB / MEX / .mat'); lab.setObjectName('Good'); lab.setWordWrap(True); il.addWidget(lab); root.addWidget(info)
         self.start=QPushButton('启动实时仿真'); self.stop=QPushButton('停止'); self.reset=QPushButton('重置'); self.stop.setEnabled(False); root.addWidget(self.start); root.addWidget(self.stop); root.addWidget(self.reset); root.addStretch(1)
         self.mode.currentIndexChanged.connect(self._mode); self.ws.valueChanged.connect(self._proj); self.wdir.valueChanged.connect(self._proj); self.start.clicked.connect(lambda:self.start_requested.emit(self.get_config())); self.stop.clicked.connect(self.stop_requested); self.reset.clicked.connect(self.reset_requested); self._mode(0)
@@ -41,10 +50,12 @@ class ConfigPanel(QWidget):
             target_altitude_m=self.alt.value(),
             target_speed_mps=self.speed.value(),
             duration_s=self.duration.value(),
+            target_positions_m=[w.value() for w in self.targets],
             sensor_noise_seed=sensor_seed,
             wind=wind,
             realtime_factor=factor,
         )
     def set_running(self,r):
         self.start.setEnabled(not r); self.stop.setEnabled(r); self.reset.setEnabled(not r)
-        for w in (self.alt,self.speed,self.mode,self.kind,self.formal,self.ws,self.wdir,self.duration,self.factor): w.setEnabled(not r if w not in (self.ws,self.wdir) else (not r and self.mode.currentIndex()==0))
+        controls=(self.alt,self.speed,self.mode,self.kind,self.formal,self.ws,self.wdir,self.duration,self.factor,*self.targets)
+        for w in controls: w.setEnabled(not r if w not in (self.ws,self.wdir) else (not r and self.mode.currentIndex()==0))

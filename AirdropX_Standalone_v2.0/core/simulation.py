@@ -29,6 +29,7 @@ class LiveFrame:
     throttle: float
     target_m: float|None
     cargo_paths: list
+    impact_scatters: list
 
 
 class StandaloneSimulation:
@@ -46,6 +47,43 @@ class StandaloneSimulation:
         out['h_m']=max(0.,float(rs['h_m'])+float(rs['vz_up_mps'])*tau)
         out['wind_est_mps']=float(np.clip(float(rs['wind_est_mps'])+float(rs['wind_rate_est_mps2'])*tau,-BALLISTIC_PARAMS['max_w'],BALLISTIC_PARAMS['max_w']))
         return out
+
+    @staticmethod
+    def _impact_mc_samples(est_rel:dict,wind_sigma:float,seed:int,n:int=96)->list[float]:
+        rng=np.random.default_rng(int(seed))
+        samples=[]
+        sigma=max(0.15,float(wind_sigma))
+        for _ in range(n):
+            rr=dict(est_rel)
+            rr['x_m']=float(rr['x_m'])+float(rng.normal(0.0,1.0))
+            rr['h_m']=max(0.0,float(rr['h_m'])+float(rng.normal(0.0,0.6)))
+            rr['vx_ground_mps']=float(rr['vx_ground_mps'])+float(rng.normal(0.0,0.20))
+            rr['vz_up_mps']=float(rr['vz_up_mps'])+float(rng.normal(0.0,0.08))
+            rr['wind_est_mps']=float(np.clip(float(rr['wind_est_mps'])+float(rng.normal(0.0,sigma)),-BALLISTIC_PARAMS['max_w'],BALLISTIC_PARAMS['max_w']))
+            rr['wind_rate_est_mps2']=float(np.clip(float(rr['wind_rate_est_mps2'])+float(rng.normal(0.0,0.20)),-BALLISTIC_PARAMS['max_rate'],BALLISTIC_PARAMS['max_rate']))
+            samples.append(float(predict(rr)['impact_x_m']))
+        return samples
+
+    @staticmethod
+    def _mc_summary(samples:list[float])->dict:
+        if not samples:
+            return dict(mc_sample_count=0,mc_p05_m=float('nan'),mc_p50_m=float('nan'),mc_p95_m=float('nan'))
+        arr=np.asarray(samples,dtype=float)
+        return dict(
+            mc_sample_count=int(arr.size),
+            mc_p05_m=float(np.percentile(arr,5)),
+            mc_p50_m=float(np.percentile(arr,50)),
+            mc_p95_m=float(np.percentile(arr,95)),
+        )
+
+    def _append_drop_scatter(self,impact_scatters:list,drop_index:int,target:float,predicted:float,truth:float,samples:list[float])->None:
+        impact_scatters.append(dict(
+            index=int(drop_index),
+            target_m=float(target),
+            predicted_impact_m=float(predicted),
+            truth_impact_m=float(truth),
+            samples_m=[float(x) for x in samples],
+        ))
 
     def run(self,cfg:MissionConfig,frame_cb=None,log_cb=None,progress_cb=None):
         errs=cfg.validate()
@@ -70,9 +108,10 @@ class StandaloneSimulation:
         truth=plant.initialize(models[0].xref,models[0].uref,0)
         sensor=PaperSensor(Ts,cfg.sensor_noise_seed)
         wind_prof=WindProfile(cfg.wind); wind_est=WindEstimator(Ts)
-        cfgid=0; target_idx=0; targets=[cfg.target_start_m+i*cfg.target_spacing_m for i in range(4)]
-        series=[]; cargo=[]; cargo_visuals=[]; wall=time.perf_counter(); qp_ok=0; stopped=False
+        cfgid=0; target_idx=0; targets=cfg.drop_targets()
+        series=[]; cargo=[]; cargo_visuals=[]; impact_scatters=[]; wall=time.perf_counter(); qp_ok=0; stopped=False
         log(f"[START] standalone JSBSim + Physics-MPC v1.3.6-Paper | H={cfg.target_altitude_m:g} m V={cfg.target_speed_mps:g} m/s | {cfg.envelope_label}")
+        log('[TARGET] '+', '.join(f"T{i+1}={x:.1f}m" for i,x in enumerate(targets)))
         for ev_t, ev_label in wind_event_markers(cfg.wind, cfg.duration_s):
             log(f"[WIND] t={ev_t:.2f}s {ev_label}")
 
@@ -100,9 +139,12 @@ class StandaloneSimulation:
                     old_cfg=cfgid; release_t=t; tau=0.0; truth_release=truth
                     est_rel=self._release_state(rs,tau); pred_rel=predict(est_rel)
                     tr=integrate(float(truth_release['pos_n_m']),float(truth_release['h_m']),float(truth_release['Vg_long_mps']),float(truth_release['Vz_up_mps']),lambda age:float(wind_prof.value(release_t+age)))
-                    release_row=dict(index=target_idx+1,target_m=targets[target_idx],release_t_s=release_t,release_phase_s=0.0,fractional_release=False,scheduler_mode=sr['mode'],scheduler_residual_m=sr['scheduler_residual_m'],release_x_est_m=est_rel['x_m'],release_h_est_m=est_rel['h_m'],predicted_impact_m=pred_rel['impact_x_m'],truth_impact_m=tr['impact_x_m'],landing_error_m=tr['impact_x_m']-targets[target_idx],fall_time_s=tr['fall_time_s'])
+                    drop_no=target_idx+1; target=targets[target_idx]
+                    mc_samples=self._impact_mc_samples(est_rel,float(eo['wind_sigma_mps']),cfg.sensor_noise_seed*1000+drop_no)
+                    release_row=dict(index=drop_no,target_m=target,release_t_s=release_t,release_phase_s=0.0,fractional_release=False,scheduler_mode=sr['mode'],scheduler_residual_m=sr['scheduler_residual_m'],release_x_est_m=est_rel['x_m'],release_h_est_m=est_rel['h_m'],predicted_impact_m=pred_rel['impact_x_m'],truth_impact_m=tr['impact_x_m'],landing_error_m=tr['impact_x_m']-target,fall_time_s=tr['fall_time_s'],**self._mc_summary(mc_samples))
                     cargo.append(release_row); cargo_visuals.append((release_t,tr['path_timed']))
-                    log(f"[DROP] #{target_idx+1} t={release_t:.3f}s phase=0 target={targets[target_idx]:.1f}m impact={tr['impact_x_m']:.2f}m error={release_row['landing_error_m']:+.2f}m")
+                    self._append_drop_scatter(impact_scatters,drop_no,target,pred_rel['impact_x_m'],tr['impact_x_m'],mc_samples)
+                    log(f"[DROP] #{drop_no} t={release_t:.3f}s phase=0 target={target:.1f}m impact={tr['impact_x_m']:.2f}m error={release_row['landing_error_m']:+.2f}m")
                     target_idx+=1; cfgid=min(4,cfgid+1)
                     paper.reset_transition(old_cfg,cfgid)
                 elif sr['release_within_sample']:
@@ -118,9 +160,12 @@ class StandaloneSimulation:
                 truth_release=plant.step(sol.u,old_cfg,float(wind_prof.value(t)),tau) if tau>1e-9 else truth
                 est_rel=self._release_state(rs,tau); pred_rel=predict(est_rel)
                 tr=integrate(float(truth_release['pos_n_m']),float(truth_release['h_m']),float(truth_release['Vg_long_mps']),float(truth_release['Vz_up_mps']),lambda age:float(wind_prof.value(release_t+age)))
-                release_row=dict(index=target_idx+1,target_m=targets[target_idx],release_t_s=release_t,release_phase_s=tau,fractional_release=True,scheduler_mode=sr['mode'],scheduler_residual_m=sr['scheduler_residual_m'],release_x_est_m=est_rel['x_m'],release_h_est_m=est_rel['h_m'],predicted_impact_m=pred_rel['impact_x_m'],truth_impact_m=tr['impact_x_m'],landing_error_m=tr['impact_x_m']-targets[target_idx],fall_time_s=tr['fall_time_s'])
+                drop_no=target_idx+1; target=targets[target_idx]
+                mc_samples=self._impact_mc_samples(est_rel,float(eo['wind_sigma_mps']),cfg.sensor_noise_seed*1000+drop_no)
+                release_row=dict(index=drop_no,target_m=target,release_t_s=release_t,release_phase_s=tau,fractional_release=True,scheduler_mode=sr['mode'],scheduler_residual_m=sr['scheduler_residual_m'],release_x_est_m=est_rel['x_m'],release_h_est_m=est_rel['h_m'],predicted_impact_m=pred_rel['impact_x_m'],truth_impact_m=tr['impact_x_m'],landing_error_m=tr['impact_x_m']-target,fall_time_s=tr['fall_time_s'],**self._mc_summary(mc_samples))
                 cargo.append(release_row); cargo_visuals.append((release_t,tr['path_timed']))
-                log(f"[DROP] #{target_idx+1} t={release_t:.3f}s phase={tau:.4f}s target={targets[target_idx]:.1f}m impact={tr['impact_x_m']:.2f}m error={release_row['landing_error_m']:+.2f}m")
+                self._append_drop_scatter(impact_scatters,drop_no,target,pred_rel['impact_x_m'],tr['impact_x_m'],mc_samples)
+                log(f"[DROP] #{drop_no} t={release_t:.3f}s phase={tau:.4f}s target={target:.1f}m impact={tr['impact_x_m']:.2f}m error={release_row['landing_error_m']:+.2f}m")
                 target_idx+=1; cfgid=min(4,cfgid+1); fractional_happened=True
                 rem=Ts-tau
                 truth_next=plant.step(sol.u,cfgid,float(wind_prof.value(release_t)),rem) if rem>1e-9 else truth_release
@@ -146,7 +191,7 @@ class StandaloneSimulation:
                 if display_t+1e-9<release_t: continue
                 age=display_t-release_t; pts=[(px,ph) for tau,px,ph in path_timed if tau<=age+1e-9]
                 if pts: visible_cargo.append(pts)
-            emit(LiveFrame(t,float(truth['pos_n_m']),float(truth['h_m']),float(obs['x_est'][0]),float(obs['x_est'][1]),math.degrees(float(obs['x_est'][3])),wind,float(eo['wind_est_mps']),cfgid,float(sol.u[0]),float(sol.u[1]),targets[target_idx] if target_idx<4 else None,visible_cargo))
+            emit(LiveFrame(t,float(truth['pos_n_m']),float(truth['h_m']),float(obs['x_est'][0]),float(obs['x_est'][1]),math.degrees(float(obs['x_est'][3])),wind,float(eo['wind_est_mps']),cfgid,float(sol.u[0]),float(sol.u[1]),targets[target_idx] if target_idx<4 else None,visible_cargo,list(impact_scatters)))
             progress(min(1.,k/max(1,N-1)))
             if truth_next is not None: truth=truth_next
 
