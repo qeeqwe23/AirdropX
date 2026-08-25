@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<!--
+  Direct thruster used by the AirdropX JSBSim S-Function plant.
+  Thrust is computed directly by the engine model.
+-->
+<direct name="Direct">
+</direct>

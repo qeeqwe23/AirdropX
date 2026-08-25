@@ -1,0 +1,29 @@
+AirdropX Standalone v2.0.0-rc1
+
+Runtime architecture:
+  PyQt6 -> Python numerical Physics-MPC v1.3.6-Paper port -> JSBSim 1.3.1 Python/native
+  MATLAB runtime: NO
+  MEX runtime: NO
+  .mat runtime reads: NO
+
+Hard flight envelope:
+  H: 20..200 m
+  V: 45..65 m/s
+  Build requires complete 19 x 5 x 5 = 475 anchor combinations.
+
+Release rules:
+  - no unknown-model generation at runtime
+  - H/V off-grid: bilinear A/B/xtrim/utrim + DARE P/K, common Q/R, Np=Nc=100
+  - original v1.3.6-Paper transient evidence / recovery / energy logic ported
+  - no special Engineering-tail controller patch
+  - fractional release remains aligned to 1/120 s JSBSim grid
+
+Build gates:
+  1. Python 3.12 required
+  2. compileall
+  3. unit regression suite
+  4. real JSBSim trim/wind/mass/MPC smoke
+  5. PyInstaller only after all gates pass
+
+This source package was not able to execute the Windows JSBSim/PyQt runtime in the current build environment.
+The Windows build script intentionally refuses to create a release executable if the real JSBSim smoke fails.

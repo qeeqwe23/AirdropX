@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!--
+  MQ-9 Reaper 非武器货运构型 - 20m 低空无伞投放任务初始条件
+  用途：JSBSim 仿真初始化，对应 20m 低空定高空投任务
+  注意：本文件为纯 JSBSim initialize 格式，不包含 FlightGear HUD/武器/Nasal 配置
+-->
+<initialize name="reset_20m">
+  <!-- 机体坐标系速度分量，单位：m/s -->
+  <!-- ubody: 机体轴向（前向）速度 75 m/s，MQ-9 低空配平速度
+       配平分析：Sw=23.90m^2, CL_0=0.4077, m=3423kg, h=20m
+       v_trim = sqrt(2*W/(rho*Sw*CL_0)) = sqrt(2*33580/(1.225*23.90*0.4077)) = 75.0 m/s
+       在 v=90m/s 时升力/重力=1.44（过剩），在 v=75m/s 时升力/重力≈1.00（配平）-->
+  <ubody unit="M/SEC">50.0</ubody>
+  <!-- vbody: 机体侧向速度，初始为 0 -->
+  <vbody unit="M/SEC">0.0</vbody>
+  <!-- wbody: 机体法向速度，初始为 0（水平飞行） -->
+  <wbody unit="M/SEC">0.0</wbody>
+
+  <!-- 初始地理位置：成都平原上空（经纬度仅用于大气模型参考） -->
+  <latitude  unit="DEG">30.0</latitude>
+  <longitude unit="DEG">103.0</longitude>
+
+  <!-- 初始高度：20m AGL（低空无伞投放任务高度） -->
+  <altitude unit="M">20.0</altitude>
+
+  <!-- 初始姿态角：水平飞行，无滚转/俯仰/偏航 -->
+  <phi   unit="DEG">0.0</phi>   <!-- 滚转角 -->
+  <theta unit="DEG">7.0</theta> <!-- 俯仰角 -->
+  <psi   unit="DEG">0.0</psi>   <!-- 偏航角（航向正北） -->
+
+  <!-- 初始角速度：全部为 0（配平状态） -->
+  <p unit="DEG/SEC">0.0</p>   <!-- 滚转角速度 -->
+  <q unit="DEG/SEC">0.0</q>   <!-- 俯仰角速度 -->
+  <r unit="DEG/SEC">0.0</r>   <!-- 偏航角速度 -->
+</initialize>

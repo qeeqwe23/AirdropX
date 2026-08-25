@@ -1,4 +1,4 @@
-slprj/
+﻿slprj/
 matlab/slprj/
 matlab/results/
 matlab/outputs/
@@ -13,3 +13,8 @@ matlab/_backup*/
 AirdropX_Software/build/
 AirdropX_Software/build_spec/
 AirdropX_Software/dist/
+AirdropX_Standalone_v2.0/.venv_standalone/
+AirdropX_Standalone_v2.0/build/
+AirdropX_Standalone_v2.0/dist/
+AirdropX_Standalone_v2.0/AirdropX.spec
+

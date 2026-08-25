@@ -1,0 +1,72 @@
+{
+  "_comment": "MQ-9 Reaper 非武器货运构型 - 20m 低空无伞投放任务配置",
+  "_version": "1.0.0",
+  "_task_card": "TC-CARP20-01",
+
+  "aircraft": {
+    "model": "MQ9_Reaper_Cargo",
+    "xml_path": "aircraft/MQ9_Reaper/MQ9_Reaper.xml",
+    "reset_ic": "aircraft/MQ9_Reaper/reset_20m.xml",
+    "empty_mass_kg": 2223.0,
+    "cargo_count": 4,
+    "cargo_mass_per_item_kg": 300.0,
+    "total_payload_kg": 1200.0
+  },
+
+  "mission": {
+    "type": "no_chute_airdrop",
+    "target_altitude_m": 20.0,
+    "airspeed_mps": 90.0,
+    "drop_mode": "single_item",
+    "parachute": false
+  },
+
+  "carp": {
+    "_comment": "实际解算值（TC-CARP20-01，2026-05-02）",
+    "altitude_m": 20.0,
+    "ground_speed_mps": 90.0,
+    "t_fall_s": 2.0193,
+    "d_no_drag_m": 181.7348,
+    "d_drag_correction_m": 32.7123,
+    "d_total_no_wind_m": 214.447,
+    "k_drag": 0.002,
+    "wind_correction_5mps_m": 10.097,
+    "mc_cep50_m": 4.81,
+    "mc_success_rate_pct": 100.0,
+    "mc_samples": 100,
+    "mc_wind_std_mps": 2.0,
+    "mc_alt_std_m": 0.5
+  },
+
+  "controller": {
+    "type": "ADRC_V17",
+    "target_altitude_m": 20.0,
+    "max_target_alt_m": 28.0,
+    "climb_suppress_threshold_m": 1.0,
+    "omega_o": 20.0,
+    "omega_c": 1.5,
+    "omega_r": 6.0,
+    "b0_base": 1.5,
+    "k_ff": 0.50,
+    "ff_tau": 0.50
+  },
+
+  "mass_cg": {
+    "airframe_preset": "MQ9_REAPER_CARGO",
+    "cargo_items": [
+      {"name": "CARGO_1", "mass_kg": 300.0, "x_m": 4.826, "jsbsim_prop": "inertia/pointmass-weight-lbs[0]"},
+      {"name": "CARGO_2", "mass_kg": 300.0, "x_m": 5.131, "jsbsim_prop": "inertia/pointmass-weight-lbs[1]"},
+      {"name": "CARGO_3", "mass_kg": 300.0, "x_m": 5.436, "jsbsim_prop": "inertia/pointmass-weight-lbs[2]"},
+      {"name": "CARGO_4", "mass_kg": 300.0, "x_m": 5.740, "jsbsim_prop": "inertia/pointmass-weight-lbs[3]"}
+    ]
+  },
+
+  "acceptance_criteria": {
+    "drop_done": true,
+    "altitude_error_p95_m": 3.0,
+    "carp_distance_tolerance_m": 5.0,
+    "no_nan_in_telemetry": true,
+    "smoke_simple_pass": true,
+    "smoke_jsbsim_pass": true
+  }
+}
