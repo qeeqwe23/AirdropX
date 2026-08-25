@@ -10,3 +10,6 @@ __pycache__/
 matlab/_backup*/
 *.bak
 *.rar
+AirdropX_Software/build/
+AirdropX_Software/build_spec/
+AirdropX_Software/dist/

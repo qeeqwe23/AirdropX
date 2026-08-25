@@ -1,0 +1,30 @@
+PASS  formal paper sensor default
+PASS  nominal cargo default
+PASS  zero-bias sensor model
+PASS  zero-mean measurements
+PASS  controller state comes from sensor estimate
+PASS  release uses estimated position/height
+PASS  wind estimator uses measured Va/Vz/Vg
+PASS  base MPC uses xCtrl
+PASS  disturbance MPC uses xCtrl
+PASS  energy MPC uses xCtrl
+PASS  no solver consumes xTruth
+PASS  truth release state separate
+PASS  truth-estimate time series pairs
+PASS  truth leakage metrics explicit
+PASS  paper core separate from engineering gate
+PASS  actual impact model error metric
+PASS  optional independent cargo sensitivity
+PASS  ideal state ablation explicit
+PASS  full runner forces paper sensors
+PASS  full runner nominal cargo
+PASS  same deterministic seed map
+PASS  hidden child windows full
+PASS  hidden child windows point
+PASS  missing marker does not force rebuild full
+PASS  missing marker does not force rebuild point
+PASS  base equivalence uses paper sensors
+PASS  paper assumptions documented
+PASS  no precompiled binaries
+
+static_contract_check_v136p: 28/28 PASS

@@ -1,0 +1,12 @@
+PASS airdropx_wind_airdrop_mission_v136p.m: raw delimiter/function checks ok
+PASS airdropx_wind_airdrop_entry_v136p.m: raw delimiter/function checks ok
+PASS airdropx_phys_mpc_base_equivalence_audit_v136p.m: raw delimiter/function checks ok
+PASS airdropx_wind_airdrop_finalize_v136p.m: raw delimiter/function checks ok
+PASS airdropx_cargo_truth_params_v136p.m: raw delimiter/function checks ok
+PASS airdropx_cargo_truth_plant_v136p.m: raw delimiter/function checks ok
+PASS airdropx_paper_sensor_init_v136p.m: raw delimiter/function checks ok
+PASS airdropx_paper_sensor_step_v136p.m: raw delimiter/function checks ok
+PASS run_paper_validation_v136p_D.ps1: raw delimiter/function checks ok
+PASS run_paper_validation_point_v136p_D.ps1: raw delimiter/function checks ok
+PASS run_paper_equivalence_audit_v136p_D.ps1: raw delimiter/function checks ok
+PASS install_paper_validation_v136p.ps1: raw delimiter/function checks ok

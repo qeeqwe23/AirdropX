@@ -1,0 +1,3 @@
+AirdropX Offline Software v1.0
+Controller: Physics-MPC v1.3.6-Paper
+Policy: Paper controller unchanged; Engineering Gate is diagnostic only.

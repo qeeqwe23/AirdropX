@@ -1,0 +1,14 @@
+quantity,formal_online_source,jsbsim_truth_allowed_online,jsbsim_truth_use
+h,unbiased noisy baro plus causal vertical filter,no,scoring only
+Va,unbiased noisy pitot air-data plus causal filter,no,scoring only
+gamma,derived from estimated GNSS velocity vector,no,scoring only
+theta,unbiased noisy AHRS plus causal filter,no,scoring only
+q,unbiased noisy IMU gyro plus causal filter,no,scoring only
+N1_N2,unbiased noisy engine telemetry plus causal filter,no,scoring only
+along_track_position,unbiased noisy GNSS position plus causal filter,no,scoring only
+ground_speed,unbiased noisy GNSS velocity plus causal filter,no,scoring only
+vertical_speed,unbiased noisy GNSS vertical velocity plus causal filter,no,scoring only
+longitudinal_wind,causal air-ground velocity estimator,no,environment forcing and scoring only
+mass_CG_Iyy,scheduled cfg model,no,consistency scoring only
+A_B_trim,offline JSBSim model identification,not online,offline model source
+Gw,offline JSBSim finite-difference wind identification,not online,offline model source

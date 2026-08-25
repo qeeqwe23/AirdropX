@@ -1,0 +1,27 @@
+AirdropX Offline Software v1.0 - Release Audit
+
+Controller backend:
+  Physics-MPC v1.3.6-Paper only
+
+Policy:
+  - No Engineering-tail compensation patch added.
+  - No v1.4.0 controller path exposed by the software UI.
+  - v1.3.6-Paper overlay/controller source remains byte-identical to the previous validated baseline package.
+  - GUI custom-wind support is isolated behind scenario name gui_custom; formal v1.3.6-Paper scenario names continue through the original path.
+
+Static checks completed in release environment:
+  Python compileall: PASS
+  Config tests: PASS
+  Real 200m/50m/calm result parsing: PASS
+    timeseries rows = 551
+    cargo rows = 4
+    paper_core_pass = true
+    engineering_gate_pass = false
+    max_landing_error_m = 0.592075161034
+    rms_landing_error_m = 0.386937929857
+  v136p_overlay changed files vs baseline = 0
+
+Windows-only checks/build:
+  PyQt6 GUI construction and MATLAB/JSBSim execution must run on the Windows AirdropX host.
+  The user's previously reported baseline run already established GUI -> v1.3.6-Paper -> MATLAB -> JSBSim SUCCESS and Paper Core PASS.
+  install_into_airdropx.ps1 builds dist\AirdropX\AirdropX.exe on Windows by default.

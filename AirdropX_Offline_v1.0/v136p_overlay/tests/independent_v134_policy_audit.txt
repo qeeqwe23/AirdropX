@@ -1,0 +1,4 @@
+PASS v1.3.4 independent policy audit
+energy caps: H200=3.0 m, H100=2.0 m, H20=0.4 m
+no abrupt gust + assist disabled -> recovery target 0
+constant Iyy origin bias cancels without relaxing cfg delta check

@@ -1,0 +1,8 @@
+Replay of the user-provided v1.3.4 calm timeseries through the v1.3.5 evidence latch
+samples=551
+v134_reported_wind_mpc_active_fraction=0.290381125227
+v135_projected_evidence_active_fraction=0
+qualified_abrupt_gust_count=0
+max_wind_confidence=0.590554801737
+consecutive_3_samples_ge_0p25=0
+PASS

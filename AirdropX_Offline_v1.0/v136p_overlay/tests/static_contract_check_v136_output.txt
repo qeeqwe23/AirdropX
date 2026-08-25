@@ -1,0 +1,49 @@
+01 PASS required v136 file exists :: matlab/airdrop/airdropx_wind_airdrop_mission_v136.m
+02 PASS required v136 file exists :: matlab/airdrop/airdropx_wind_airdrop_entry_v136.m
+03 PASS required v136 file exists :: matlab/airdrop/airdropx_wind_airdrop_finalize_v136.m
+04 PASS required v136 file exists :: matlab/airdrop/airdropx_wind_airdrop_manifest_v136.m
+05 PASS required v136 file exists :: matlab/wind/airdropx_wind_profile_v136.m
+06 PASS required v136 file exists :: run_wind_disturbance_airdrop_point_v136_D.ps1
+07 PASS required v136 file exists :: run_wind_disturbance_airdrop_v136_D.ps1
+08 PASS required v136 file exists :: install_wind_disturbance_airdrop_v136.ps1
+09 PASS required v136 file exists :: matlab/airdrop/airdropx_phys_mpc_base_equivalence_audit_v136.m
+10 PASS absolute wind evidence separated for release diagnostics :: matlab/airdrop/airdropx_wind_airdrop_mission_v136.m
+11 PASS carrier transient evidence logged :: matlab/airdrop/airdropx_wind_airdrop_mission_v136.m
+12 PASS constant absolute wind documented as non-keepalive :: matlab/airdrop/airdropx_wind_airdrop_mission_v136.m
+13 PASS carrier rate magnitude+confidence criterion :: matlab/airdrop/airdropx_wind_airdrop_mission_v136.m
+14 PASS transient persistence bridges smooth sine extrema :: matlab/airdrop/airdropx_wind_airdrop_mission_v136.m
+15 PASS solver selected from transient event state :: matlab/airdrop/airdropx_wind_airdrop_mission_v136.m
+16 PASS no numerical deadband solver chatter :: matlab/airdrop/airdropx_wind_airdrop_mission_v136.m
+17 PASS tail base-solver context metric :: matlab/airdrop/airdropx_wind_airdrop_mission_v136.m
+18 PASS tail zero-wind context metric :: matlab/airdrop/airdropx_wind_airdrop_mission_v136.m
+19 PASS formal sine tail context gate :: matlab/airdrop/airdropx_wind_airdrop_mission_v136.m
+20 PASS wind-MPC switching diagnostic :: matlab/airdrop/airdropx_wind_airdrop_mission_v136.m
+21 PASS transient evidence switching diagnostic :: matlab/airdrop/airdropx_wind_airdrop_mission_v136.m
+22 PASS v136 scoring profile used for cargo truth :: matlab/airdrop/airdropx_wind_airdrop_mission_v136.m
+23 PASS sine profile reaches true zero wind :: matlab/wind/airdropx_wind_profile_v136.m
+24 PASS formal sine mission extended to 60 s :: matlab/airdrop/airdropx_wind_airdrop_manifest_v136.m
+25 PASS point sine automatically runs 60 s :: run_wind_disturbance_airdrop_point_v136_D.ps1
+26 PASS point child MATLAB hidden by default :: run_wind_disturbance_airdrop_point_v136_D.ps1
+27 PASS full child MATLAB hidden by default :: run_wind_disturbance_airdrop_v136_D.ps1
+28 PASS full runner uses v136 manifest :: run_wind_disturbance_airdrop_v136_D.ps1
+29 PASS base equivalence remains a full-run preflight :: run_wind_disturbance_airdrop_v136_D.ps1
+30 PASS full runner reads v136 final summary :: run_wind_disturbance_airdrop_v136_D.ps1
+31 PASS parallel cap remains <=3 :: run_wind_disturbance_airdrop_v136_D.ps1
+32 PASS v1.3.6 reuses validated v1.3.5 Oracle :: run_wind_disturbance_airdrop_point_v136_D.ps1
+33 PASS full runner reuses validated v1.3.5 Oracle :: run_wind_disturbance_airdrop_v136_D.ps1
+34 PASS installer does not force needless Oracle rebuild :: install_wind_disturbance_airdrop_v136.ps1
+35 PASS equivalence audit exercises v136 mission :: matlab/airdrop/airdropx_phys_mpc_base_equivalence_audit_v136.m
+36 PASS finalizer exports transient evidence metric :: matlab/airdrop/airdropx_wind_airdrop_finalize_v136.m
+37 PASS finalizer exports switching metric :: matlab/airdrop/airdropx_wind_airdrop_finalize_v136.m
+38 PASS v136 final output names distinct :: matlab/airdrop/airdropx_wind_airdrop_finalize_v136.m
+39 PASS version file :: VERSION.txt
+40 PASS no precompiled MEX shipped :: []
+41 PASS MATLAB function name matches filename :: matlab/airdrop/airdropx_wind_airdrop_mission_v136.m
+42 PASS MATLAB function name matches filename :: matlab/airdrop/airdropx_wind_airdrop_entry_v136.m
+43 PASS MATLAB function name matches filename :: matlab/airdrop/airdropx_wind_airdrop_finalize_v136.m
+44 PASS MATLAB function name matches filename :: matlab/airdrop/airdropx_wind_airdrop_manifest_v136.m
+45 PASS MATLAB function name matches filename :: matlab/wind/airdropx_wind_profile_v136.m
+46 PASS MATLAB function name matches filename :: matlab/airdrop/airdropx_phys_mpc_base_equivalence_audit_v136.m
+47 PASS MATLAB function name matches filename :: matlab/airdrop/airdropx_airdrop_truth_impact_v136.m
+
+TOTAL 47/47 PASS

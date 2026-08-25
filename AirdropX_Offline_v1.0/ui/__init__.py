@@ -1,0 +1,1 @@
+"""AirdropX offline GUI widgets."""
