@@ -49,7 +49,7 @@ class StandaloneSimulation:
         return out
 
     @staticmethod
-    def _impact_mc_samples(est_rel:dict,wind_sigma:float,seed:int,n:int=96)->list[float]:
+    def _impact_mc_samples(est_rel:dict,wind_sigma:float,seed:int,n:int=96)->list[dict]:
         rng=np.random.default_rng(int(seed))
         samples=[]
         sigma=max(0.15,float(wind_sigma))
@@ -61,30 +61,35 @@ class StandaloneSimulation:
             rr['vz_up_mps']=float(rr['vz_up_mps'])+float(rng.normal(0.0,0.08))
             rr['wind_est_mps']=float(np.clip(float(rr['wind_est_mps'])+float(rng.normal(0.0,sigma)),-BALLISTIC_PARAMS['max_w'],BALLISTIC_PARAMS['max_w']))
             rr['wind_rate_est_mps2']=float(np.clip(float(rr['wind_rate_est_mps2'])+float(rng.normal(0.0,0.20)),-BALLISTIC_PARAMS['max_rate'],BALLISTIC_PARAMS['max_rate']))
-            samples.append(float(predict(rr)['impact_x_m']))
+            x=float(predict(rr)['impact_x_m'])
+            y=float(rng.normal(0.0,1.2)+0.035*float(rr.get('wind_est_mps',0.0))*float(rng.normal(0.0,1.0)))
+            samples.append(dict(x_m=x,y_m=y))
         return samples
 
     @staticmethod
-    def _mc_summary(samples:list[float])->dict:
+    def _mc_summary(samples:list[dict])->dict:
         if not samples:
-            return dict(mc_sample_count=0,mc_p05_m=float('nan'),mc_p50_m=float('nan'),mc_p95_m=float('nan'))
-        arr=np.asarray(samples,dtype=float)
+            return dict(mc_sample_count=0,mc_p05_m=float('nan'),mc_p50_m=float('nan'),mc_p95_m=float('nan'),mc_y_abs_p95_m=float('nan'))
+        xs=np.asarray([float(p['x_m']) for p in samples],dtype=float)
+        ys=np.asarray([float(p.get('y_m',0.0)) for p in samples],dtype=float)
         return dict(
-            mc_sample_count=int(arr.size),
-            mc_p05_m=float(np.percentile(arr,5)),
-            mc_p50_m=float(np.percentile(arr,50)),
-            mc_p95_m=float(np.percentile(arr,95)),
+            mc_sample_count=int(xs.size),
+            mc_p05_m=float(np.percentile(xs,5)),
+            mc_p50_m=float(np.percentile(xs,50)),
+            mc_p95_m=float(np.percentile(xs,95)),
+            mc_y_abs_p95_m=float(np.percentile(np.abs(ys),95)),
         )
-
-    def _append_drop_scatter(self,impact_scatters:list,drop_index:int,target:float,predicted:float,truth:float,samples:list[float])->None:
+    def _append_drop_scatter(self,impact_scatters:list,drop_index:int,target:float,predicted:float,truth:float,samples:list[dict])->None:
         impact_scatters.append(dict(
             index=int(drop_index),
-            target_m=float(target),
-            predicted_impact_m=float(predicted),
-            truth_impact_m=float(truth),
-            samples_m=[float(x) for x in samples],
+            target_x_m=float(target),
+            target_y_m=0.0,
+            predicted_x_m=float(predicted),
+            predicted_y_m=0.0,
+            truth_x_m=float(truth),
+            truth_y_m=0.0,
+            samples_xy=[dict(x_m=float(p['x_m']),y_m=float(p.get('y_m',0.0))) for p in samples],
         ))
-
     def run(self,cfg:MissionConfig,frame_cb=None,log_cb=None,progress_cb=None):
         errs=cfg.validate()
         if errs: raise ValueError('\n'.join(errs))
