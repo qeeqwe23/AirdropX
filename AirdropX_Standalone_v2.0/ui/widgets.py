@@ -66,7 +66,7 @@ class MiniChart(QWidget):
 
 class ImpactScatter(QWidget):
     def __init__(self,parent=None):
-        super().__init__(parent); self.items=[]; self.selected_index=None; self._buttons=[]; self.setMinimumHeight(260)
+        super().__init__(parent); self.items=[]; self.selected_index=None; self._buttons=[]; self.setMinimumHeight(285)
     def reset(self): self.items=[]; self.selected_index=None; self._buttons=[]; self.update()
     def set_impacts(self,items):
         self.items=list(items or [])
@@ -88,21 +88,21 @@ class ImpactScatter(QWidget):
         super().mousePressEvent(event)
     def paintEvent(self,_):
         p=QPainter(self); p.setRenderHint(QPainter.RenderHint.Antialiasing); p.fillRect(self.rect(),QColor('#0b0f11'))
-        p.setPen(QColor('#a9c2cb')); p.drawText(8,20,'落点 Monte Carlo XY (m)')
+        p.setPen(QColor('#a9c2cb')); p.drawText(8,20,'MC XY (m)')
         selected=self._selected_item()
         selected_idx=int(selected.get('index',0)) if selected else 0
         available={int(x.get('index',0)) for x in self.items}
         self._buttons=[]
-        bx=max(118,self.width()-150); by=7; bw=31; bh=20
+        bw=30; bh=20; gap=4; bx=max(104,self.width()-4*(bw+gap)-18); by=6
         for i in range(1,5):
-            rect=QRectF(bx+(i-1)*(bw+4),by,bw,bh); enabled=i in available; active=i==selected_idx
+            rect=QRectF(bx+(i-1)*(bw+gap),by,bw,bh); enabled=i in available; active=i==selected_idx
             self._buttons.append((i,rect,enabled))
             fill=QColor('#12333b') if active else QColor('#101619')
             edge=QColor('#00dfff') if active else (QColor('#40505a') if enabled else QColor('#263138'))
             text=QColor('#d9faff') if enabled else QColor('#52646c')
             p.setBrush(QBrush(fill)); p.setPen(QPen(edge,1)); p.drawRoundedRect(rect,3,3)
             p.setPen(text); p.drawText(rect,Qt.AlignmentFlag.AlignCenter,f'T{i}')
-        plot=self.rect().adjusted(52,38,-18,-36)
+        plot=self.rect().adjusted(58,42,-18,-72)
         side=min(plot.width(),plot.height())
         r=QRectF(plot.left()+(plot.width()-side)/2,plot.top()+(plot.height()-side)/2,side,side)
         p.setPen(QColor('#40505a')); p.drawRect(r)
@@ -134,21 +134,22 @@ class ImpactScatter(QWidget):
         p.drawLine(int(r.left()),int(r.center().y()),int(r.right()),int(r.center().y()))
         p.drawLine(int(r.center().x()),int(r.top()),int(r.center().x()),int(r.bottom()))
         p.setPen(QColor('#72858e'))
-        p.drawText(int(r.left()),int(r.bottom()+18),f'X-Target  {-span:.0f}     0     +{span:.0f}')
         p.drawText(8,int(r.top()+12),f'Y +{span:.0f}')
         p.drawText(8,int(r.bottom()),f'Y -{span:.0f}')
+        p.drawText(int(r.left()),int(r.bottom()+18),f'X error   {-span:.0f}        0        +{span:.0f}')
         p.setBrush(QBrush(Qt.BrushStyle.NoBrush))
         p.setPen(QPen(QColor('#8aa0a8'),1.0))
         for x,y in shown:
-            p.drawEllipse(mp(x,y),2.3,2.3)
+            p.drawEllipse(mp(x,y),2.2,2.2)
         p.setPen(QPen(QColor('#5dce6a'),2.0)); p.drawEllipse(mp(0,0),5.4,5.4)
         if isfinite(pred_x) and isfinite(pred_y):
             p.setPen(QPen(QColor('#00dfff'),2.0)); p.drawEllipse(mp(pred_x,pred_y),6.2,6.2)
         if isfinite(truth_x) and isfinite(truth_y):
             p.setPen(QPen(QColor('#ff5964'),2.2)); p.drawEllipse(mp(truth_x,truth_y),7.0,7.0)
         p.setPen(QColor('#d9faff'))
-        p.drawText(int(r.left()+4),int(r.top()+16),f'T{selected_idx} error ({truth_x:+.2f}, {truth_y:+.2f}) m')
-        p.setPen(QColor('#5dce6a')); p.drawText(int(r.left()+4),self.height()-10,'绿=目标')
-        p.setPen(QColor('#8aa0a8')); p.drawText(int(r.left()+66),self.height()-10,'灰=样本')
-        p.setPen(QColor('#00dfff')); p.drawText(int(r.left()+128),self.height()-10,'青=预测')
-        p.setPen(QColor('#ff5964')); p.drawText(int(r.left()+198),self.height()-10,'红=真实')
+        p.drawText(int(r.left()+4),int(r.top()+16),f'T{selected_idx}  X {truth_x:+.2f}  Y {truth_y:+.2f} m')
+        legend_y=int(r.bottom()+39)
+        p.setPen(QColor('#5dce6a')); p.drawText(int(r.left()),legend_y,'绿=目标')
+        p.setPen(QColor('#8aa0a8')); p.drawText(int(r.left()+58),legend_y,'灰=样本')
+        p.setPen(QColor('#00dfff')); p.drawText(int(r.left()+118),legend_y,'青=预测')
+        p.setPen(QColor('#ff5964')); p.drawText(int(r.left()+184),legend_y,'红=真实')

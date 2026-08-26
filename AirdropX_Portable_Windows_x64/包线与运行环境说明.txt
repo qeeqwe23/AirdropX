@@ -1,0 +1,43 @@
+﻿AirdropX 免安装包内容说明
+
+一、运行环境
+- AirdropX/AirdropX.exe：Windows x64 GUI 主程序。
+- AirdropX/_internal：PyInstaller 打包的完整运行目录。
+- 已内置 Python 3.12 运行环境相关库。
+- 已内置 PyQt6 GUI 运行库。
+- 已内置 NumPy / SciPy 数值运行库。
+- 已内置 JSBSim Python/native runtime。
+
+二、JSBSim 与飞机模型
+- AirdropX/_internal/assets/jsbsim/aircraft/MQ9_Reaper/MQ9_Reaper.xml
+- AirdropX/_internal/assets/jsbsim/aircraft/MQ9_Reaper/Controls.xml
+- AirdropX/_internal/assets/jsbsim/aircraft/MQ9_Reaper/LandingGear.xml
+- AirdropX/_internal/assets/jsbsim/aircraft/MQ9_Reaper/reset_20m_runtime.xml
+- AirdropX/_internal/assets/jsbsim/aircraft/MQ9_Reaper/generated/reset_20m_runtime.xml
+- AirdropX/_internal/assets/jsbsim/engine/direct.xml
+- AirdropX/_internal/assets/jsbsim/engine/TPE331-10.xml
+
+三、Physics-MPC v1.3.6-Paper 控制器数据
+- AirdropX/_internal/assets/controller/controller_bank.npz
+- 源数据名：physics_full_envelope_bank_diagnostic.mat
+- 高度包线：20, 30, ..., 200 m，共 19 个高度点。
+- 速度包线：45, 50, 55, 60, 65 m/s，共 5 个速度点。
+- 载荷配置：cfg0, cfg1, cfg2, cfg3, cfg4，共 5 个质量/投放阶段。
+- 数据矩阵：A, B, Q, R, P, K, xref, uref, state_scale, input_scale, rho, N。
+
+四、仿真/风场能力
+- 无风。
+- 恒定顺风/逆风。
+- 阶跃风。
+- 双向阶跃风。
+- Ramp 风。
+- 正弦风。
+- 复合阵风/湍流。
+- 论文正式风场预设。
+- 自定义投放目标范围。
+- 四连投与落点 Monte Carlo XY 圆圈散点显示。
+
+五、当前边界
+- 当前软件是纵向 Physics-MPC：自定义风只支持沿航迹顺风/逆风，不冒充三维横风控制。
+- 控制器包线限定 H=20..200 m，V=45..65 m/s；GUI 会限制在合理范围内。
+- 结果目录在用户文档下，不写入软件安装目录。

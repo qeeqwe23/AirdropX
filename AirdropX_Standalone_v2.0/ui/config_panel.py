@@ -13,10 +13,15 @@ class ConfigPanel(QWidget):
         g.addWidget(QLabel('目标高度'),0,0); g.addWidget(self.alt,0,1); g.addWidget(QLabel('目标速度'),1,0); g.addWidget(self.speed,1,1)
         self.envelope=QLabel('允许范围：H 20-200 m · V 45-65 m/s\n超出范围不可启动，运行时不生成未知模型。'); self.envelope.setWordWrap(True); self.envelope.setObjectName('Good'); g.addWidget(self.envelope,2,0,1,2); root.addWidget(box)
 
-        wb=QGroupBox('风场'); wg=QGridLayout(wb); self.mode=QComboBox(); self.mode.addItems(['自定义风场','论文验证预设']); self.kind=QComboBox(); self.kind.addItems(CUSTOM_WIND_TYPES.keys()); self.formal=QComboBox(); self.formal.addItems(FORMAL_SCENARIOS.keys()); self.formal.hide()
-        self.ws=self._spin(0,20,0,.5,' m/s'); self.wdir=self._spin(0,360,0,5,' deg 来向'); self.projected=QLabel('沿航迹: +0.00 m/s'); self.projected.setObjectName('Good')
-        self.wind_note=QLabel('纵向 Physics-MPC：风向按航迹方向投影；横风分量不冒充为纵向控制输入。'); self.wind_note.setWordWrap(True)
-        for row,(name,w) in enumerate([('模式',self.mode),('风型',self.kind),('论文预设',self.formal),('风速',self.ws),('风向',self.wdir),('',self.projected)]): wg.addWidget(QLabel(name),row,0); wg.addWidget(w,row,1)
+        wb=QGroupBox('风场'); wg=QGridLayout(wb)
+        self.mode=QComboBox(); self.mode.addItems(['自定义风场','论文验证预设'])
+        self.kind=QComboBox(); self.kind.addItems(CUSTOM_WIND_TYPES.keys())
+        self.formal=QComboBox(); self.formal.addItems(FORMAL_SCENARIOS.keys()); self.formal.hide()
+        self.ws=self._spin(0,20,0,.5,' m/s')
+        self.wdir=QComboBox(); self.wdir.addItems(['顺风','逆风'])
+        self.projected=QLabel('沿航迹: +0.00 m/s'); self.projected.setObjectName('Good')
+        self.wind_note=QLabel('当前为纵向 Physics-MPC：自定义风只提供沿航迹分量，顺风为正、逆风为负。'); self.wind_note.setWordWrap(True)
+        for row,(name,w) in enumerate([('模式',self.mode),('风型',self.kind),('论文预设',self.formal),('风速',self.ws),('方向',self.wdir),('',self.projected)]): wg.addWidget(QLabel(name),row,0); wg.addWidget(w,row,1)
         wg.addWidget(self.wind_note,6,0,1,2); root.addWidget(wb)
 
         mb=QGroupBox('任务'); mf=QFormLayout(mb); self.duration=self._spin(30,120,55,5,' s'); self.factor=QComboBox(); self.factor.addItems(['1x 实时','2x','5x']); mf.addRow('任务时长',self.duration); mf.addRow('显示倍率',self.factor); root.addWidget(mb)
@@ -29,11 +34,19 @@ class ConfigPanel(QWidget):
 
         info=QGroupBox('独立运行时'); il=QVBoxLayout(info); lab=QLabel('Physics-MPC v1.3.6-Paper 数值移植\nJSBSim Python/native runtime\n运行时不调用 MATLAB / MEX / .mat'); lab.setObjectName('Good'); lab.setWordWrap(True); il.addWidget(lab); root.addWidget(info)
         self.start=QPushButton('启动实时仿真'); self.stop=QPushButton('停止'); self.reset=QPushButton('重置'); self.stop.setEnabled(False); root.addWidget(self.start); root.addWidget(self.stop); root.addWidget(self.reset); root.addStretch(1)
-        self.mode.currentIndexChanged.connect(self._mode); self.ws.valueChanged.connect(self._proj); self.wdir.valueChanged.connect(self._proj); self.start.clicked.connect(lambda:self.start_requested.emit(self.get_config())); self.stop.clicked.connect(self.stop_requested); self.reset.clicked.connect(self.reset_requested); self._mode(0)
+        self.mode.currentIndexChanged.connect(self._mode); self.kind.currentIndexChanged.connect(self._proj); self.ws.valueChanged.connect(self._proj); self.wdir.currentIndexChanged.connect(self._proj); self.start.clicked.connect(lambda:self.start_requested.emit(self.get_config())); self.stop.clicked.connect(self.stop_requested); self.reset.clicked.connect(self.reset_requested); self._mode(0)
     def _spin(self,a,b,v,step,suf): w=QDoubleSpinBox(); w.setRange(a,b); w.setDecimals(2); w.setSingleStep(step); w.setValue(v); w.setSuffix(suf); return w
+    def _direction_from_deg(self): return 180.0 if self.wdir.currentIndex()==0 else 0.0
     def _mode(self,i):
         custom=i==0; self.kind.setVisible(custom); self.formal.setVisible(not custom); self.ws.setEnabled(custom); self.wdir.setEnabled(custom); self._proj()
-    def _proj(self): self.projected.setText(f'沿航迹: {WindConfig(speed_mps=self.ws.value(),direction_from_deg=self.wdir.value()).along_track_mps():+.2f} m/s')
+    def _proj(self):
+        speed=self.ws.value()
+        try:
+            calm=CUSTOM_WIND_TYPES[self.kind.currentText()]=='calm'
+        except KeyError:
+            calm=False
+        along=0.0 if calm else WindConfig(speed_mps=speed,direction_from_deg=self._direction_from_deg()).along_track_mps()
+        self.projected.setText(f'沿航迹: {along:+.2f} m/s')
     def get_config(self):
         custom=self.mode.currentIndex()==0
         kind=CUSTOM_WIND_TYPES[self.kind.currentText()] if custom else FORMAL_SCENARIOS[self.formal.currentText()]
@@ -41,7 +54,7 @@ class ConfigPanel(QWidget):
             mode='custom' if custom else 'formal',
             kind=kind,
             speed_mps=self.ws.value(),
-            direction_from_deg=self.wdir.value(),
+            direction_from_deg=self._direction_from_deg(),
             random_seed=2401 if custom else FORMAL_SENSOR_SEEDS[kind],
         )
         sensor_seed=2401 if custom else FORMAL_SENSOR_SEEDS[kind]
